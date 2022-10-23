@@ -5,13 +5,12 @@
 2. [Platforms](#platforms)
 3. [Scenarios](#scenarios)
 4. [Screens](#screens)
-   - [Main Menu](#main-menu)
-   - [Help](#help)
+   1. [Main Menu](#main-menu)
+   2. [Help](#help)
    - [Credits](#credits)
    - [In Game](#in-game)
    - [End Game](#end-game)
-- [Rules](#rules)
-- [Controls](#controls)
+5. [Controls](#controls)
    - [Selecting a Piece](#selecting-a-piece)
       - [Deselecting a Piece](#deselecting-a-piece)
       - [Selecting a Different Piece](#selecting-a-different-piece)
@@ -19,20 +18,19 @@
       - [If the Player Moves the Mouse Out of the Window](#mouse-off-screen)
 
 ## Overview <a name="overview" />
-A two-player chess game in a pass-and-play GUI environment (both players use the same computer and interface to input their moves). The game will take place on a two-dimensional 64-square board with letters labelling the board’s columns and numbers labelling the rows. The game will contain some sort of marker indicating which player is currently taking their turn. On a player’s turn, they can select one of their chess pieces and move it to any legal tile. When a player selects their piece, the piece’s tile will follow the mouse until a move is selected. If the player clicks on one of their other pieces while they already have a piece selected, the clicked piece will become their new selected piece. If the player tries to select one of the opponent’s pieces or move their selected piece to an invalid spot, nothing will happen. Once the player has made a valid move, the next player will take their turn. Once the game is over, the winner will be displayed, and the player will be presented with a list of options, such as restarting the game, quitting the program, or returning to the main menu.
+Chessboard is a two-player pass-and-play chess game. The game will take place on a traditional 64-tile chessboard in a graphical environment. Upon launching Chessboard, the user can start a game via the main menu. On their turn, a player can select one of their chess pieces and move it to any legal tile. When a player selects a piece, the piece will follow the mouse until the player selects a valid tile to place it, after which the next player will take their turn using the same keyboard and mouse. The game will follow all rules outlined in http://www.fraserheightschess.com/Documents/BasicChessRules.pdf.
 
 ## Platforms <a name="platforms" />
 Linux, macOS, Windows
 
 ## Scenarios <a name="scenarios" />
-Two users can sit down together with a laptop, no matter where they are they will be able to open the chess game and can sit together at the same computer. They will be able to start a game together and pass the laptop between one another and play a full, complete game of chess together without the need of having a physical chess board where you will need to set up the board and reset every time a new game is started.
+Two users can sit down together with a laptop. No matter where they are, they will be able to open the chess game and can sit together at the same computer. They can start a game together, pass the laptop between one another, and play a full, complete game of chess together without having a physical chess board, which requires time to set up.
 
 ## Screens <a name="screens" />
 <div>
-<img alt="turn diagram" src="assets/state_diagram.png" width=600>
+<img alt="Screen Transition Diagram" src="assets/screen_transition_diagram.png" width=600>
 </div>
 The game will have several screens with which the user can interact. The above diagram demonstrates how the user can move between the different screens. Below, each screen is described in detail and accompanied by a mockup.
-
 
 ### Main Menu <a name="main-menu" />
 <div>
@@ -40,10 +38,10 @@ The game will have several screens with which the user can interact. The above d
 </div>
 The Main Menu is the Startup screen of the application. From here, users can navigate to all sections of the application. The Main Menu gives the user the following options:
 
-- **Start** – Start a pass n play game of chess with another player.
-- **Help** – Read the instruction for the app and the rules of chess.
+- **Start** – Start a pass-and-play game of chess with another player.
+- **Help** – Read the instruction for the app.
 - **Credits** – Credits screen credits all the developers with a short description of their role.
-- **Quit** – Stops the program.
+- **Exit** – Stops the program.
 
 The Main Menu is also accessible after a game ends and from the in-game state if any player chooses to do so.
 ### In Game <a name="in-game" />
@@ -57,7 +55,7 @@ The chess game starts with the white's turn and alternates legal moves between b
 <img alt="help menu mockup" src="assets/help_menu.png" width=600>
 </div>
 The Help screen is accessible from the main menu. This page contains basic instructions on how to use the app. Instructions like what type of input the app expects, what's considered a bad input, and what other bounds there are on the user.
-It also presents a brief overview of some basic chess rules and piece movements, acting as an introduction for new players to chess. The page also has links to the FIDE official rules webpage for an in-depth review of the rules.
+It also presents a brief overview of some basic chess rules and piece movements, acting as an introduction for new players to chess.
 
 ### Credits <a name="credits" />
 <div>
@@ -72,13 +70,9 @@ Any outside help and references are also listed here.
 </div>
 The end game screen appears when one of the players has won the game by either checkmating the opponent or one of the players resigns. This state is a dialogue box that lets users choose from the following options:
 
--  **Restart** – This option restarts the game and takes the users directly to the in-game state.
--	**Return to menu** – This option takes the user back to the main menu state.
+-	**Main Menu** – This option takes the user back to the main menu state.
+-  **Reset** – This option restarts the game and takes the users directly to the in-game state.
 -	**Quit** – This option stops and ends the program.
-
-
-## Rules<a name="rules" />
-
 
 ## Controls <a name="controls" /> 
 There will be two distinct phases on a given player's turn: selecting a piece and then choosing a position to move it.
@@ -88,11 +82,15 @@ There will be two distinct phases on a given player's turn: selecting a piece an
 
 ### Selecting a piece <a name="selecting-a-piece" />
 At the start of the player's turn, they can select any of their pieces by left-clicking on it and then releasing the mouse button. Once selected, the piece will follow the player's cursor around the screen. Nothing will happen if a player tries to select one of their opponent's pieces.
+
 #### Deselecting a Piece <a name="deselecting-a-piece" />
 The player can return a selected piece to its original position by left-clicking the tile from which the piece came. Doing so will result in no pieces following the cursor.
+
 #### Selecting a different piece <a name="selecting-a-different-piece" />
 If the player decides they want to move a different piece instead, they can select a new piece by left-clicking on it. The initially selected piece will return to its original position after the mouse button is released.
+
 ### Moving a piece <a name="moving-a-piece" />
 Once the player has selected a piece, they can choose a new position for it by left-clicking one of the highlighted tiles. Once the mouse button is released, the piece will instantly move on to the clicked tile and no longer follow the cursor. Nothing will happen if the player clicks an invalid tile, and the selected piece will continue to follow the cursor.
+
 #### If the player moves the mouse out of the window <a name="mouse-off-screen" />
 The selected piece will remain in the position the player moved the cursor out of the window. However, once the player moves the cursor back inside the window, the piece will immediately jump to the cursor's position.
