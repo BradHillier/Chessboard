@@ -193,8 +193,40 @@ get_moves(piece)
     - get the moves for the piece at the provided position on the `board`. If a piece exists at the provided position, call its `available_moves()` method and return the resulting array. If no piece exists at the provided position, return an empty array.
 
 ## 7. ChessController
-The chess controller acts as an intermediary between the user interface and the games internal representation and logic. The chess controller only exposes aspects of the games 
-### 7.1
+Exposing only necessary aspects of `Chessboard`, The chess controller acts as an intermediary between the user interface and the game's internal representation and logic. It provides `SDLChessGame` with enough information about the state of the `game`'s board to draw it to the screen. The only input `SDLChessGame` needs to provide the chess controller is the `Position` on the `game` board a player has clicked. Using the internal state of the `game`, it determines what the user intended to happen.
+```
+Chessboard
+process_click(position)
+get_selected_pieced( )
+get_board_state( )
+reset( )
+current player( )
+```
+### 7.1 Attributes
+#### 7.1.1 Private
+- **game :** Chessboard
+    - The internal representation of the gameboard.
+### 7.2 Methods
+#### 7.2.1 Public
+- **process_click(position:** Position **)**
+    - If the player doesn't currently have a piece selected, select the piece in the provided `position` if one exists, otherwise, attempt to move the currently selected piece to the clicked `position`.
+<br>
+
+- **get_selected_pieced( ) :** PieceNum
+    - return the `PieceNum` associated with the currently selected `Piece`. If no piece is selected, return `Null`.
+<br>
+
+- **get_board_state( ) :** Array\<Array\<PieceNum\>\>
+    - return the current layout of pieces on the gameboard. `PieceNum` is used to limit direct access to the games'`Piece` objects.
+<br>
+
+- **reset( )**
+    - return the gameboard to its initial state, putting all the pieces back to their default tiles by utilizing `game`'s `reset_board()` method.
+<br>
+
+- **current_player( ) :** boolean
+    - return `game`'s current player
+
 
 ## 8. View
 
