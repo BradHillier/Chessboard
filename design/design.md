@@ -129,14 +129,17 @@ The selected piece will remain in the position the player moved the cursor out o
 - is_game_over : boolean
     - boolean flag denoting whether or not the game has reached a terminal state either by checkmate, or resignation   
 <br>
+
 - curr_player : boolean
     - boolean value indicating which player is currently taking their turn. true if it is the white players turn, and false if it is the black players turn.
 <br>
+
 - selected : Piece
     - stores the currently selected `Piece` if there is one, otherwise `Null` if no piece is selected.
 #### 6.1.2 Private
 - board : Array\<Array\<Piece\>\> 
     - a 2-dimensional array containing pointers to `Piece` objects. If the pointer in a given cell is `Null` it indicates that the tile is empty.
+<br> 
 
 ### 6.2. Methods
 
@@ -144,25 +147,32 @@ The selected piece will remain in the position the player moved the cursor out o
 - move( source: Position, destination: Position ) : boolean
     - In the `board` array, if a piece exists in the source position and destination is a valid move for that piece, move the piece from source to destination on the board and return true, otherwise return false.
 <br>
+
 - select( piece: Position ) : boolean
     - If there is a piece at the provided position on the board, update the object's `selected` property to said piece and return true, otherwise return false.
 <br>
+
 - deselect() : boolean
     - If there is currently a piece selected, set the `selected` property to `Null` and return true. If no piece is selected return false.
 <br>
+
 - reset_board() : void
     - re-initialize Chessboard's `board` array, putting all pieces back to the default positions
 <br>
+
 - get_board() : Array\<Array\<PieceNum\>\>
     - returns a simplified representation of the `board` array. This simplified 2-dimensional array will contain the `PieceNum` counterpart for each element in the original `board` array.
+<br>
 
 #### 6.2.2 Private
 - take( piece: Position ) : boolean
-    removes the piece at the provide position from the game and then return true. If the provided position is empty, return false.
+    - removes the piece at the provide position from the game and then return true. If the provided position is empty, return false.
 <br>
+
 - is_valid_move( source: Position, destination: Position ) : boolean
     - checks if available moves for the piece at the source position contains the destination position. If so, return true, otherwise false.
 <br>
+
 - get_moves( piece: Position) : Array\<Position\>
     - get the moves for the piece at the provided position on the `board`. If a piece exists at the provided position, call its `available_moves()` method and return the resulting array. If no piece exists at the provided position, return an empty array.
 
