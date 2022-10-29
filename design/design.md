@@ -265,16 +265,20 @@ The central component of the user interface, `SDLChessGame` manages the UI's cur
 - **assets :** Dictionary
     - Contains all images used in the game. The images associated with a specific `Piece` can be accessed using its related `PieceNum` as a key.
 <br>
+
 - **dirty :** boolean
     - a flag denoting whether or not an event has occured that requires the screen to be redrawn. This prevents the program from having to redraw the entire screen on each iteration of the game loop.
 <br>
+
 - **controller :** ChessController
     - The controller acts as a proxy between the games model, `ChessBoard`, and `SDLChessGame`, providing it with method for seeing and interacting with the games internal state, without being able to directly modify it.
 <br>
+
 #### 8.1.1 Private
 - **curr_state :** State
     - the screen the player is currently interacting with. This property provides `SDLChessGame` with methods for processing events and displaying the current screen to the user.
 <br>
+
 ### 8.2 Methods
 #### 8.2.1 Public
 - **change_state(state:** State **)**
@@ -339,6 +343,7 @@ Playing is the in-game state. One of its main functions is to process the users 
 - **sdl_point_to_position(point:** SDL_Point **) :** Position
     - Takes the cooridinates of the mouse on screen when the user clicked the left-mouse button and attempts to convert it into a `Position` on the game boards grid. 
 <br>
+
 - **board_state() :** \<Array\<Array<PieceNum\>\>
     - Returns a 2-dimensional array of `PieceNum`s representing the current state of the gameboard. See section 6.2.1 for an example of the game's initial state.
 <br>
