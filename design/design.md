@@ -123,64 +123,111 @@ Once the player has selected a piece, they can choose a new position for it by l
 **If the player moves the mouse out of the window**
 The selected piece will remain in the position the player moved the cursor out of the window. However, once the player moves the cursor back inside the window, the piece will immediately jump to the cursor’s position.
 
-## 6. Chessboard (Model) <a name="chessboard-model" />
+## 6. Chessboard (Model) 
+Chessboard directly manages the internal representation of the game board's state, and contains all its related logic. It is completely independent from the user interface and can exist on its own.
+```
+is _game _over
+curr_player
+selected
+board
+
+move(source, destination)
+select(piece)
+deselect_piece()
+reset_ board()
+get board()
+take(piece)
+is valid move(source, destination)
+get_moves(piece)
+```
 ### 6.1. Attributes
 #### 6.1.1 Public
-- is_game_over : boolean
-    - boolean flag denoting whether or not the game has reached a terminal state either by checkmate, or resignation   
+- **is_game_over :** boolean
+    - A flag denoting whether or not the game has reached a terminal state either by checkmate, or resignation   
 <br>
 
-- curr_player : boolean
-    - boolean value indicating which player is currently taking their turn. true if it is the white players turn, and false if it is the black players turn.
+- **curr_player :** boolean
+    - A boolean value indicating which player is currently taking their turn. True if it is the white players turn, and false if it is the black players turn.
 <br>
 
-- selected : Piece
+- **selected :** Piece
     - stores the currently selected `Piece` if there is one, otherwise `Null` if no piece is selected.
 #### 6.1.2 Private
-- board : Array\<Array\<Piece\>\> 
+- **board :** Array\<Array\<Piece\>\> 
     - a 2-dimensional array containing pointers to `Piece` objects. If the pointer in a given cell is `Null` it indicates that the tile is empty.
 <br> 
 
 ### 6.2. Methods
 
 #### 6.2.1 Public
-- move( source: Position, destination: Position ) : boolean
+- **move(source:** Position, **destination:** Position **) :** boolean
     - In the `board` array, if a piece exists in the source position and destination is a valid move for that piece, move the piece from source to destination on the board and return true, otherwise return false.
 <br>
 
-- select( piece: Position ) : boolean
+- **select( piece:** Position **) :** boolean
     - If there is a piece at the provided position on the board, update the object's `selected` property to said piece and return true, otherwise return false.
 <br>
 
-- deselect() : boolean
+- **deselect( ) :** boolean
     - If there is currently a piece selected, set the `selected` property to `Null` and return true. If no piece is selected return false.
 <br>
 
-- reset_board() : void
+- **reset_board( ) :** void
     - re-initialize Chessboard's `board` array, putting all pieces back to the default positions
 <br>
 
-- get_board() : Array\<Array\<PieceNum\>\>
+- **get_board( ) :** Array\<Array\<PieceNum\>\>
     - returns a simplified representation of the `board` array. This simplified 2-dimensional array will contain the `PieceNum` counterpart for each element in the original `board` array.
 <br>
 
 #### 6.2.2 Private
-- take( piece: Position ) : boolean
+- **take( piece:** Position **) :** boolean
     - removes the piece at the provide position from the game and then return true. If the provided position is empty, return false.
 <br>
 
-- is_valid_move( source: Position, destination: Position ) : boolean
+- **is_valid_move( source:** Position, **destination:** Position **) :** boolean
     - checks if available moves for the piece at the source position contains the destination position. If so, return true, otherwise false.
 <br>
 
-- get_moves( piece: Position) : Array\<Position\>
+- **get_moves( piece:** Position **) :** Array\<Position\>
     - get the moves for the piece at the provided position on the `board`. If a piece exists at the provided position, call its `available_moves()` method and return the resulting array. If no piece exists at the provided position, return an empty array.
 
-## 7. Controller
+## 7. ChessController
+The chess controller acts as an intermediary between the user interface and the games internal representation and logic. The chess controller only exposes aspects of the games 
+### 7.1
 
 ## 8. View
 
 ## 9. Piece
+Piece is an abstract base class which will be implemented by the following classes:
+
+- Pawn
+- Rook
+- Knight
+- Bishop
+- Queen
+- King
+
 ### 9.1. Attributes
-### 9.2. Struct Position
-### 9.3. Methods
+#### 9.1.1 Public 
+- position: Position
+    - the location on the `board` at which the piece is located.
+<br>
+
+#### 9.1.2 Private
+- colour: bool
+<br>
+
+- board: Chessboard
+### 9.2. Methods
+### 9.2.1 Public
+- get_colour() : bool
+
+### 10 Globals
+#### 10.1 Position
+#### 10.2 PieceNum
+#### 10.3 Constants
+- WHITE : true
+    - a constant boolean representing the white player
+- BLACK : false
+    - a constant boolean representing the black player
