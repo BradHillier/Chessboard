@@ -177,6 +177,18 @@ Chessboard directly manages the internal representation of the game board's stat
 <br>
 
 - **get_board( ) :** Array\<Array\<PieceNum\>\>
+    ```
+    [
+        [-2, -3, -4, -6, -5, -4, -3, -2],
+        [-1, -1, -1, -1, -1, -1, -1, -1],
+        [ 0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0],
+        [ 1,  1,  1,  1,  1,  1,  1,  1],
+        [ 2,  3,  4,  6,  5,  4,  3,  2]
+    ]
+    ```
     - returns a simplified representation of the `board` array. This simplified 2-dimensional array will contain the `PieceNum` counterpart for each element in the original `board` array.
 <br>
 
@@ -194,29 +206,30 @@ Chessboard directly manages the internal representation of the game board's stat
 
 ## 7. ChessController
 ```
-Chessboard
+game
+
 process_click(position)
-get_selected_pieced( )
-get_board_state( )
-reset( )
-current player( )
+get_selected_pieced()
+get_board_state()
+reset()
+current player()
 ```
-Exposing only necessary aspects of `Chessboard`, The chess controller acts as an intermediary between the user interface and the game's internal representation and logic. It provides `SDLChessGame` with enough information about the state of the `game`'s board to draw it to the screen. The only input `SDLChessGame` needs to provide the chess controller is the `Position` on the `game` board a player has clicked. Using the internal state of the `game`, it determines the users intent.
+Exposing only necessary aspects of `game`, The chess controller acts as an intermediary between the user interface and the game's internal representation and logic. It provides `SDLChessGame` with enough information about the state of `game`to represent it on the screen. The only input `SDLChessGame` needs to provide the chess controller is the `Position` on the `game` board a player has clicked. Using the internal state of the `game`, `ChessController` can then assume the users intent.
 ### 7.1 Attributes
 #### 7.1.1 Private
 - **game :** Chessboard
     - The internal representation of the gameboard.
 ### 7.2 Methods
 #### 7.2.1 Public
-```
-if a piece is selected:
-    move it to the clicked position
-else if the clicked position is the tile of the selected piece:
-    deselect the currently selected piece
-otherwise, if the clicked tile contains a piece
-    select the clicked piece
-```
 - **process_click(position:** Position **)**
+    ```
+    if a piece is currently selected:
+        move it to the clicked position
+    else if the clicked position is the tile of the selected piece:
+        deselect the currently selected piece
+    otherwise, if the clicked tile contains a piece:
+        select the clicked piece
+    ```
     - If the player doesn't currently have a piece selected, select the piece in the provided `position` if one exists, otherwise, attempt to move the currently selected piece to the clicked `position`.
 <br>
 
@@ -268,14 +281,14 @@ The central component of the user interface, `SDLChessGame` manages the UI's cur
     - This is used to transition the program from one screen to another. It deletes the current state and replaces it with the provided one. `SDLChessGame` will use this newly created states methods inside of `run_loop`.
 <br>
 
-```
-while the game is not over:
-    process events
-    update internal representation
-    render the screen
-```
 - **run_loop()**
-    - continuously processes events from the user, updates the progams internal state then renders the screen with respect to the current state of the user interface.
+    ```
+    while the programming is running:
+        process events
+        update the games internal representation
+        render the represention to the screen
+    ```
+    - continuously processes events from the user, updates the progams internal state then renders the screen using the methods provided by the user interface's current state.
 
 ## 9. Piece
 Piece is an abstract base class which will be implemented by the following classes:
@@ -301,6 +314,57 @@ Piece is an abstract base class which will be implemented by the following class
 ### 9.2. Methods
 ### 9.2.1 Public
 - get_colour() : bool
+
+## 10. Playing
+```
+position_to_sdl_rect(position)
+sdl_point_to_position(point)
+board_state()
+selected_piece()
+click(position)
+get_curr_player()
+reset_game()
+```
+Playing is the in-game state. One of its main functions is to process the users mouse click events. If a board tile is clicked `Playing` will try to determine which one, passing this information to the `ChessController` which will use it to update the `Chessboard` if necessary. This state will also check if any of the on-screen buttons have been clicked, in which case it will change `SDLChessGame`'s state appropiately.
+<div style="text-align: center">                                                
+<img alt="turn diagram" src="../specifications/assets/playing.png" width=600>                   
+</div>                   
+
+### 10.1 Methods
+#### 10.1.1 Private
+- **position_to_sdl_rect(position:** Position **) :** SDL_Rect
+    - Takes a `Position` on the game board, and converts it into a rectangular area on the screen. This is used to draw game piece assets in the correct area of the screen.
+<br>
+
+- **sdl_point_to_position(point:** SDL_Point **) :** Position
+    - Takes the cooridinates of the mouse on screen when the user clicked the left-mouse button and attempts to convert it into a `Position` on the game boards grid. 
+<br>
+- **board_state() :** \<Array\<Array<PieceNum\>\>
+    - Returns a 2-dimensional array of `PieceNum`s representing the current state of the gameboard. See section 6.2.1 for an example of the game's initial state.
+<br>
+
+- **selected_piece() :** PieceNum
+    - Returns the currently selected `Piece`'s associated PieceNum. If no `Piece` is selected, returns 0.
+<br>
+
+- **legal_moves() :** \<Array\<Position\>\>
+    - Returns an array containing all legals moves for the currently selected piece. If no piece is selected an empty array is return.
+<br>
+
+- **click(position:** Position **)**
+    -  passes a Position, recently converted from an SDL_Point, to the `ChessController` to be processed.
+<br>
+
+- **get_curr_player() :** boolean
+    - the player currently taking their turn represented as a boolean. Returns true if white and false if black.
+<br>
+
+- **reset_game()**
+    - Via the controller, this method resets the `Chessboard` to its initial state.
+
+
+
+
 
 ### 10 Globals
 #### 10.1 Position
