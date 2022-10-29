@@ -40,31 +40,89 @@
 9.3.	Methods
 
 ## 1. Introduction
-
 ### 1.1 Purpose
+The purpose of this document is to provide a detailed description of the implementation of the chess software built by the team Prometheus. Software is a c++ based chess game.
 ### 1.2 Scope
-
+The document describes the implementation details of the chess program. The program consists of 3 major constituents, namely Model, Controller, View (Names are subject to change). The document will not be concerned with any testing of the program.
 ## 2. Design Overview
 ### 2.1 Description of the Program
+Chessboard is a two-player pass-and-play chess game. The game will take place on a traditional 64-tile chessboard in a graphical environment. Upon launching Chessboard, the user can start a game via the main menu. On their turn, a player can select one of their chess pieces and move it to any legal tile. When a player selects a piece, the piece will follow the mouse until the player selects a valid tile to place it, after which the next player will take their turn using the same keyboard and mouse. The game will follow all rules outlined in http://www.fraserheightschess.com/Documents/BasicChessRules.pdf.
 ### 2.2 Technologies Used
+The chess program is entirely based on C++. The program uses SDL libraries for the graphical components. OpenGL libraries maybe used.
+
+The target platforms are Microsoft Windows, Linux and MacOS.
 ### 2.3 Diagram
 
 ## 3. States
 ### 3.1 State Diagram
-
+The game will have several screens with which the user can interact. The above diagram demonstrates how the user can move between the different screens. Below, each screen is described in detail and accompanied by a mock-up.
 ## 4. UI (Pictures & Descriptions)
 ### 4.1 Main Menu
+<div style="text-align: center">                                                
+<img alt="turn diagram" src="../specifications/assets/main_menu.png" width=600>                   
+</div>                   
+The Main Menu is the Startup screen of the application. From here, users can navigate to all sections of the application. The Main Menu gives the user the following options:
+
+- Start – Start a pass-and-play game of chess with another player.
+- Help – Read the instruction for the app.
+- Credits – Credits screen credits all the developers with a short description of their role. Exit – Stops the program.
+
+The Main Menu is also accessible after a game ends and from the in-game state if any player chooses to do so.
+
 ### 4.2 In Game
+<div style="text-align: center">                                                
+<img alt="turn diagram" src="../specifications/assets/playing.png" width=600>                   
+</div>                   
+The chess game starts with the white’s turn and alternates legal moves between black and white until one of the kings is checkmated. Players can navigate the application’s different states, even in the in-game state. The applications allow users to quit the program or go to the main menu. Users also have the option to reset the game if they wish to start a new game from this state itself.
+
 ### 4.3 Help
+<div style="text-align: center">                                                
+<img alt="turn diagram" src="../specifications/assets/help_menu.png" width=600>                   
+</div>                   
+The Help screen is accessible from the main menu. This page contains basic instructions on how to use the app. Instructions like what type of input the app expects, what’s considered a bad input, and what other bounds there are on the user.
+It also presents a brief overview of some basic chess rules and piece movements, acting as an introduction for new players to chess.
+
 ### 4.4. Credits
+<div style="text-align: center">                                                
+<img alt="turn diagram" src="../specifications/assets/credits.png" width=600>                   
+</div>                   
+The “credits” page’s objective is to recognize the individuals involved in producing the product. The page’s style is straightforward: identify everyone engaged in the program’s creation and provide a summary of their role or contribution.
+Any outside help and references are also listed here.
+
 ### 4.5. End Game
+<div style="text-align: center">                                                
+<img alt="turn diagram" src="../specifications/assets/game_over.png" width=600>                   
+</div>                   
+The end game screen appears when one of the players has won the game by either checkmating the opponent or one of the players resigns. This state is a dialogue box that lets users choose from the following options
+
+- Main menu – This option takes the user back to the main menu state.
+- Reset – This option restarts the game and takes the users directly to the in-game state.
+- Quit – This option stops and ends the program.
+
 
 ## 5. Controls
+<div style="text-align: center">                                                
+<img alt="turn diagram" src="../specifications/assets/turn_diagram.png" width=600>                   
+</div>                   
 ### 5.1. Selecting a piece
+At the start of the player’s turn, they can select any of their pieces by left clicking on it and then releasing the mouse button. Once selected, the piece will follow the player’s cursor around the screen. Nothing will happen if a player tries to select one of their opponent’s pieces.
+
+**Deselecting a Piece**
+The player can return a selected piece to its original position by left-clicking the tile from which the piece came. Doing so will result in no pieces following the cursor.
+
+**Selecting a different piece**
+If the player decides they want to move a different piece instead, they can select a new piece by left clicking on it. The initially selected piece will return to its original position after the mouse button is released.
+
 ### 5.2. Moving a piece
+Once the player has selected a piece, they can choose a new position for it by left clicking one of the highlighted tiles. Once the mouse button is released, the piece will instantly move on to the clicked tile and no longer follow the cursor. Nothing will happen if the player clicks an invalid tile, and the selected piece will continue to follow the cursor.
+
+**If the player moves the mouse out of the window**
+The selected piece will remain in the position the player moved the cursor out of the window. However, once the player moves the cursor back inside the window, the piece will immediately jump to the cursor’s position.
+
 
 ## 6. Model
 ### 6.1. Attributes
+
 ### 6.2. Methods
 
 ## 7. Controller
