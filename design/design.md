@@ -124,7 +124,6 @@ Once the player has selected a piece, they can choose a new position for it by l
 The selected piece will remain in the position the player moved the cursor out of the window. However, once the player moves the cursor back inside the window, the piece will immediately jump to the cursor’s position.
 
 ## 6. Chessboard (Model) 
-Chessboard directly manages the internal representation of the game board's state, and contains all its related logic. It is completely independent from the user interface and can exist on its own.
 ```
 is _game _over
 curr_player
@@ -140,6 +139,7 @@ take(piece)
 is valid move(source, destination)
 get_moves(piece)
 ```
+Chessboard directly manages the internal representation of the game board's state, and contains all its related logic. It is completely independent from the user interface and can exist on its own.
 ### 6.1. Attributes
 #### 6.1.1 Public
 - **is_game_over :** boolean
@@ -193,7 +193,6 @@ get_moves(piece)
     - get the moves for the piece at the provided position on the `board`. If a piece exists at the provided position, call its `available_moves()` method and return the resulting array. If no piece exists at the provided position, return an empty array.
 
 ## 7. ChessController
-Exposing only necessary aspects of `Chessboard`, The chess controller acts as an intermediary between the user interface and the game's internal representation and logic. It provides `SDLChessGame` with enough information about the state of the `game`'s board to draw it to the screen. The only input `SDLChessGame` needs to provide the chess controller is the `Position` on the `game` board a player has clicked. Using the internal state of the `game`, it determines what the user intended to happen.
 ```
 Chessboard
 process_click(position)
@@ -202,12 +201,21 @@ get_board_state( )
 reset( )
 current player( )
 ```
+Exposing only necessary aspects of `Chessboard`, The chess controller acts as an intermediary between the user interface and the game's internal representation and logic. It provides `SDLChessGame` with enough information about the state of the `game`'s board to draw it to the screen. The only input `SDLChessGame` needs to provide the chess controller is the `Position` on the `game` board a player has clicked. Using the internal state of the `game`, it determines the users intent.
 ### 7.1 Attributes
 #### 7.1.1 Private
 - **game :** Chessboard
     - The internal representation of the gameboard.
 ### 7.2 Methods
 #### 7.2.1 Public
+```
+if a piece is selected:
+    move it to the clicked position
+else if the clicked position is the tile of the selected piece:
+    deselect the currently selected piece
+otherwise, if the clicked tile contains a piece
+    select the clicked piece
+```
 - **process_click(position:** Position **)**
     - If the player doesn't currently have a piece selected, select the piece in the provided `position` if one exists, otherwise, attempt to move the currently selected piece to the clicked `position`.
 <br>
@@ -228,7 +236,46 @@ current player( )
     - return `game`'s current player
 
 
-## 8. View
+## 8. SDLChessGame
+```
+assets
+controller 
+curr_ state
+dirty
+
+change_state(state)
+run_loop()
+```
+The central component of the user interface, `SDLChessGame` manages the UI's current state. It is in charge of switching between menus and running the game loop. It also acts as a container for all of the game's assets.`SDLChessGame` is also in charge of passing information to the `ChessController` when necessary so it can update the games internal representation.
+### 8.1 Attributes
+#### 8.2.1 Public
+- **assets :** Dictionary
+    - Contains all images used in the game. The images associated with a specific `Piece` can be accessed using its related `PieceNum` as a key.
+<br>
+- **dirty :** boolean
+    - a flag denoting whether or not an event has occured that requires the screen to be redrawn. This prevents the program from having to redraw the entire screen on each iteration of the game loop.
+<br>
+- **controller :** ChessController
+    - The controller acts as a proxy between the games model, `ChessBoard`, and `SDLChessGame`, providing it with method for seeing and interacting with the games internal state, without being able to directly modify it.
+<br>
+#### 8.1.1 Private
+- **curr_state :** State
+    - the screen the player is currently interacting with. This property provides `SDLChessGame` with methods for processing events and displaying the current screen to the user.
+<br>
+### 8.2 Methods
+#### 8.2.1 Public
+- **change_state(state:** State **)**
+    - This is used to transition the program from one screen to another. It deletes the current state and replaces it with the provided one. `SDLChessGame` will use this newly created states methods inside of `run_loop`.
+<br>
+
+```
+while the game is not over:
+    process events
+    update internal representation
+    render the screen
+```
+- **run_loop()**
+    - continuously processes events from the user, updates the progams internal state then renders the screen with respect to the current state of the user interface.
 
 ## 9. Piece
 Piece is an abstract base class which will be implemented by the following classes:
