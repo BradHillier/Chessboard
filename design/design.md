@@ -18,11 +18,11 @@
 5. [Playing](#playing)
 5. [Main Menu](#main-menu)
 7. [Help](#help)
-8. [Credits](#credts)
-9. [ChessController](#chess-controller)
-10. [Chessboard](#chessboard-model)
+8. [Credits](#credits)
+9. [ChessController](#controller)
+10. [Chessboard](#chessboard)
 11. [Piece](#piece)
-12. [Globals](#global)
+12. [Globals](#globals)
 
 ## 1. Introduction <a name="intro" />
 ### 1.1 Purpose
