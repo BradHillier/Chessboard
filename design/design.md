@@ -205,8 +205,7 @@ Exposing only necessary aspects of `game`, The chess controller acts as an inter
 - **current_player( ) :** boolean
     - return `game`'s current player
 
-<a name="chessboard" />
-## 10. Chessboard (Model) 
+## 10. Chessboard (Model)  <a name="chessboard" />
 ```
 is _game _over
 curr_player
@@ -288,8 +287,7 @@ Chessboard directly manages the internal representation of the game board's stat
     - get the moves for the piece at the provided position on the `board`. If a piece exists at the provided position, call its `available_moves()` method and return the resulting array. If no piece exists at the provided position, return an empty array.
 
 
-<a  name="piece" />
-## 11. Piece
+## 11. Piece <a  name="piece" />
 Piece is an abstract base class which will be implemented by the following classes:
 
 - Pawn
@@ -315,8 +313,7 @@ Piece is an abstract base class which will be implemented by the following class
 - get_colour() : bool
 
 
-<a  name="globals" />
-## 12. Globals 
+## 12. Globals  <a  name="globals" />
 ### 12.1 Position
 ### 12.2 PieceNum
 ### 12.3 Constants
