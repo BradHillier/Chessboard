@@ -30,6 +30,7 @@ The purpose of this document is to provide a detailed description of the impleme
 ### 1.2 Scope
 The document describes the implementation details of the chess program. The program consists of 3 major constituents, namely Model, Controller, View (Names are subject to change). The document will not be concerned with any testing of the program.
 ## 2. Design Overview <a name="overview" />
+![Class Diagram](assets/class_diagram.png)
 ### 2.1 Description of the Program
 Chessboard is a two-player pass-and-play chess game. The game will take place on a traditional 64-tile chessboard in a graphical environment. Upon launching Chessboard, the user can start a game via the main menu. On their turn, a player can select one of their chess pieces and move it to any legal tile. When a player selects a piece, the piece will follow the mouse until the player selects a valid tile to place it, after which the next player will take their turn using the same keyboard and mouse. The game will follow all rules outlined in http://www.fraserheightschess.com/Documents/BasicChessRules.pdf.
 ### 2.2 Technologies Used
@@ -42,8 +43,8 @@ The target platforms are Microsoft Windows, Linux and MacOS.
 ```
 assets
 controller 
-curr_ state
 dirty
+curr_ state
 
 change_state(state)
 run_loop()
@@ -55,13 +56,14 @@ The central component of the user interface, `SDLChessGame` manages the UI's cur
     - Contains all images used in the game. The images associated with a specific `Piece` can be accessed using its related `PieceNum` as a key.
 <br>
 
+- **controller :** ChessController
+    - The controller acts as a proxy between the games model (`ChessBoard`), and `SDLChessGame`, providing it with method for seeing and interacting with the games internal state, without being able to directly modify it.
+<br>
+
 - **dirty :** boolean
     - a flag denoting whether or not an event has occured that requires the screen to be redrawn. This prevents the program from having to redraw the entire screen on each iteration of the game loop.
 <br>
 
-- **controller :** ChessController
-    - The controller acts as a proxy between the games model (`ChessBoard`), and `SDLChessGame`, providing it with method for seeing and interacting with the games internal state, without being able to directly modify it.
-<br>
 
 #### 3.1.1 Private
 - **curr_state :** State
@@ -145,7 +147,7 @@ Any outside help and references are also listed here.
 game
 
 process_click(position)
-get_selected_pieced()
+get_selected_piece()
 get_available_moves()
 get_board_state()
 get_current_player()
@@ -200,7 +202,7 @@ board
 move(piece, destination)
 select(piece)
 deselect_piece()
-reset_ board()
+reset_board()
 get_board()
 take(piece)
 is_valid_move(piece, destination)
