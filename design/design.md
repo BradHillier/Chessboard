@@ -91,11 +91,7 @@ ABSTRACT STATE DOCUMENTATION GOES HERE
 ```
 position_to_sdl_rect(position)
 sdl_point_to_position(point)
-board_state()
-selected_piece()
 click(position)
-get_curr_player()
-reset_game()
 ```
 Playing is the in-game state. One of its main functions is to process the users mouse click events. If a board tile is clicked `Playing` will try to determine which one, passing this information to the `ChessController` which will use it to update the `Chessboard` if necessary. This state will also check if any of the on-screen buttons have been clicked, in which case it will change `SDLChessGame`'s state appropiately.
 <div style="text-align: center">                                                
@@ -111,28 +107,11 @@ Playing is the in-game state. One of its main functions is to process the users 
 - **sdl_point_to_position(point:** SDL_Point **) :** Position
     - Takes the cooridinates of the mouse on screen when the user clicked the left-mouse button and attempts to convert it into a `Position` on the game boards grid. 
 <br>
-- **board_state() :** \<Array\<Array<PieceNum\>\>
-    - Returns a 2-dimensional array of `PieceNum`s representing the current state of the gameboard. See section 6.2.1 for an example of the game's initial state.
-<br>
-
-- **selected_piece() :** PieceNum
-    - Returns the currently selected `Piece`'s associated PieceNum. If no `Piece` is selected, returns 0.
-<br>
-
-- **legal_moves() :** \<Array\<Position\>\>
-    - Returns an array containing all legals moves for the currently selected piece. If no piece is selected an empty array is return.
-<br>
 
 - **click(position:** Position **)**
     -  passes a Position, recently converted from an SDL_Point, to the `ChessController` to be processed.
 <br>
 
-- **get_curr_player() :** boolean
-    - the player currently taking their turn represented as a boolean. Returns true if white and false if black.
-<br>
-
-- **reset_game()**
-    - Via the controller, this method resets the `Chessboard` to its initial state.
 
 ## 6. Main Menu <a name="main-menu" />
 <div style="text-align: center">                                                
@@ -167,9 +146,11 @@ game
 
 process_click(position)
 get_selected_pieced()
+get_available_moves()
 get_board_state()
+get_current_player()
+is_game_over()
 reset()
-current player()
 ```
 Exposing only necessary aspects of `game`, The chess controller acts as an intermediary between the user interface and the game's internal representation and logic. It provides `SDLChessGame` with enough information about the state of `game`to represent it on the screen. The only input `SDLChessGame` needs to provide the chess controller is the `Position` on the `game` board a player has clicked. Using the internal state of the `game`, `ChessController` can then assume the users intent.
 ### 9.1 Attributes
@@ -194,20 +175,24 @@ Exposing only necessary aspects of `game`, The chess controller acts as an inter
     - return the `PieceNum` associated with the currently selected `Piece`. If no piece is selected, return `Null`.
 <br>
 
+- **get_available_moves( ) :** Array\<Position\>
+    - get all available moves for the currently selected piece. If a piece is selected, call its `available_moves()` method and return the resulting array. If no piece is selected, return an empty array.
+
 - **get_board_state( ) :** Array\<Array\<PieceNum\>\>
-    - return the current layout of pieces on the gameboard. `PieceNum` is used to limit direct access to the games'`Piece` objects.
+    - return the current layout of pieces on the gameboard. `PieceNum` is used to limit direct access to the games'`Piece` objects. See `get_board()` under section 10.2.1 for an example of the array returned when the board is in its default state.
 <br>
 
-- **reset( )**
+- **get_current_player( ) :** boolean
+    - return `game`'s current player
+<br>
+
+ - **reset( )**
     - return the gameboard to its initial state, putting all the pieces back to their default tiles by utilizing `game`'s `reset_board()` method.
 <br>
 
-- **current_player( ) :** boolean
-    - return `game`'s current player
-
 ## 10. Chessboard (Model)  <a name="chessboard" />
 ```
-is _game _over
+game_over
 curr_player
 selected
 board
@@ -216,15 +201,15 @@ move(piece, destination)
 select(piece)
 deselect_piece()
 reset_ board()
-get board()
+get_board()
 take(piece)
-is valid move(piece, destination)
+is_valid_move(piece, destination)
 get_moves(piece)
 ```
 Chessboard directly manages the internal representation of the game board's state, and contains all its related logic. It is completely independent from the user interface and can exist on its own.
 ### 10.1. Attributes
 #### 10.1.1 Public
-- **is_game_over :** boolean
+- **game_over :** boolean
     - A flag denoting whether or not the game has reached a terminal state either by checkmate, or resignation   
 <br>
 
@@ -283,8 +268,6 @@ Chessboard directly manages the internal representation of the game board's stat
     - checks if available moves for `piece` contains `destination`. If so, return true, otherwise false.
 <br>
 
-- **get_moves( piece:** Position **) :** Array\<Position\>
-    - get the moves for the piece at the provided position on the `board`. If a piece exists at the provided position, call its `available_moves()` method and return the resulting array. If no piece exists at the provided position, return an empty array.
 
 
 ## 11. Piece <a  name="piece" />
