@@ -23,6 +23,7 @@
 10. [Chessboard](#chessboard)
 11. [Piece](#piece)
 12. [Globals](#globals)
+13. [File Structure](#file-structure)
 
 ## 1. Introduction <a name="intro" />
 ### 1.1 Purpose
@@ -97,19 +98,27 @@ HandleEvents()
 Update()
 Render()
 ```
+The State machine is an abstract class that handles every event that takes place on the chessboard, then `updates` the board and `renders` the new and updated version of the board. The state provides `SDLChessGame` with a uniform interface for interacting with the various states of the game using the virtual methods within state.
 ### 4.1 Attributes
 #### Private
+
 - **parent_ :** SDLChessGame
+    - The parent class that handles the view of the different playing states.
 <br>
 
 ### 4.2 Methods
+#### Public
+
 - **HandleEvents() :** void
+    - Handles any event that could take place in either of the states and has a void return type.
 <br>
 
 - **Update() :** void
+    - Updates the state with the neccessary changes based on what events took place in the current state. Has a void return type.
 <br>
 
 - **Render() :** void
+    - Renders the updated version of the board for the view to display to the user after each event is handled successfully. Has a void return type.    
 <br>
 
 ## 5. Playing <a name="playing" />
@@ -124,6 +133,7 @@ Playing is the in-game state. One of its main functions is to process the users 
 
 ### 5.1 Methods
 #### Private
+
 - **PositionToRect(position:** Position **) :** SDL_Rect
     - Takes a `Position` on the game board, and converts it into a rectangular area on the screen. This is used to draw game piece assets in the correct area of the screen.
 <br>
@@ -421,36 +431,7 @@ An enumeration used to represent the state of a tile. Every tile on the chessboa
     - a constant boolean representing the black player
 <br>
 
-## 13. State
-```
-parent
-
-handle_events()
-update()
-render()
-```
-The State machine is an abstract class that handles every event that takes place on the chessboard, then `updates` the board and `renders` the new and updated version of the board. The state provides `SDLChessGame` with a uniform interface for interacting with the various states of the game using the virtual methods within state.
-
-
-**13.1 Attributes**  
-
-
-**13.1.1 Private**
- * **parent:**  GameView
-    * The parent class that handles the view of the different playing states.
-
-**13.2 Methods**
-
- **13.2.2 Public** 
- * **handle_events()**  
-   *  Handles any event that could take place in either of the states and has a void return type.
- * **update()**
-   * Updates the state with the neccessary changes based on what events took place in the current state. Has a void return type.
-* **render()**   
-   * Renders the updated version of the board for the view to display to the user after each event is handled successfully. Has a void return type.    
-<br>
-
-## 14. File Structure  
+## 13. File Structure  <a name="file-structure" />
 
 **14.1 Overview** 
 
