@@ -420,3 +420,62 @@ An enumeration used to represent the state of a tile. Every tile on the chessboa
 - **kBlack :** false
     - a constant boolean representing the black player
 <br>
+
+## 13. State
+```
+parent
+
+handle_events()
+update()
+render()
+```
+The State machine is an abstract class that handles every event that takes place on the chessboard, then `updates` the board and `renders` the new and updated version of the board. The state provides `SDLChessGame` with a uniform interface for interacting with the various states of the game using the virtual methods within state.
+
+
+**13.1 Attributes**  
+
+
+**13.1.1 Private**
+ * **parent:**  GameView
+    * The parent class that handles the view of the different playing states.
+
+**13.2 Methods**
+
+ **13.2.2 Public** 
+ * **handle_events()**  
+   *  Handles any event that could take place in either of the states and has a void return type.
+ * **update()**
+   * Updates the state with the neccessary changes based on what events took place in the current state. Has a void return type.
+* **render()**   
+   * Renders the updated version of the board for the view to display to the user after each event is handled successfully. Has a void return type.    
+<br>
+
+## 14. File Structure  
+
+**14.1 Overview** 
+
+The file structure of the Game will follow a standard of keeping all the `header` files in a directory called `include` and all the source code files will be present in a directory called `src`. The Game directory will also have the `README` and `Specifications` files. 
+<br>
+
+**14.2 Tree Representation** 
+
+The following tree is a visual depiction of how our file structure would look for the game:
+```
+ChessGame
+   ├───README.txt
+   ├───src
+   │   ├───Controller.c
+   │   ├───Model.c  
+   │   ├───SDLChessGame.c
+   │   ├───Piece.c  
+   │   └───State.c
+   │       
+   ├───include
+   │   ├───Controller.h
+   │   ├───Model.h  
+   │   ├───SDLChessGame.h
+   │   ├───Piece.h  
+   │   └───State.h 
+   │     
+   └───Specifications
+   ```
