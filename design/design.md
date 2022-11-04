@@ -459,11 +459,11 @@ ChessGame
    │   └───State.h 
    │
    ├───bin
-   │   └───someimagefile
    │
    ├───libs
    │
    ├───assets  
+   │   └───someimagefile
    │  
    └───specifications
    ```
