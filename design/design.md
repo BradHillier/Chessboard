@@ -457,6 +457,13 @@ ChessGame
    │   ├───SDLChessGame.h
    │   ├───Piece.h  
    │   └───State.h 
-   │     
-   └───Specifications
+   │
+   ├───bin
+   │
+   ├───libs
+   │
+   ├───assets  
+   │   └───someimagefile
+   │  
+   └───specifications
    ```
