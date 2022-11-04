@@ -128,7 +128,7 @@ PointToPosition(point)
 ```
 Playing is the in-game state. One of its main functions is to process the users mouse click events. If a board tile is clicked `Playing` will try to determine which one, passing this information to the `ChessController` which will use it to update the `Chessboard` if necessary. This state will also check if any of the on-screen buttons have been clicked, in which case it will change `SDLChessGame`'s state appropiately.
 <div style="text-align: center">                                                
-<img alt="turn diagram" src="../specifications/assets/playing.png" width=600>                   
+<img alt="In-Game Mockup" src="../specifications/assets/playing.png" width=600>                   
 </div>                   
 
 ### 5.1 Methods
@@ -144,7 +144,7 @@ Playing is the in-game state. One of its main functions is to process the users 
 
 ## 6. Main Menu <a name="main-menu" />
 <div style="text-align: center">                                                
-<img alt="turn diagram" src="../specifications/assets/main_menu.png" width=600>                   
+<img alt="Main Menu Mockup" src="../specifications/assets/main_menu.png" width=600>                   
 </div>                   
 The Main Menu is the Startup screen of the application. From here, users can navigate to all sections of the application. The Main Menu gives the user the following options:
 
@@ -156,14 +156,14 @@ The Main Menu is also accessible after a game ends and from the in-game state if
 
 ## 7. Help <a name="help" />
 <div style="text-align: center">                                                
-<img alt="turn diagram" src="../specifications/assets/help_menu.png" width=600>                   
+<img alt="Help Menu Mockup" src="../specifications/assets/help_menu.png" width=600>                   
 </div>                   
 The Help screen is accessible from the main menu. This page contains basic instructions on how to use the app. Instructions like what type of input the app expects, what’s considered a bad input, and what other bounds there are on the user.
 It also presents a brief overview of some basic chess rules and piece movements, acting as an introduction for new players to chess.
 
 ## 8. Credits <a name="credits" />
 <div style="text-align: center">                                                
-<img alt="turn diagram" src="../specifications/assets/credits.png" width=600>                   
+<img alt="Credits Screen Mockup" src="../specifications/assets/credits.png" width=600>                   
 </div>                   
 The “credits” page’s objective is to recognize the individuals involved in producing the product. The page’s style is straightforward: identify everyone engaged in the program’s creation and provide a summary of their role or contribution.
 Any outside help and references are also listed here.
