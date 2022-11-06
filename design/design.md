@@ -203,8 +203,8 @@ Exposing only necessary aspects of `game`, The chess controller acts as an inter
     - If the player doesn't currently have a piece selected, select the piece in the provided `position` if one exists, otherwise, attempt to move the currently selected piece to the clicked `position`.
 <br>
 
-- **GetLegalMoves( ) :** Array\<Position\>
-    - get all available moves for the currently selected piece. If a piece is selected, call its `LegalMoves()` method and return the resulting array. If no piece is selected, return an empty array.
+- **GetLegalMoves( ) :** vector\<Position\>
+    - get all available moves for the currently selected piece. If a piece is selected, call its `LegalMoves()` method and return the resulting vector. If no piece is selected, return an empty vector.
 <br>
 
 - **GetSelectedPiece( ) :** PieceNum
@@ -377,8 +377,8 @@ Piece is an abstract base class which will be implemented by the following class
     - uses the `piece_num_` to determine if the `Piece` is white or black and then returns the boolean constant associated with its colour.
 <br>
 
-- **AvailableMoves( ) :** Array\<Position\>
-    - Returns all available moves for the piece from its current position. Moves outside of the board's boundaries and moves that are occupied with a piece of the same colour will not be included in the returned array.
+- **AvailableMoves( ) :** vector\<Position\>
+    - Returns all available moves for the piece from its current position. Moves outside of the board's boundaries and moves that are occupied with a piece of the same colour will not be included in the returned vector.
 <br>
 
 ## 12. Globals  <a  name="globals" />
