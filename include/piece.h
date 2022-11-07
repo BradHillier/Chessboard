@@ -13,7 +13,7 @@ class Chessboard;
  /// @brief an abstract chess piece used to implement the various pieces on a chessboard
 class Piece 
 {
-    private:
+    protected:
 
         /// referenceChessboard the piece exists on 
         Chessboard* board_;
