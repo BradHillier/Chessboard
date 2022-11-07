@@ -11,8 +11,10 @@ using std::vector;
 class Chessboard;
 
  /// @brief an abstract chess piece used to implement the various pieces on a chessboard
-class Piece {
+class Piece 
+{
     private:
+
         /// referenceChessboard the piece exists on 
         Chessboard* board_;
 
@@ -21,9 +23,11 @@ class Piece {
 
         /// the pieces current position on the chessboard it exists on
         Position position_;
+
     public:
-        Piece();
-        ~Piece();
+
+        Piece(Chessboard* board, Position position);
+        ~Piece() {};
 
         /// @brief get the pieces associated integer value
         /// @details Acts as a getter method for the `piece_num_` data member
