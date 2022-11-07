@@ -1,11 +1,12 @@
 #ifndef PIECE
 #define PIECE
-#include "../globals.h"
-#include "../chessboard.h"
+#include "globals.h"
 #include <vector>
+
 using std::vector;
 
-// this prevents Chessboard undefined error. 
+// forward declaration
+// this prevents Chessboard undefined error.
 // since chessboard.h and piece.h include eachother, this is needed
 // there may be a better way of handling this
 class Chessboard;
@@ -53,7 +54,7 @@ class Piece
 
         /// @brief get all legal moves for the piece
         /// @return a vector containing all positions on the chessboard the piece can be moved to
-        virtual vector<Position> AvailableMoves();
-}
+        virtual vector<Position> AvailableMoves() = 0;
+};
 
 #endif

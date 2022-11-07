@@ -1,4 +1,5 @@
 #include "../include/piece.h"
+#include "../include/chessboard.h"
 
 
 Piece::Piece(Chessboard* board, Position position)
@@ -26,14 +27,12 @@ Position Piece::position()
 bool Piece::set_position(Position position)
 {
    // only checks if position is within bounds
-   if (board_.isValidMove(self, destination) {
-      position_ = position;
-   }
+   position_ = position;
 }
 
 
 bool Piece::Colour() 
 {
-   return piece_num_ < 0 ? wBlack : wWhite;
+   return piece_num_ < 0 ? kBlack : kWhite;
 }
 
