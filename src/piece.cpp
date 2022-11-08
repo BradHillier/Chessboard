@@ -26,13 +26,16 @@ Position Piece::position()
 
 bool Piece::set_position(Position position)
 {
-   // only checks if position is within bounds
+   // No error checking currently
+   // assume the user is not trying to set invalid positions
    position_ = position;
 }
 
 
 bool Piece::Colour() 
 {
-   return piece_num_ < 0 ? kBlack : kWhite;
+   if (piece_num_ < 0) { 
+      return kBlack  
+   } 
+   return kWhite;
 }
-
