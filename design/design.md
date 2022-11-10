@@ -423,6 +423,10 @@ An enumeration used to represent the state of a tile. Every tile on the chessboa
     - the white king
 
 ### 12.3 Constants
+
+- **PieceColour :** bool
+   - a typedef of boolean, used to help clarify the usage of the below constants
+
 - **kWhite :** true
     - a constant boolean representing the white player
 <br>
