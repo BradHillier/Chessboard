@@ -1,8 +1,19 @@
 #ifndef CHESSBOARD
 #define CHESSBOARD
 #include "globals.h"
+#include <unordered_set>
 #include <list>
+using std::unordered_set;
 using std::list;
+
+// These are all included specifically for Print()
+#include <iostream>
+#include <iomanip>
+#include <string>
+using std::setw;
+using std::cout;
+using std::endl;
+using std::string;
 
 
 // forward declaration
@@ -11,7 +22,7 @@ class Piece;
 class Chessboard
 {
    private:
-      
+
       /** flag indicating if game is over, either by check mate or other */
       bool is_game_over_; 
 
@@ -22,13 +33,38 @@ class Chessboard
       Piece* selected_;
 
       /** A 2D array of Pieces representing the current state of the game board */
-      Piece** board_;
+      Piece* board_[kBoardSize][kBoardSize];
+
+      unordered_set<Piece*> white_pieces;
+
+      unordered_set<Piece*> black_pieces;
 
       list<Position> LegalMoves();
 
-      bool Take(Position piece);
+      /** @brief create a new Piece of the specified type and place it on the board
+      *
+      *   Using a simplified integer representation of the initial piece setup,
+      *   clear all old piece from the board and replace them with new ones
+      *   in  there initial positions
+      *
+      *   @param piece_type The PieceNum representation of the piece being created
+      *   @param position The Position on the board to place the newly created piece
+      *
+      *   @example 
+      *   if (CreatePiece(kBPawn, Position(1, 1))) {
+      *      cout << "You succesfully created a Black Pawn" << endl;
+      *   }
+      *
+      *   @return bool True if space was allocated for a new piece, otherwise false
+      */
+      bool CreatePiece(PieceNum piece_type, Position position);
 
-      bool IsValidMove(Position destination);
+      void SetDefaultValues();
+
+      void PlacePiecesInStartingPositions();
+
+      friend class Piece;
+
    public:
       Chessboard();
       ~Chessboard();
@@ -55,8 +91,14 @@ class Chessboard
       PieceColour current_player();
 
       /** @brief get a reference to the 
+
+          @example
+          Selected()->AvailableMoves()
       */
       Piece* selected();
+
+      // TODO: below may not be the final return type
+      //       have to decide what will be easiest for the UI to use
 
       /** @brief A simplified representation of the board for external use
       *
@@ -99,19 +141,32 @@ class Chessboard
       *   If a piece is currently selected, set `selected_` to NULL and return
       *   true. If no piece is selected return false.
       *
+      *   @example
+      *   if (DeselectPiece()) {
+      *     cout << "Successfully deselected a piece" << endl;
+      *   } else {
+      *     cout << "No piece was selected" << endl;
+      *   }
+      *   cout << Selected()  // prints NULL
+      *
       *   @return true is a piece was successfully deselected otherwise false
       */
-      bool Deselectpiece();
+      bool DeselectPiece();
       
       /** @brief Get a reference to the piece at the provided position
       *
       *   If a piece exists at the provided position on the board, return
       *   a pointer to it. If no piece exists return NULL.
       *
+      *   @example 
+      *   PieceAt(Position(1, 1));          // kBPawn at the start of game 
+      *   PieceAt(Position(-1, -1));        // NULL as (-1,-1) is out of bounds 
+      *
       *   @param position The location on the board to check for a piece
       *   @return A reference to the piece if one exists.
       */
       Piece* PieceAt(Position position);
+
 
       /** @brief Reset the game board to its initial state
       *
@@ -119,7 +174,10 @@ class Chessboard
       *
       *   @return Void
       */
-      void Reset();
+       void Reset();
+
+
+       void Print();
 };
 
 #endif
