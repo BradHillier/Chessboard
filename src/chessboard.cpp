@@ -6,7 +6,10 @@
 
 Chessboard::Chessboard()
 {
-   SetDefaultValues();
+   SetDefaultValues()
+
+   // cleaner to use integers and typecast them to PieceNum
+   // rather than writing {kBPawn,  kBpawn, ... kBPawn}
    int initial_layout[kBoardSize][kBoardSize] = {
       {-2,-3,-4,-6,-5,-4,-3,-2},
       {-1,-1,-1,-1,-1,-1,-1,-1},
