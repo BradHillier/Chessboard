@@ -4,11 +4,55 @@
 
 Piece::Piece(Chessboard* board, Position position)
 {
-   board_ = board;
+   chess_ = board;
+   position_ = kOffTheBoard;
+   set_position(position);
+   starting_position_ = position_;
+}
 
-   // We should check if the provided position is valid
-   // we might need to do some sort of exception handling here
-   position_ = position;
+
+void Piece::set_position(Position dest)
+{
+   chess_->board_[dest.row][dest.col] = this;
+   position_ = dest;
+}
+
+
+// bool Piece::IsPotentialMove(Position destination)
+// {
+//    Piece* dest_occupant = chess_->PieceAt(destination); 
+//    bool occupant_is_friendly = dest_occupant && dest_occupant->Colour() == Colour();
+// 
+//    if (IsWithinBoard(destination) && !occupant_is_friendly) {
+//       return true;
+//    }
+//    return false;
+// }
+
+
+bool Piece::IsValidMove(Position destination)
+{
+   bool dest_is_empty = chess_->PieceAt(destination) == NULL;
+   bool in_bounds = IsWithinBoard(destination);
+   bool different = destination != position();
+   bool OffBoard = destination == kOffTheBoard;
+
+   if ((dest_is_empty && in_bounds && different) || OffBoard) {
+      return true;
+   }
+   return false;
+}
+
+
+bool Piece::IsWithinBoard(Position dest)
+{
+   bool row_in_range = 0 <= dest.row && dest.row <= kBoardSize;
+   bool col_in_range = 0 <= dest.col && dest.col <= kBoardSize;
+
+   if (row_in_range && col_in_range) {
+      return true;
+   }
+   return false;
 }
 
 
@@ -24,18 +68,32 @@ Position Piece::position()
 }
 
 
-bool Piece::set_position(Position position)
+bool Piece::MoveTo(Position destination)
 {
-   // No error checking currently
-   // assume the user is not trying to set invalid positions
-   position_ = position;
+   if (IsValidMove(destination)) {
+      RemoveFromBoard();
+      set_position(destination);
+      return true;
+   }
+   return false;
 }
 
 
 bool Piece::Colour() 
 {
    if (piece_num_ < 0) { 
-      return kBlack  
+      return kBlack;
    } 
    return kWhite;
+}
+
+
+bool Piece::RemoveFromBoard()
+{
+   if (position_ != kOffTheBoard) {
+      chess_->board_[position().row][position().col] = NULL;
+      position_ = kOffTheBoard;
+      return true;
+   }
+   return false;
 }
