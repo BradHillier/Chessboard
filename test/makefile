@@ -1,23 +1,27 @@
-OBJECTS = piece.o chessboard.o pawn.o
-EXECUTABLES = main
-PIECE_HEADERS = ../include/piece.h ../include/pawn.h
-OPTIONS = -Wall -Wextra
-
-main: main.cpp  $(OBJECTS)
-	@echo "\nbuilding main"
-	g++ -g main.cpp $(OBJECTS) -o $@
-
-chessboard.o: ../include/chessboard.h ../src/chessboard.cpp $(PIECE_HEADERS) ../include/globals.h 
-	@echo "\nchessboard.o needs updating"
-	g++ -g -c $< ../src/chessboard.cpp ../include/globals.h
-
-piece.o: ../include/piece.h ../src/piece.cpp ../include/chessboard.h ../include/globals.h
-	@echo "\npiece.o needs updating"
-	g++ -g -c $< ../src/piece.cpp ../include/globals.h
-
-pawn.o: ../include/pawn.h ../src/pawn.cpp ../include/piece.h
-	@echo "\npawn.o needs updating"
-	g++ -g -c $< ../src/pawn.cpp ../include/piece.h
-
-clean:
-	rm $(OBJECTS) $(EXECUTABLES)
+EXECUTABLES = main                                                                 
+OBJECTS = piece.o chessboard.o pawn.o                                              
+                                                                                   
+PIECE_HEADERS = ../include/piece.h ../include/pawn.h                               
+                                                                                   
+SHARED = ../include/globals.h                                                      
+OPTIONS = -Wall -Wextra                                                            
+                                                                                   
+                                                                                   
+main: main.cpp  $(OBJECTS)                                                         
+   @echo "\nbuilding main"                                                         
+   g++ -g main.cpp $(OBJECTS) -o $@                                                
+                                                                                   
+chessboard.o: ../src/chessboard.cpp ../include/chessboard.h  $(PIECE_HEADERS) $(SHARED)
+   @echo "\nchessboard.o needs updating"                                           
+   g++ -g -c $(OPTIONS) $<                                                         
+                                                                                   
+piece.o: ../src/piece.cpp ../include/piece.h ../include/chessboard.h $(SHARED)  
+   @echo "\npiece.o needs updating"                                                
+   g++ -g -c $(OPTIONS) $<                                                         
+                                                                                   
+pawn.o: ../src/pawn.cpp ../include/pawn.h ../include/piece.h $(SHARED)             
+   @echo "\npawn.o needs updating"                                                 
+   g++ -g -c $(OPTIONS) $<                                                         
+                                                                                   
+clean:                                                                             
+   rm $(OBJECTS) $(EXECUTABLES) 
