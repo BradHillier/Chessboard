@@ -47,9 +47,9 @@ class Piece
       *    @warning This method does not check if a piece already residing
       *             at the desitination can be taken
       *    @param destination The Position being examinec
-      *    @ return bool True if all requirements met, otherwise false
+      *    @return bool True if all requirements met, otherwise false
       */
-      bool IsValidMove(Position destination);
+      bool IsAvailable(Position destination);
 
     protected:
 
@@ -61,22 +61,45 @@ class Piece
       /** reference to the Chessboard the piece exists on */
       Chessboard* chess_;
 
-      /** Check if the target destination is within the bounds of the gameboard
+      /** @brief Check if the destination is within the bounds of the gameboard
+      *
+      *   Check if the row and column of the provide destination position is 
+      *   greater than or equal to 0 and less then the size of the board.
+      *
+      *   @param destination The position to check
+      *   @return bool True if within bounds, otherwise false;
       */
-      bool IsWithinBoard(Position dest);
+      bool IsWithinBoard(Position destination);
 
-      /** This is supposed to be used to check if tile is within the
-      *   bounds of the board and either empty or contains an enemy piece.
-      *   Intended to be used by child classes to filter out invalid moves. 
+      /** @brief Check if the provided Position contains a piece of the same colour
+      *   
+      *   First checks if the position contains a piece. if so, it compares the
+      *   colour of the piece occupying the provided position with the
+      *   colour of the calling piece.
+      *
+      *   @param position The position to check for a piece and compare colours
+      *   @return bool True if the provide position contains a piece of the 
+      *           same colour otherwise false.
       */ 
-      // bool IsPotentialMove(Position destination);
+      bool IsFriendly(Position position);
+
+      /** @brief Check if the destination is either empty or contains an enemy piece
+      *
+      *   For use in child classes LegalMoves method to filter out illegal moves
+      *   such as those that would take the piece outside the bounds of the 
+      *   board, or result in it attacking a friendly piece.
+      *
+      *   @param position The Position being consider as a potential move
+      *   @return bool True if move is legal, otherwise false;
+      */
+      bool isLegalMove(Position destination);
 
    public:
 
       Piece(Chessboard* board, Position position);
       ~Piece() {};
 
-      /** brief get the pieces associated integer value
+      /** @brief get the pieces associated integer value
       *
       *   Acts as a getter method for the `piece_num_` data member
       *   protecting the attribute from accidently being changed
@@ -109,13 +132,13 @@ class Piece
       *   @param dest The position to move the piece to
       *   @returns bool True if position was changed, otherwise false
       */
-      bool MoveTo(Position dest);
+      bool MoveTo(Position destination);
 
       /** @brief Remove the piece from its current positon on the board
       *
       *   If the piece is currently on the gameboard, remove it and return 
       *   true, otherwise return false.
-      *   
+      *
       *   @return bool Succcess of operation
       */
       bool RemoveFromBoard();
@@ -132,7 +155,7 @@ class Piece
       *
       *   @return all legal moves from the pieces current position
       */
-      virtual list<Position> AvailableMoves() = 0;
+      virtual list<Position> LegalMoves() = 0;
 };
 
 #endif

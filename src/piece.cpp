@@ -11,43 +11,49 @@ Piece::Piece(Chessboard* board, Position position)
 }
 
 
-void Piece::set_position(Position dest)
+void Piece::set_position(Position destination)
 {
-   chess_->board_[dest.row][dest.col] = this;
-   position_ = dest;
+   chess_->board_[destination.row][destination.col] = this;
+   position_ = destination;
 }
 
-
-// bool Piece::IsPotentialMove(Position destination)
-// {
-//    Piece* dest_occupant = chess_->PieceAt(destination); 
-//    bool occupant_is_friendly = dest_occupant && dest_occupant->Colour() == Colour();
-// 
-//    if (IsWithinBoard(destination) && !occupant_is_friendly) {
-//       return true;
-//    }
-//    return false;
-// }
-
-
-bool Piece::IsValidMove(Position destination)
+bool Piece::isLegalMove(Position destination)
 {
-   bool dest_is_empty = chess_->PieceAt(destination) == NULL;
-   bool in_bounds = IsWithinBoard(destination);
-   bool different = destination != position();
-   bool OffBoard = destination == kOffTheBoard;
-
-   if ((dest_is_empty && in_bounds && different) || OffBoard) {
+   if (IsWithinBoard(destination) && !IsFriendly(destination)) {
       return true;
    }
    return false;
 }
 
 
-bool Piece::IsWithinBoard(Position dest)
+bool Piece::IsFriendly(Position position)
 {
-   bool row_in_range = 0 <= dest.row && dest.row <= kBoardSize;
-   bool col_in_range = 0 <= dest.col && dest.col <= kBoardSize;
+   Piece* occupant = chess_->PieceAt(position); 
+
+   if (occupant != NULL && occupant->Colour() == Colour()) {
+      return true;
+   }
+   return false;
+}
+
+
+bool Piece::IsAvailable(Position destination)
+{
+   bool dest_is_empty = chess_->PieceAt(destination) == NULL;
+   bool in_bounds = IsWithinBoard(destination);
+   bool not_curr_pos = destination != position();
+
+   if (dest_is_empty && in_bounds && not_curr_pos) {
+      return true;
+   }
+   return false;
+}
+
+
+bool Piece::IsWithinBoard(Position destination)
+{
+   bool row_in_range = 0 <= destination.row && destination.row < kBoardSize;
+   bool col_in_range = 0 <= destination.col && destination.col < kBoardSize;
 
    if (row_in_range && col_in_range) {
       return true;
@@ -70,7 +76,7 @@ Position Piece::position()
 
 bool Piece::MoveTo(Position destination)
 {
-   if (IsValidMove(destination)) {
+   if (IsAvailable(destination)) {
       RemoveFromBoard();
       set_position(destination);
       return true;

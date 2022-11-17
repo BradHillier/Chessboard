@@ -12,7 +12,7 @@ class Knight: public Piece
 
       /** @brief 
       */
-      virtual list<Position> AvailableMoves() override;
+      virtual list<Position> LegalMoves() override;
 };
 
 #endif

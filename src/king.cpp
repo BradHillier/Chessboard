@@ -9,6 +9,6 @@ King::King(Chessboard* board, Position position, bool colour)
 }
 
 
-list<Position> King::AvailableMoves()
+list<Position> King::LegalMoves()
 {
 }
