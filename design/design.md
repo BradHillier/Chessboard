@@ -20,7 +20,7 @@
 7. [Help](#help)
 8. [Credits](#credits)
 9. [ChessController](#controller)
-10. [Chessboard](#chessboard)
+10. [Chessboard](#board)
 11. [Piece](#piece)
 12. [Globals](#globals)
 13. [File Structure](#file-structure)
@@ -227,7 +227,7 @@ Exposing only necessary aspects of `game`, The chess controller acts as an inter
     - return the gameboard to its initial state, putting all the pieces back to their default tiles by utilizing `game_`'s `Reset()` method.
 <br>
 
-## 10. Chessboard (Model)  <a name="chessboard" />
+## 10. Chessboard (Model)  <a name="board" />
 ```
 is_game_over_
 current_player_
