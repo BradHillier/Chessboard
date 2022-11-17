@@ -223,7 +223,7 @@ Exposing only necessary aspects of `game`, The chess controller acts as an inter
     - get the game over status from `game_` and return it
 <br>
 
- - **ResetGame( )**
+- **ResetGame( )**
     - return the gameboard to its initial state, putting all the pieces back to their default tiles by utilizing `game_`'s `Reset()` method.
 <br>
 
@@ -399,7 +399,7 @@ Piece is an abstract base class which will be implemented by the following class
 <br>
 
 - **RemoveFromBoard( ) :** boolean
-- If the piece is currently on the gameboard, remove it and return true, otherwise return false.
+    - If the piece is currently on the gameboard, remove it and return true, otherwise return false.
 <br>
 
 - **set_position(position: Position) :** boolean
