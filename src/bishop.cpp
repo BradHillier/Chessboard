@@ -9,6 +9,6 @@ Bishop::Bishop(Chessboard* board, Position position, bool colour)
 }
 
 
-list<Position> Bishop::AvailableMoves()
+list<Position> Bishop::LegalMoves()
 {
 }
