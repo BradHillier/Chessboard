@@ -326,14 +326,20 @@ Chessboard directly manages the internal representation of the game board's stat
 
 ## 11. Piece <a  name="piece" />
 ```
-board_
+chess_
 piece_num_
 position_
+starting_position_
+IsAvailable(destination)
+IsWithinBoard(destination)
+IsFriendly(position)
 piece_num()
 position()
+MoveTo(destination)
+RemoveFromBoard()
 set_position()
 Colour()
-AvailableMoves()
+LegalMoves()
 ```
 Piece is an abstract base class which will be implemented by the following classes:
 
@@ -347,7 +353,7 @@ Piece is an abstract base class which will be implemented by the following class
 ### 11.1. Attributes
 #### Private 
 
-- **board_ :** Chessboard
+- **chess_ :** Chessboard
     - a reference to the `Chessboard`
 <br>
 
@@ -359,7 +365,26 @@ Piece is an abstract base class which will be implemented by the following class
     - the location on the `board` at which the piece is located.
 <br>
 
+- **starting_position_ :** Position
+    - the location on the `board` at which the piece was located at the start of the game.
+<br>
+
 ### 11.2 Methods
+
+- **IsAvailable(Position :** destination **) :** boolean
+   - Checks that the destination is empty, is not the position the piece is already in, is within the bounds of the board, or the destinaion is off the board.
+<br>
+
+- **IsWithinBoard(Position :** destination **) :** boolean
+   - Check if the row and column of the provide destination position is greater than or equal to 0 and less then the size of the board.
+<br>
+
+- **IsFriendly(Position :** position **) :** boolean
+   - First checks if the position contains a piece. if so, it compares the colour of the piece occupying the provided position with the colour of the calling piece.
+<br>
+
+- **IsLegalMove(Position :** destination **) :** bool
+   - For use in child classes LegalMoves method to filter out illegal moves such as those that would take the piece outside the bounds of the board by calling IsWithinBoard(), or result in it attacking a friendly piece.
 
 - **piece_num( ) :** PieceNum
     - A getter method for the `piece_num_` attribute.
@@ -367,6 +392,14 @@ Piece is an abstract base class which will be implemented by the following class
 
 - **position( ) :** Position
     - A getter method for the `position_` attribute.
+<br>
+
+- **MoveTo(Position :** destination **) :** boolean
+   - First checking if the provided destinations is both within the bounds of the game board and not already occupied by another piece, remove the piece from its current position and move it to the destination.
+<br>
+
+- **RemoveFromBoard( ) :** boolean
+- If the piece is currently on the gameboard, remove it and return true, otherwise return false.
 <br>
 
 - **set_position(position: Position) :** boolean
@@ -377,7 +410,7 @@ Piece is an abstract base class which will be implemented by the following class
     - uses the `piece_num_` to determine if the `Piece` is white or black and then returns the boolean constant associated with its colour.
 <br>
 
-- **AvailableMoves( ) :** vector\<Position\>
+- **LegalMoves( ) :** unordered_set\<Position\>
     - Returns all available moves for the piece from its current position. Moves outside of the board's boundaries and moves that are occupied with a piece of the same colour will not be included in the returned vector.
 <br>
 
