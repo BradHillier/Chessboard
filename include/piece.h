@@ -84,10 +84,11 @@ class Piece
       bool IsFriendly(Position position);
 
       /** @brief Check if the destination is either empty or contains an enemy piece
+                 or is within bounds by calling IsWithinBoard() 
       *
       *   For use in child classes LegalMoves method to filter out illegal moves
       *   such as those that would take the piece outside the bounds of the 
-      *   board, or result in it attacking a friendly piece.
+      *   board by calling IsWithinBoard(), or result in it attacking a friendly piece.
       *
       *   @param position The Position being consider as a potential move
       *   @return bool True if move is legal, otherwise false;
