@@ -12,7 +12,7 @@ class Rook: public Piece
 
       /** @brief 
       */
-      virtual list<Position> LegalMoves() override;
+      virtual unordered_set<Position> LegalMoves() override;
 };
 
 #endif
