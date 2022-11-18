@@ -1,5 +1,5 @@
 #include "globals.h"
-#include "chessboard.h.h"
+#include "chessboard.h"
 #include <unordered_set>
 #include <list>
 using std::unordered_set;
