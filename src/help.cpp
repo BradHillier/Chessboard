@@ -19,7 +19,7 @@ void Help::enter(){
 
 void Help::update(){
 
-     while (true)
+     while (currState == help)
     {
         cout<<"############################"<<endl;
         cout<<"######SOME HELP TEXT########"<<endl;

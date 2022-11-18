@@ -9,9 +9,9 @@ class State
 private:
     /* data */
 public:
-    State(/* args */);
+    State(/* args */) {}
 
-    virtual ~State();
+    virtual ~State() {}
 
     
     virtual void enter() = 0; //initialize

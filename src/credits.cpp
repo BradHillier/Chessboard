@@ -19,7 +19,7 @@ void Credits::enter(){
 
 void Credits::update(){
 
-     while (true)
+     while (currState == credits)
     {
         cout<<"Brad"<<endl;
         cout<<"Josh"<<endl;

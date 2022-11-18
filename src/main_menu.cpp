@@ -19,7 +19,7 @@ void MainMenu::enter(){
 
 void MainMenu::update(){
 
-    while (true)
+    while (currState == mainMenu)
     {
         cout<<"1. play"<<endl;
         cout<<"2. credits"<<endl;
