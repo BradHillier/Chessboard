@@ -71,16 +71,16 @@ class Piece
       */ 
       // bool IsPotentialMove(Position destination);
 
-      /** This is used to return an unordered set of the all diagonal positions on the 
-          board that are the available and legal positions to move a piece.
+      /** This is used to return an unordered set of the all diagonal Positions on the 
+          board that are the available and legal Positions to move a piece.
       */
-      unordered_set<position> diagonal();
+      unordered_set<Position> diagonal();
 
       /** This is used to return an unordered set of the all vertical and
-          all horizontal positions on the board that are the furthest 
-          possible and legal positions to move a piece.
+          all horizontal Positions on the board that are the furthest 
+          possible and legal Positions to move a piece.
       */
-      unordered_set<position> straights();        
+      unordered_set<Position> straights();        
 
    public:
 

@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "chessboard.h.h"
 #include <unordered_set>
 #include <list>
 using std::unordered_set;
@@ -24,7 +25,7 @@ class Controller
         *   @param position:Position
         *   @return void
         */
-        void ProcessClick(position:Position);
+        void ProcessClick(Position position);
         
         /** @brief gets all the legal moves for a current selcted piece
         *
@@ -54,7 +55,7 @@ class Controller
         *       
         *   @return Position
         */ 
-        Array<Array<PieceNum>> GetBoard()
+        PieceNum** GetBoard()
 
         /** @brief Returns game_'s current player
         *       
@@ -76,5 +77,5 @@ class Controller
         *       
         *   @return void
         */ 
-        ResetGame();
+        void ResetGame();
 };   
