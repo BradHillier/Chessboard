@@ -1,12 +1,17 @@
 #include "../include/chessboard.h"
 #include "../include/piece.h"
 #include "../include/pawn.h"
+#include "../include/rook.h"
+#include "../include/knight.h"
+#include "../include/bishop.h"
+#include "../include/queen.h"
+#include "../include/king.h"
 
 
 
 Chessboard::Chessboard()
 {
-   SetDefaultValues()
+   SetDefaultValues();
 
    // cleaner to use integers and typecast them to PieceNum
    // rather than writing {kBPawn,  kBpawn, ... kBPawn}
@@ -98,11 +103,6 @@ Piece* Chessboard::PieceAt(Position position)
 }
 
 
-bool Chessboard::RemovePieceAt(Position position)
-{
-}
-
-
 void Chessboard::SetDefaultValues()
 {
    is_game_over_ = false;
@@ -142,24 +142,24 @@ bool Chessboard::CreatePiece(PieceNum piece_type, Position position)
          break;
       case kWRook:
       case kBRook:
-         // piece = new Rook(this, position, colour);
-         // break;
+         piece = new Rook(this, position, colour);
+         break;
       case kWKnight:
       case kBKnight:
-         // piece = new Knight(this, position, colour);
-         // break;
+         piece = new Knight(this, position, colour);
+         break;
       case kWBishop:
       case kBBishop:
-         // piece = new Bishop(this, position, colour);
-         // break;
+         piece = new Bishop(this, position, colour);
+         break;
       case kWQueen:
       case kBQueen:
-         // piece = new Queen(this, position, colour);
-         // break;
+         piece = new Queen(this, position, colour);
+         break;
       case kWKing:
       case kBKing:
-         // piece = new King(this, position, colour);
-         // break;
+         piece = new King(this, position, colour);
+         break;
       default:
          board_[position.row][position.col] = NULL;
          return false;
