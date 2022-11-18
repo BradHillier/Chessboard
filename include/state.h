@@ -31,7 +31,7 @@ public:
 #endif
 
 
-/* main.cpp used for tetsting state machine to be demoed on 19/11
+/* main.cpp used for testing state machine to be demoed on 19/11
 
 #include "main_menu.h"
 #include "help.h"
@@ -53,8 +53,8 @@ int main(){
 
     while(true){
 
-        State::current->enter();
-        State::current->update();
+        State::currState->enter();
+        State::currState->update();
 
 
     }
