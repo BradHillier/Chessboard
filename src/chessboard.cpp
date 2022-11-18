@@ -56,9 +56,12 @@ bool Chessboard::current_player()
 }
 
 
-Piece* Chessboard::selected()
+Position Chessboard::selected()
 {
-   return selected_;
+   if (selected_ == NULL) {
+      return kOffTheBoard;
+   } 
+   return selected_->position();
 }
 
 
@@ -71,7 +74,7 @@ bool Chessboard::Move(Position destination)
 {
    // below is just for testing, this will get replaced
 
-    if (selected() != NULL && selected()->MoveTo(destination)) {
+    if (selected_ != NULL && selected_->MoveTo(destination)) {
        selected_ = NULL;
        return true;
     }
@@ -128,13 +131,8 @@ bool Chessboard::CreatePiece(PieceNum piece_type, Position position)
    Piece* piece;            // reference to the soon to be created piece object
    PieceColour colour;      // The colour of the piece being created
 
-   // Parse colour from PieceNum
-   if (piece_type < 0) {
-      colour = kBlack;
-   } else {
-      colour = kWhite;
-   }
-   // create a new piece
+   colour = (piece_type < 0) ? kBlack : kWhite;
+
    switch (piece_type) {
       case kWPawn:
       case kBPawn:
