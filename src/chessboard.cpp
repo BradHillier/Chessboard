@@ -34,7 +34,7 @@ Chessboard::~Chessboard()
 }
 
 
-list<Position> Chessboard::LegalMoves()
+unordered_set<Position> Chessboard::LegalMoves()
 {
 }
 
