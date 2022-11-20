@@ -2,9 +2,7 @@
 #define CHESSBOARD
 #include "globals.h"
 #include <unordered_set>
-#include <list>
 using std::unordered_set;
-using std::list;
 
 // These are all included specifically for Print()
 #include <iostream>
@@ -32,19 +30,22 @@ class Chessboard
       /** The piece currently selected, waiting to be move */
       Piece* selected_;
 
-      /** A 2D array of Pieces representing the current state of the game board */
+      /** @brief A 2D array of Pieces representing the current state of the game board 
+      *
+      *   This should never be directly modified by the Chessboard itself.
+      *   Read the description above `friend class Piece` for more info.
+      */
       Piece* board_[kBoardSize][kBoardSize];
 
+      /** set of all white pieces on and off the gameboard */
       unordered_set<Piece*> white_pieces;
 
+      /** set of all black pieces on and off the gameboard */
       unordered_set<Piece*> black_pieces;
-
-      list<Position> LegalMoves();
 
       /** @brief create a new Piece of the specified type and place it on the board
       *
-      *   Using a simplified integer representation of the initial piece setup,
-      *   clear all old piece from the board and replace them with new ones
+      *   Using a simplified integer representation of the initial piece setup, *   clear all old piece from the board and replace them with new ones
       *   in  there initial positions
       *
       *   @param piece_type The PieceNum representation of the piece being created
@@ -59,10 +60,27 @@ class Chessboard
       */
       bool CreatePiece(PieceNum piece_type, Position position);
 
+      /** @brief Reset the game flags to their default state
+      *
+      *   Resets the games current player, selected piece and its flag
+      *   denoting whether the game is over or not.
+      */
       void SetDefaultValues();
 
+      /** @brief Move all the game pieces to their intial position on the board
+      *
+      *   iterates through the sets of white and black pieces, moving each piece
+      *   to their respective starting position. If a different piece is currently
+      *   in another pieces starting position it first removes the incorrectly 
+      *   placed piece from the board and then replaces it with the correct piece.
+      */
       void PlacePiecesInStartingPositions();
 
+      /** This allows all Piece movement on the board to happen directly on
+      *   the piece objects. This was done to prevent the possibility of the 
+      *   array representing the gameboard getting out of sync with the
+      *   Position stored on each individual Piece.
+      */
       friend class Piece;
 
    public:
@@ -90,15 +108,12 @@ class Chessboard
       */
       PieceColour current_player();
 
-      /** @brief get a reference to the 
-
-          @example
-          Selected()->AvailableMoves()
+      /** @brief get the position the currently selected piece is in
+      *  
+      *   Acts as a getter method for the selected_ property without
+      *   directly making the pointer available for manipulation
       */
-      Piece* selected();
-
-      // TODO: below may not be the final return type
-      //       have to decide what will be easiest for the UI to use
+      Position selected();
 
       /** @brief A simplified representation of the board for external use
       *
@@ -115,7 +130,7 @@ class Chessboard
       /** @brief Attempt to move the selected piece to the provided position
       *
       *   If a piece is currently selected, get its available moves and check
-      *   if the provide move is in the list. If so, use the piece's set
+      *   if the provide move is in the set. If so, use the piece's set
       *   position method to move it and return true. otherwise return false
       *   if no piece is selected return false.
       *
@@ -123,6 +138,15 @@ class Chessboard
       *   @return success of the operation
       */
       bool Move(Position destination);
+
+      /** @brief Get a all legal moves for the currently select piece
+      *
+      *   Get the set containing all available Positions on the board that 
+      *   are legal move for the piece currently selected
+      *
+      *   @return all legal moves or an empty set if no piece selected
+      */
+      unordered_set<Position> LegalMoves();
 
       /** @brief select the piece at the provided position
       *
@@ -152,11 +176,15 @@ class Chessboard
       *   @return true is a piece was successfully deselected otherwise false
       */
       bool DeselectPiece();
-      
+
       /** @brief Get a reference to the piece at the provided position
       *
       *   If a piece exists at the provided position on the board, return
       *   a pointer to it. If no piece exists return NULL.
+      *
+      *   TODO: This should be made private and replaced with a
+      *         public method returning a PieceNum as it is the
+      *         only method publicly exposing a Piece Pointer
       *
       *   @example 
       *   PieceAt(Position(1, 1));          // kBPawn at the start of game 
@@ -167,17 +195,19 @@ class Chessboard
       */
       Piece* PieceAt(Position position);
 
-
       /** @brief Reset the game board to its initial state
       *
-      *   TODO: add detailed implementation description here
-      *
-      *   @return Void
+      *   Resets all the games flags and values to their default state
+      *   and move all of the game pieces to their initial position.
       */
-       void Reset();
+      void Reset();
 
-
-       void Print();
+      /** @brief Display the current layout of the game board
+      *
+      *   Display a ascii art representation of the game board with 
+      *   each Piece represented by their associated PieceNum integer.
+      */
+      void Print();
 };
 
 #endif
