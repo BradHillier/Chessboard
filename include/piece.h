@@ -95,6 +95,17 @@ class Piece
       */
       bool isLegalMove(Position destination);
 
+      /** This is used to return an unordered set of the all diagonal Positions on the 
+          board that are the available and legal Positions to move a piece.
+      */
+      unordered_set<Position> diagonal();
+
+      /** This is used to return an unordered set of the all vertical and
+          all horizontal Positions on the board that are the furthest 
+          possible and legal Positions to move a piece.
+      */
+      unordered_set<Position> straights();        
+
    public:
 
       Piece(Chessboard* board, Position position);
