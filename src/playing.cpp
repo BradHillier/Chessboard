@@ -19,7 +19,7 @@ void Playing::enter(){
 
 void Playing::update(){
 
-     while (true)
+     while (currState == playing)
     {
         cout<<"############################"<<endl;
         cout<<"PLAYING STATE"<<endl;
