@@ -109,4 +109,16 @@ struct Position
 const Position kOffTheBoard = Position(INT_MIN, INT_MIN);
 
 
+namespace std 
+{
+   template<>
+   struct hash<Position> 
+   {
+      size_t operator()(const Position &p) const {
+         return hash<int>() (p.row * p.col);
+      }
+   };
+ }
+
+
 #endif

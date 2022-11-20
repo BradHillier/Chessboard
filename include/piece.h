@@ -1,8 +1,8 @@
 #ifndef PIECE_DEFINED
 #define PIECE_DEFINED
 #include "globals.h"
-#include <list>
-using std::list;
+#include <unordered_set>
+using std::unordered_set;
 
 
 // forward declaration prevents Chessboard undefined error
@@ -167,7 +167,7 @@ class Piece
       *
       *   @return all legal moves from the pieces current position
       */
-      virtual list<Position> LegalMoves() = 0;
+      virtual unordered_set<Position> LegalMoves() = 0;
 };
 
 #endif

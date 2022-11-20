@@ -60,6 +60,20 @@ class Chessboard
       */
       bool CreatePiece(PieceNum piece_type, Position position);
 
+      /** @brief Get a reference to the piece at the provided position
+      *
+      *   If a piece exists at the provided position on the board, return
+      *   a pointer to it. If no piece exists return NULL.
+      *
+      *   @example 
+      *   PieceAt(Position(1, 1));          // kBPawn at the start of game 
+      *   PieceAt(Position(-1, -1));        // NULL as (-1,-1) is out of bounds 
+      *
+      *   @param position The location on the board to check for a piece
+      *   @return A reference to the piece if one exists.
+      */
+      Piece* PieceAt(Position position);
+
       /** @brief Reset the game flags to their default state
       *
       *   Resets the games current player, selected piece and its flag
@@ -177,23 +191,6 @@ class Chessboard
       */
       bool DeselectPiece();
 
-      /** @brief Get a reference to the piece at the provided position
-      *
-      *   If a piece exists at the provided position on the board, return
-      *   a pointer to it. If no piece exists return NULL.
-      *
-      *   TODO: This should be made private and replaced with a
-      *         public method returning a PieceNum as it is the
-      *         only method publicly exposing a Piece Pointer
-      *
-      *   @example 
-      *   PieceAt(Position(1, 1));          // kBPawn at the start of game 
-      *   PieceAt(Position(-1, -1));        // NULL as (-1,-1) is out of bounds 
-      *
-      *   @param position The location on the board to check for a piece
-      *   @return A reference to the piece if one exists.
-      */
-      Piece* PieceAt(Position position);
 
       /** @brief Reset the game board to its initial state
       *

@@ -9,6 +9,6 @@ King::King(Chessboard* board, Position position, bool colour)
 }
 
 
-list<Position> King::LegalMoves()
+unordered_set<Position> King::LegalMoves()
 {
 }
