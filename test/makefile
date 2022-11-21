@@ -1,9 +1,12 @@
-EXECUTABLES = main state_machine
-OBJECTS = piece.o chessboard.o pawn.o rook.o knight.o bishop.o queen.o king.o
+EXECUTABLES = main backend_test_program 
 
-STATE_OBJS = playing.o help.o credits.o main_menu.o
+UI_OBJS = sdl_chess_game.o
+GAME_OBJS = piece.o chessboard.o pawn.o rook.o knight.o bishop.o queen.o king.o 
+STATE_OBJS =  state.o main_menu.o playing.o help.o credits.o
                                                                                    
 PIECE_HEADERS = ../include/piece.h ../include/pawn.h ../include/rook.h ../include/knight.h ../include/bishop.h ../include/queen.h ../include/king.h
+STATE_HEADERS = ../include/playing.h ../include/help.h ../include/credits.h ../include/main_menu.h
+UI_HEADERS = ../include/sdl_chess_game.h $(STATE_HEADERS)
                                                                                    
 SHARED = ../include/globals.h
 OPTIONS = -Wall -Wextra
@@ -11,18 +14,34 @@ OPTIONS = -Wall -Wextra
 
 all: $(EXECUTABLES)
 
-state_machine: test_state_machine.cpp $(STATE_OBJS)
+main: main.cpp chess_controller.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) 
 	@echo "\nbuilding state machine"
-	g++ $(OPTIONS) test_state_machine.cpp $(STATE_OBJS) -o $@
+	g++ $(OPTIONS) main.cpp chess_controller.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) -o $@
                                                                                    
-main: main.cpp  $(OBJECTS)                                                         
+backend_test_program: backend_test_program.cpp  $(GAME_OBJS)                                                         
 	@echo "\nbuilding main"                                                         
-	g++ $(OPTIONS) main.cpp $(OBJECTS) -o $@                                                
+	g++ $(OPTIONS) backend_test_program.cpp $(GAME_OBJS) -o $@                                                
+
+#=============================================================================
+#	MODULES
+#=============================================================================
+
+sdl_chess_game.o: ../src/sdl_chess_game.cpp ../include/sdl_chess_game.h ../include/chess_controller.h $(STATE_HEADERS) $(SHARED)
+	@echo "\nsdl_chess_game.o needs updating"
+	g++ $(OPTIONS) -c $<
+
                                                                                    
 chessboard.o: ../src/chessboard.cpp ../include/chessboard.h  $(PIECE_HEADERS) $(SHARED)
 	@echo "\nchessboard.o needs updating"                                           
 	g++ $(OPTIONS) -c $<                                                         
-                                                                                   
+
+chess_controller.o: ../src/chess_controller.cpp ../include/chess_controller.h ../include/chessboard.h $(SHARED)
+	@echo "\nchess_controller.o needs updating"
+	g++ $(OPTIONS) -c $<                                                         
+
+#=============================================================================
+#	PIECES
+#=============================================================================
 piece.o: ../src/piece.cpp ../include/piece.h ../include/chessboard.h $(SHARED)  
 	@echo "\npiece.o needs updating"                                                
 	g++ $(OPTIONS) -c $<                                                         
@@ -51,6 +70,15 @@ king.o: ../src/king.cpp ../include/king.h ../include/piece.h $(SHARED)
 	@echo "\nking.o needs updating"                                                 
 	g++ $(OPTIONS) -c $<                                                         
 
+
+#=============================================================================
+#	STATES
+#=============================================================================
+
+state.o: ../src/state.cpp ../include/state.h
+	@echo "\nstate.o needs updating"
+	g++ $(OPTINOS) -c $<
+
 playing.o: ../src/playing.cpp ../include/playing.h ../include/state.h
 	@echo "\nplaying.o needs updating"
 	g++ $(OPTIONS) -c $<
@@ -67,5 +95,9 @@ main_menu.o: ../src/main_menu.cpp ../include/main_menu.h ../include/state.h
 	@echo "\nmain_menu.o needs updating"
 	g++ $(OPTIONS) -c $<
                                                                                    
+#=============================================================================
+#	PHONY
+#=============================================================================
+
 clean:                                                                             
-	rm $(OBJECTS) $(STATE_OBJS) $(EXECUTABLES) 
+	rm chess_controller.o $(GAME_OBJS) $(UI_OBJS) $(STATE_OBJS) $(EXECUTABLES) 
