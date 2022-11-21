@@ -6,14 +6,15 @@
 class Credits : public State
 {
 private:
-    /* data */
+   virtual bool LoopCondition() override;
 public:
-    Credits(/* args */);
+    Credits(SDLChessGame* parent);
     virtual ~Credits();
 
     void enter();
-    void update();
     void leave();
+    virtual void DisplayOptions() override;
+    virtual void HandleInput() override;
 };
 
 #endif

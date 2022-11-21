@@ -4,62 +4,32 @@
 #include <iostream>
 using namespace std;
 
+
+class SDLChessGame;
+
+
 class State
 {
-private:
-    /* data */
-public:
-    State(/* args */) {}
+   private:
 
-    virtual ~State() {}
+      virtual bool LoopCondition() = 0;
 
-    
-    virtual void enter() = 0; //initialize
-    virtual void update() = 0; // whatever happens in the state and state transitions
-    virtual void leave() = 0; //leave state, free memory
+   protected:
 
-    static State* currState;
+       SDLChessGame* parent_;
 
-    static State* mainMenu;
-    static State* help;
-    static State* credits;
-    static State* playing;
+   public:
 
+       State(SDLChessGame* parent);
+       virtual ~State() {}
+
+       virtual void enter() = 0; //initialize
+       virtual void DisplayOptions() = 0;
+       virtual void HandleInput() = 0;
+       virtual void leave() = 0; //leave state, free memory
+       
+       void loop();
 };
 
 
 #endif
-
-
-/* main.cpp used for testing state machine to be demoed on 19/11
-
-#include "main_menu.h"
-#include "help.h"
-#include "playing.h"
-#include "credits.h"
-
-#include <iostream>
-
-using namespace std;
-
-State * State::mainMenu = new MainMenu();
-State * State::help = new Help();
-State * State::credits = new Credits();
-State * State::playing = new Playing();
-
-State * State::currState = State::mainMenu;
-
-int main(){
-
-    while(true){
-
-        State::currState->enter();
-        State::currState->update();
-
-
-    }
-
-    return 0;
-}
-
-*/

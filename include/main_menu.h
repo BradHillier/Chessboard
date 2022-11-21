@@ -6,14 +6,16 @@
 class MainMenu : public State
 {
 private:
-    /* data */
+   virtual bool LoopCondition() override;
 public:
-    MainMenu(/* args */);
+    MainMenu(SDLChessGame* parent);
     virtual ~MainMenu();
 
     void enter();
-    void update();
     void leave();
+
+    virtual void DisplayOptions() override;
+    virtual void HandleInput() override;
 };
 
 #endif
