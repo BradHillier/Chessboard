@@ -36,6 +36,72 @@ bool Piece::IsFriendly(Position position)
    return false;
 }
 
+unordered_set<Position> straights()
+{
+   unordered_set <Position> strts;
+   Position pos1 = position_;
+   Position pos2 = position_;
+   Position pos3 = position_;
+   Position pos4 = position_;
+
+   //goes through the vertical upward straight
+   while(isLegalMove(pos1.column + 1) && IsAvailable(pos1.column + 1))
+   {
+      //checks if next pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(pos1.column + 1)) 
+      {
+         strts.insert(pos1.column + 1);
+         break;
+      }
+      strts.insert(pos1.column + 1);
+      pos1.column++;
+
+   }
+
+   //goes through the downward vertical straight
+   while(isLegalMove(pos2.column - 1) && IsAvailable(pos2.column - 1))
+   {
+      //checks if next pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(pos2.column - 1)) 
+      {
+         strts.insert(pos2.column - 1);
+         break;
+      }
+      strts.insert(pos2.column - 1);
+      pos1.column--;
+
+   }
+
+   //goes through the right horizontal straight
+   while(isLegalMove(pos3.row + 1) && IsAvailable(pos3.row + 1))
+   {
+      //checks if next pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(pos3.row + 1)) 
+      {
+         strts.insert(pos3.row + 1);
+         break;
+      }
+      strts.insert(pos3.row + 1);
+      pos3.row++
+
+   }
+
+   //goes through the left horizontal straight
+   while(isLegalMove(pos4.row - 1) && IsAvailable(pos4.row - 1))
+   {
+      //checks if next pos is an enemy and if yes stores the pos and breaks loop
+      if(!IsFriendly(pos4.row - 1)) 
+      {
+         strts.insert(pos4.row - 1);
+         break;
+      }
+      strts.insert(pos4.row - 1);
+      pos1.row--;
+
+   }
+   return strts;
+}
+
 
 bool Piece::IsAvailable(Position destination)
 {
