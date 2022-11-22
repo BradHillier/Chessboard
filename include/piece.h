@@ -93,7 +93,7 @@ class Piece
       *   @param position The Position being consider as a potential move
       *   @return bool True if move is legal, otherwise false;
       */
-      bool isLegalMove(Position destination);
+      bool IsLegalMove(Position destination);
 
       /** This is used to return an unordered set of the all diagonal Positions on the 
           board that are the available and legal Positions to move a piece.

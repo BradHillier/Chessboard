@@ -17,9 +17,10 @@ void Piece::set_position(Position destination)
    position_ = destination;
 }
 
-bool Piece::isLegalMove(Position destination)
+bool Piece::IsLegalMove(Position destination)
 {
-   if (IsWithinBoard(destination) && !IsFriendly(destination)) {
+   if (IsWithinBoard(destination) && !IsFriendly(destination)) 
+   {
       return true;
    }
    return false;
@@ -30,78 +31,162 @@ bool Piece::IsFriendly(Position position)
 {
    Piece* occupant = chess_->PieceAt(position); 
 
-   if (occupant != NULL && occupant->Colour() == Colour()) {
+   if (occupant != NULL && occupant->Colour() == Colour()) 
+   {
       return true;
    }
    return false;
 }
 
-unordered_set<Position> straights()
+unordered_set<Position> Piece::straights()
 {
    unordered_set <Position> strts;
-   Position pos1 = position_;
-   Position pos2 = position_;
-   Position pos3 = position_;
-   Position pos4 = position_;
+   Position up = position_;
+   Position down = position_;
+   Position right = position_;
+   Position left = position_;
 
    //goes through the vertical upward straight
-   while(isLegalMove(pos1.column + 1) && IsAvailable(pos1.column + 1))
+   while (IsLegalMove(up.column + 1))
    {
       //checks if next pos is an enemy and if yes stores the pos and break loop
-      if(!IsFriendly(pos1.column + 1)) 
+      if(!IsFriendly(up.column + 1)) 
       {
-         strts.insert(pos1.column + 1);
+         up.column++;
+         strts.insert(up);
          break;
       }
-      strts.insert(pos1.column + 1);
-      pos1.column++;
+      up.column++;
+      strts.insert(up);
 
    }
 
    //goes through the downward vertical straight
-   while(isLegalMove(pos2.column - 1) && IsAvailable(pos2.column - 1))
+   while (IsLegalMove(down.column - 1))
    {
       //checks if next pos is an enemy and if yes stores the pos and break loop
-      if(!IsFriendly(pos2.column - 1)) 
+      if(!IsFriendly(down.column - 1)) 
       {
-         strts.insert(pos2.column - 1);
+         down.column--;
+         strts.insert(down);
          break;
       }
-      strts.insert(pos2.column - 1);
-      pos1.column--;
+      down.column--;
+      strts.insert(down);
 
    }
 
    //goes through the right horizontal straight
-   while(isLegalMove(pos3.row + 1) && IsAvailable(pos3.row + 1))
+   while (IsLegalMove(right.row + 1))
    {
       //checks if next pos is an enemy and if yes stores the pos and break loop
-      if(!IsFriendly(pos3.row + 1)) 
+      if(!IsFriendly(right.row + 1)) 
       {
-         strts.insert(pos3.row + 1);
+         right.row++;
+         strts.insert(right);
          break;
       }
-      strts.insert(pos3.row + 1);
-      pos3.row++
+      right.row++;
+      strts.insert(right);
 
    }
 
    //goes through the left horizontal straight
-   while(isLegalMove(pos4.row - 1) && IsAvailable(pos4.row - 1))
-   {
+   while (IsLegalMove(left.row - 1))
+   { 
       //checks if next pos is an enemy and if yes stores the pos and breaks loop
-      if(!IsFriendly(pos4.row - 1)) 
+      if(!IsFriendly(right.row - 1)) 
       {
-         strts.insert(pos4.row - 1);
+         left.row--;
+         strts.insert(left);
          break;
       }
-      strts.insert(pos4.row - 1);
-      pos1.row--;
+      left.row--;
+      strts.insert(left);
 
    }
    return strts;
 }
 
+unordered_set<Position> Piece::diagonal();
+{
+   unordered_set <Position> dgnls;
+   Position quad1 = position_;
+   Position quad2 = position_;
+   Position quad3 = position_;
+   Position quad4 = position_;
+
+   //goes through the upper right quadrant (quadrant 1)
+   while (IsLegalMove(quad1.column + 1 && quad1.row + 1)
+   {
+      //checks if next pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(quad1.column + 1 && quad1.row + 1))
+      {
+         quad1.column++;
+         quad1.row++;
+         strts.insert(quad1));
+         break;
+      }
+      quad1.column++;
+      quad1.row++;
+      strts.insert(quad1));
+
+   }
+
+      //goes through the upper left quadrant (quadrant 2)
+   while (IsLegalMove(quad1.column + 1 && quad1.row - 1)
+   {
+      //checks if next pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(quad2.column + 1 && quad2.row - 1))
+      {
+         quad2.column++;
+         quad2.row--;
+         strts.insert(quad2));
+         break;
+      }
+      quad2.column++;
+      quad2.row--;
+      strts.insert(quad2));
+
+   }
+
+      //goes through the bottom left quadrant (quadrant 3)
+   while (IsLegalMove(quad3.column - 1 && quad3.row - 1)
+   {
+      //checks if next pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(quad3.column - 1 && quad3.row - 1))
+      {
+         quad3.column--;
+         quad3.row--;
+         strts.insert(quad3));
+         break;
+      }
+      quad3.column--;
+      quad3.row--;
+      strts.insert(quad3));
+
+   }
+
+      //goes through the bottom right quadrant (quadrant 4)
+   while (IsLegalMove(quad4.column - 1 && quad4.row + 1)
+   {
+      //checks if next pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(quad4.column - 1 && quad4.row + 1))
+      {
+         quad4.column--;
+         quad4.row++;
+         strts.insert(quad4));
+         break;
+      }
+      quad4.column--;
+      quad4.row++;
+      strts.insert(quad4));
+
+   }
+
+  
+   return dgnls;
+}
 
 bool Piece::IsAvailable(Position destination)
 {
@@ -109,7 +194,8 @@ bool Piece::IsAvailable(Position destination)
    bool in_bounds = IsWithinBoard(destination);
    bool not_curr_pos = destination != position();
 
-   if (dest_is_empty && in_bounds && not_curr_pos) {
+   if (dest_is_empty && in_bounds && not_curr_pos) 
+   {
       return true;
    }
    return false;
@@ -121,7 +207,8 @@ bool Piece::IsWithinBoard(Position destination)
    bool row_in_range = 0 <= destination.row && destination.row < kBoardSize;
    bool col_in_range = 0 <= destination.col && destination.col < kBoardSize;
 
-   if (row_in_range && col_in_range) {
+   if (row_in_range && col_in_range) 
+   {
       return true;
    }
    return false;
@@ -142,7 +229,8 @@ Position Piece::position()
 
 bool Piece::MoveTo(Position destination)
 {
-   if (IsAvailable(destination)) {
+   if (IsAvailable(destination)) 
+   {
       RemoveFromBoard();
       set_position(destination);
       return true;
@@ -153,7 +241,8 @@ bool Piece::MoveTo(Position destination)
 
 bool Piece::Colour() 
 {
-   if (piece_num_ < 0) { 
+   if (piece_num_ < 0) 
+   { 
       return kBlack;
    } 
    return kWhite;
@@ -162,7 +251,8 @@ bool Piece::Colour()
 
 bool Piece::RemoveFromBoard()
 {
-   if (position_ != kOffTheBoard) {
+   if (position_ != kOffTheBoard) 
+   {
       chess_->board_[position().row][position().col] = NULL;
       position_ = kOffTheBoard;
       return true;
