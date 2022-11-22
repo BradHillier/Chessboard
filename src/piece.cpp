@@ -47,64 +47,64 @@ unordered_set<Position> Piece::straights()
    Position left = position_;
 
    //goes through the vertical upward straight
-   while (IsLegalMove(up.column + 1))
+   up.column++;
+   while (IsLegalMove(up))
    {
       //checks if next pos is an enemy and if yes stores the pos and break loop
-      if(!IsFriendly(up.column + 1)) 
+      if ((!IsFriendly(up)) && (chess_->PieceAt(up) != NULL)) 
       {
-         up.column++;
          strts.insert(up);
          break;
       }
-      up.column++;
       strts.insert(up);
+      up.column++;
 
    }
 
    //goes through the downward vertical straight
-   while (IsLegalMove(down.column - 1))
+   down.column--;
+   while (IsLegalMove(down))
    {
       //checks if next pos is an enemy and if yes stores the pos and break loop
-      if(!IsFriendly(down.column - 1)) 
+      if((!IsFriendly(down)) && (chess_->PieceAt(down) != NULL)) 
       {
-         down.column--;
          strts.insert(down);
          break;
       }
-      down.column--;
       strts.insert(down);
-
+      down.column--;
    }
 
    //goes through the right horizontal straight
-   while (IsLegalMove(right.row + 1))
+   right.row++;
+   while (IsLegalMove(right))
    {
       //checks if next pos is an enemy and if yes stores the pos and break loop
-      if(!IsFriendly(right.row + 1)) 
+      if(!IsFriendly(right) && (chess_->PieceAt(right) != NULL)) 
       {
-         right.row++;
          strts.insert(right);
          break;
       }
-      right.row++;
       strts.insert(right);
+      right.row++;
 
    }
 
    //goes through the left horizontal straight
-   while (IsLegalMove(left.row - 1))
+   left.row--;
+   while (IsLegalMove(left))
    { 
       //checks if next pos is an enemy and if yes stores the pos and breaks loop
-      if(!IsFriendly(right.row - 1)) 
+      if(!IsFriendly(left) && (chess_->PieceAt(left) != NULL)) 
       {
-         left.row--;
          strts.insert(left);
          break;
       }
-      left.row--;
       strts.insert(left);
+      left.row--;
 
    }
+   //returns the complete unordered list of straights
    return strts;
 }
 
