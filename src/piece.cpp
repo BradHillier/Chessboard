@@ -38,6 +38,19 @@ bool Piece::IsFriendly(Position position)
    return false;
 }
 
+/**
+bool Piece::IsNotFriendly(Position position)
+{
+   Piece* occupant = chess_->PieceAt(position); 
+
+   if(occupant == NULL || IsFriendly(position))
+   {
+      return false;
+   }
+   return true;
+}
+*/
+
 unordered_set<Position> Piece::straights()
 {
    unordered_set <Position> strts;
@@ -50,28 +63,25 @@ unordered_set<Position> Piece::straights()
    up.column++;
    while (IsLegalMove(up))
    {
-      //checks if next pos is an enemy and if yes stores the pos and break loop
+      strts.insert(up);
+      //checks if current pos is an enemy and if yes stores the pos and break loop
       if ((!IsFriendly(up)) && (chess_->PieceAt(up) != NULL)) 
       {
-         strts.insert(up);
          break;
-      }
-      strts.insert(up);
+      }   
       up.column++;
-
    }
 
    //goes through the downward vertical straight
    down.column--;
    while (IsLegalMove(down))
    {
-      //checks if next pos is an enemy and if yes stores the pos and break loop
+      strts.insert(down);
+      //checks if current pos is an enemy and if yes stores the pos and break loop
       if((!IsFriendly(down)) && (chess_->PieceAt(down) != NULL)) 
       {
-         strts.insert(down);
          break;
       }
-      strts.insert(down);
       down.column--;
    }
 
@@ -79,30 +89,26 @@ unordered_set<Position> Piece::straights()
    right.row++;
    while (IsLegalMove(right))
    {
-      //checks if next pos is an enemy and if yes stores the pos and break loop
+      strts.insert(right);
+      //checks if current pos is an enemy and if yes stores the pos and break loop
       if(!IsFriendly(right) && (chess_->PieceAt(right) != NULL)) 
       {
-         strts.insert(right);
          break;
       }
-      strts.insert(right);
       right.row++;
-
    }
 
    //goes through the left horizontal straight
    left.row--;
    while (IsLegalMove(left))
    { 
-      //checks if next pos is an enemy and if yes stores the pos and breaks loop
+      strts.insert(left);
+      //checks if current pos is an enemy and if yes stores the pos and breaks loop
       if(!IsFriendly(left) && (chess_->PieceAt(left) != NULL)) 
       {
-         strts.insert(left);
          break;
       }
-      strts.insert(left);
       left.row--;
-
    }
    //returns the complete unordered list of straights
    return strts;
@@ -117,75 +123,65 @@ unordered_set<Position> Piece::diagonal();
    Position quad4 = position_;
 
    //goes through the upper right quadrant (quadrant 1)
-   while (IsLegalMove(quad1.column + 1 && quad1.row + 1)
+   quad1.row++;
+   quad1.column++;
+   while (IsLegalMove(quad1))
    {
-      //checks if next pos is an enemy and if yes stores the pos and break loop
-      if(!IsFriendly(quad1.column + 1 && quad1.row + 1))
+      strts.insert(quad1);
+      //checks if current pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(quad1) && (chess_->PieceAt(quad1) != NULL))
       {
-         quad1.column++;
-         quad1.row++;
-         strts.insert(quad1));
          break;
       }
       quad1.column++;
       quad1.row++;
-      strts.insert(quad1));
-
    }
 
-      //goes through the upper left quadrant (quadrant 2)
-   while (IsLegalMove(quad1.column + 1 && quad1.row - 1)
+   //goes through the upper left quadrant (quadrant 2)
+   quad1.row-- ;
+   quad1.column++;
+   while (IsLegalMove(quad2))
    {
-      //checks if next pos is an enemy and if yes stores the pos and break loop
-      if(!IsFriendly(quad2.column + 1 && quad2.row - 1))
+      strts.insert(quad2);
+      //checks if current pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(quad2) && (chess_->PieceAt(quad2) != NULL))
       {
-         quad2.column++;
-         quad2.row--;
-         strts.insert(quad2));
          break;
       }
-      quad2.column++;
-      quad2.row--;
-      strts.insert(quad2));
-
+      quad1.column++;
+      quad1.row--;
    }
 
-      //goes through the bottom left quadrant (quadrant 3)
-   while (IsLegalMove(quad3.column - 1 && quad3.row - 1)
+   //goes through the bottom left quadrant (quadrant 3)
+   quad1.row-- ;
+   quad1.column--;
+   while (IsLegalMove(quad3))
    {
-      //checks if next pos is an enemy and if yes stores the pos and break loop
-      if(!IsFriendly(quad3.column - 1 && quad3.row - 1))
+      strts.insert(quad3);
+      //checks if current pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(quad3) && (chess_->PieceAt(quad3) != NULL))
       {
-         quad3.column--;
-         quad3.row--;
-         strts.insert(quad3));
          break;
       }
-      quad3.column--;
-      quad3.row--;
-      strts.insert(quad3));
-
+      quad1.column--;
+      quad1.row--;
    }
 
-      //goes through the bottom right quadrant (quadrant 4)
-   while (IsLegalMove(quad4.column - 1 && quad4.row + 1)
+   //goes through the bottom right quadrant (quadrant 4)
+   quad1.row++ ;
+   quad1.column--;
+   while (IsLegalMove(quad4))
    {
-      //checks if next pos is an enemy and if yes stores the pos and break loop
-      if(!IsFriendly(quad4.column - 1 && quad4.row + 1))
+      strts.insert(quad4);
+      //checks if current pos is an enemy and if yes stores the pos and break loop
+      if(!IsFriendly(quad4) && (chess_->PieceAt(quad4) != NULL))
       {
-         quad4.column--;
-         quad4.row++;
-         strts.insert(quad4));
          break;
       }
-      quad4.column--;
-      quad4.row++;
-      strts.insert(quad4));
-
+      quad1.column--;
+      quad1.row++;
    }
-
-  
-   return dgnls;
+   return dgnls; //returns complete unordered set of diogonals
 }
 
 bool Piece::IsAvailable(Position destination)
