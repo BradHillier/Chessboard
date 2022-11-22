@@ -9,6 +9,6 @@ Knight::Knight(Chessboard* board, Position position, bool colour)
 }
 
 
-list<Position> Knight::LegalMoves()
+unordered_set<Position> Knight::LegalMoves()
 {
 }

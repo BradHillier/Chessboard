@@ -20,11 +20,10 @@ int main()
    int x, y;
    do {
       
-      Piece* selected = board.selected();
-      if (selected != NULL) { 
+      if (board.selected() != kOffTheBoard) { 
          cout << endl << "currently selected: Position(";
-         cout << selected->position().col << ", "; 
-         cout << selected->position().row << ")";
+         cout << board.selected().col << ", "; 
+         cout << board.selected().row << ")";
       } else {
          cout << endl << "no piece selected";
       }

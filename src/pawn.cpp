@@ -9,7 +9,7 @@ Pawn::Pawn(Chessboard* board, Position position, bool colour)
 }
 
 
-list<Position> Pawn::LegalMoves()
+unordered_set<Position> Pawn::LegalMoves()
 {
 }
 

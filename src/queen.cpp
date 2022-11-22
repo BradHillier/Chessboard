@@ -9,6 +9,6 @@ Queen::Queen(Chessboard* board, Position position, bool colour)
 }
 
 
-list<Position> Queen::LegalMoves()
+unordered_set<Position> Queen::LegalMoves()
 {
 }

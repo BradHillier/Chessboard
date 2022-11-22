@@ -9,6 +9,6 @@ Rook::Rook(Chessboard* board, Position position, bool colour)
 }
 
 
-list<Position> Rook::LegalMoves()
+unordered_set<Position> Rook::LegalMoves()
 {
 }
