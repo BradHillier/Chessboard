@@ -51,7 +51,7 @@ class Piece
       */
       bool IsAvailable(Position destination);
 
-      void SomeHelper(unordered_set<Position> &set, Position offset);
+      void ExploreOffset(unordered_set<Position> &set, Position offset);
 
     protected:
 
