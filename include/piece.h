@@ -84,6 +84,17 @@ class Piece
       *           same colour otherwise false.
       */ 
       bool IsFriendly(Position position);
+      
+      /** @brief Check if the provided Position contains a piece of different colour
+      *   
+      *   Checks if the position is empty or has a friendly piece by calling the
+      *   IsFriendly method. If yes, it returns false. Otherwise it returns true.
+      *
+      *   @param position The position to check for a piece to check if not friendly
+      *   @return bool True if the provided position contains a piece of different 
+      *           colour otherwise false.
+      */ 
+      //bool IsNotFriendly(Position position)
 
       /** @brief Check if the provided Position contains a piece of the opposing colour
       *   

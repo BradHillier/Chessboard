@@ -17,6 +17,7 @@ void Piece::set_position(Position destination)
    position_ = destination;
 }
 
+
 bool Piece::IsLegalMove(Position destination)
 {
    if (IsWithinBoard(destination) && !IsFriendly(destination)) 
@@ -75,7 +76,7 @@ unordered_set<Position> Piece::straights()
    ExploreOffset(strts, Position(0,-1));
    ExploreOffset(strts, Position(1,0));
    ExploreOffset(strts, Position(-1,0));
-
+   
    return strts;
 }
 
