@@ -51,6 +51,8 @@ class Piece
       */
       bool IsAvailable(Position destination);
 
+      void SomeHelper(unordered_set<Position> &set, Position offset);
+
     protected:
 
       /** an integer value used to indicate the piece'ss type and colour 
@@ -82,6 +84,18 @@ class Piece
       *           same colour otherwise false.
       */ 
       bool IsFriendly(Position position);
+
+      /** @brief Check if the provided Position contains a piece of the opposing colour
+      *   
+      *   First checks if the position contains a piece. if so, it compares the
+      *   colour of the piece occupying the provided position with the
+      *   colour of the calling piece.
+      *
+      *   @param position The position to check for a piece and compare colours
+      *   @return bool True if the provide position contains a piece of the 
+      *           opposing colour otherwise false.
+      */ 
+      bool IsEnemy(Position position);
 
       /** @brief Check if the destination is either empty or contains an enemy piece
                  or is within bounds by calling IsWithinBoard() 
