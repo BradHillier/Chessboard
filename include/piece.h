@@ -51,6 +51,8 @@ class Piece
       */
       bool IsAvailable(Position destination);
 
+      void ExploreOffset(unordered_set<Position> &set, Position offset);
+
     protected:
 
       /** an integer value used to indicate the piece'ss type and colour 
@@ -82,6 +84,29 @@ class Piece
       *           same colour otherwise false.
       */ 
       bool IsFriendly(Position position);
+      
+      /** @brief Check if the provided Position contains a piece of different colour
+      *   
+      *   Checks if the position is empty or has a friendly piece by calling the
+      *   IsFriendly method. If yes, it returns false. Otherwise it returns true.
+      *
+      *   @param position The position to check for a piece to check if not friendly
+      *   @return bool True if the provided position contains a piece of different 
+      *           colour otherwise false.
+      */ 
+      //bool IsNotFriendly(Position position)
+
+      /** @brief Check if the provided Position contains a piece of the opposing colour
+      *   
+      *   First checks if the position contains a piece. if so, it compares the
+      *   colour of the piece occupying the provided position with the
+      *   colour of the calling piece.
+      *
+      *   @param position The position to check for a piece and compare colours
+      *   @return bool True if the provide position contains a piece of the 
+      *           opposing colour otherwise false.
+      */ 
+      bool IsEnemy(Position position);
 
       /** @brief Check if the destination is either empty or contains an enemy piece
                  or is within bounds by calling IsWithinBoard() 
@@ -93,7 +118,7 @@ class Piece
       *   @param position The Position being consider as a potential move
       *   @return bool True if move is legal, otherwise false;
       */
-      bool isLegalMove(Position destination);
+      bool IsLegalMove(Position destination);
 
       /** This is used to return an unordered set of the all diagonal Positions on the 
           board that are the available and legal Positions to move a piece.
