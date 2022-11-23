@@ -15,6 +15,9 @@ class Controller
     
     public:
 
+        Controller();
+        ~Controller();
+
         /** @brief Processes each click made by the player
         *
         *   If no selected piece current exists for the player
@@ -36,7 +39,7 @@ class Controller
         *
         *   @return vector<Position>
         */
-        vector<Position> GetLegalMoves();
+        unordered_set<Position> GetLegalMoves();
 
         /** @brief Returns the Position of the game_'s current piece
         *
@@ -55,7 +58,7 @@ class Controller
         *       
         *   @return Position
         */ 
-        PieceNum** GetBoard()
+        PieceNum** GetBoard();
 
         /** @brief Returns game_'s current player
         *       

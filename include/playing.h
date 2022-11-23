@@ -6,14 +6,15 @@
 class Playing : public State
 {
 private:
-    /* data */
+   virtual bool LoopCondition() override;
 public:
-    Playing(/* args */);
+    Playing(SDLChessGame* parent);
     virtual ~Playing();
 
     void enter();
-    void update();
     void leave();
+    virtual void DisplayOptions() override;
+    virtual void HandleInput() override;
 };
 
 #endif

@@ -6,14 +6,16 @@
 class Help : public State
 {
 private:
-    /* data */
+   virtual bool LoopCondition() override;
 public:
-    Help(/* args */);
+    Help(SDLChessGame* parent);
     virtual ~Help();
 
     void enter();
-    void update();
     void leave();
+
+    virtual void DisplayOptions() override;
+    virtual void HandleInput() override;
 };
 
 #endif

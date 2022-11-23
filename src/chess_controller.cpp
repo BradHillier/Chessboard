@@ -1,37 +1,37 @@
 #include "../include/chess_controller.h"
 
-
-void Controller::ProcessClick(position)
+Controller::Controller()
 {
-  return;  
 }
 
-vector<Positions> GetLegalMoves()
+Controller::~Controller()
 {
-    return NULL;
+}
+
+void Controller::ProcessClick(Position position)
+{
+}
+
+unordered_set<Position> GetLegalMoves()
+{
 }
 
 Position GetSelectedPiece()
 {
-    return NULL;
 }
 
 PieceNum** GetBoard()
 {
-    return NULL;
 }
 
 bool GetCurrentPlayer()
 {
-    return GetCurrentPlayer_;
 }
 
 bool GetIsGameOver()
 {
-    return GetIsGameOver_;
 }
 
 void ResetGame()
 {
-    return;
 }
