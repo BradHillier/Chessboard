@@ -69,10 +69,9 @@ struct Position
 
    /** @brief Check if the destination is within the bounds of the gameboard
    *
-   *   Check if the row and column of the provide destination position is 
-   *   greater than or equal to 0 and less then the size of the board.
+   *   Check if the Piece's row and column are greater than or equal to 0 
+   *   and less then the size of the board.
    *
-   *   @param destination The position to check
    *   @return bool True if within bounds, otherwise false;
    */
    bool IsWithinBoard()
