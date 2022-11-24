@@ -88,7 +88,7 @@ class Chessboard
       *   in another pieces starting position it first removes the incorrectly 
       *   placed piece from the board and then replaces it with the correct piece.
       */
-      void PlacePiecesInStartingPositions();
+      void PlaceInStartingPositions(unordered_set<Piece*> pieces);
 
       /** This allows all Piece movement on the board to happen directly on
       *   the piece objects. This was done to prevent the possibility of the 

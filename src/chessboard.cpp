@@ -127,12 +127,23 @@ void Chessboard::SetDefaultValues()
 void Chessboard::Reset()
 {
    SetDefaultValues();
-   PlacePiecesInStartingPositions();
+   PlaceInStartingPositions(white_pieces);
+   PlaceInStartingPositions(black_pieces);
 }
 
 
-void Chessboard::PlacePiecesInStartingPositions()
+void Chessboard::PlaceInStartingPositions(unordered_set<Piece*> pieces)
 {
+   for (const auto &piece : pieces)
+   {
+      Piece* start_occupant = PieceAt(piece->starting_position());
+
+      if (start_occupant != NULL)
+      {
+         start_occupant->RemoveFromBoard();
+      }
+      piece->MoveTo(piece->starting_position());
+   }
 }
 
 
