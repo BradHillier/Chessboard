@@ -65,21 +65,38 @@ Position Chessboard::selected()
 }
 
 
-PieceNum** Chessboard::board()
+array< array<PieceNum, kBoardSize>, kBoardSize> Chessboard::board()
 {
+   array< array<PieceNum, kBoardSize>, kBoardSize> board_repr;
+   Piece* curr_piece;
+
+   for (int row = 0; row < kBoardSize; row++)
+   {
+      for (int col = 0; col < kBoardSize; col++)
+      {
+         curr_piece = PieceAt(Position(row, col));
+         if (curr_piece != NULL)
+         {
+            board_repr[row][col] = curr_piece->piece_num();
+         } 
+         else 
+         {
+            board_repr[row][col] = kEmpty;
+         }
+      }
+   }
+   return board_repr;
 }
 
 
 bool Chessboard::Move(Position destination)
 {
    // below is just for testing, this will get replaced
-
     if (selected_ != NULL && selected_->MoveTo(destination)) {
        selected_ = NULL;
        return true;
     }
     return false;
-
 }
 
 
