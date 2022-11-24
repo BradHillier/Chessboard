@@ -59,11 +59,11 @@ void Piece::ExploreOffset(unordered_set<Position> &set, Position offset)
    while (IsLegalMove(direction))
    {
       set.insert(direction);
-      if (IsEnemy(direction))            // would need to add this method
+      if (IsEnemy(direction))
       {
          break;
       }
-      direction = direction + offset;               // requires overloading += on Position
+      direction = direction + offset;
    }
 }
 
@@ -130,6 +130,11 @@ PieceNum Piece::piece_num()
 Position Piece::position() 
 {
    return position_;
+}
+
+Position Piece::starting_position() 
+{
+   return starting_position_;
 }
 
 
