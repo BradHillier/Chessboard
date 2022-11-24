@@ -97,6 +97,7 @@ bool Chessboard::Select(Position position)
 
 bool Chessboard::DeselectPiece()
 {
+   selected_ = NULL;
 }
 
 
