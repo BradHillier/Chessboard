@@ -102,7 +102,11 @@ bool Chessboard::DeselectPiece()
 
 Piece* Chessboard::PieceAt(Position position)
 {
-   return board_[position.row][position.col];
+   if (position.IsWithinBoard())
+   {
+      return board_[position.row][position.col];
+   }
+   return NULL;
 }
 
 
