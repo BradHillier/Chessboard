@@ -34,8 +34,8 @@ class Controller
         *
         *   Get all available moves for the currently selected piece. 
         *   If a piece is selected, call its LegalMoves() method and return
-        *   the resulting vector. If no piece is selected, 
-        *   return an empty vector 
+        *   the resulting set. If no piece is selected, 
+        *   return an empty set 
         *
         *   @return vector<Position>
         */

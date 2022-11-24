@@ -25,12 +25,13 @@ void Controller::ProcessClick(Position position)
 }
 
 unordered_set<Position> GetLegalMoves()
-{
-    
+{   
+    return ChessBoard.LegalMoves();    
 }
 
 Position GetSelectedPiece()
 {
+    return ChessBoard.Selected();
 }
 
 PieceNum** GetBoard()
