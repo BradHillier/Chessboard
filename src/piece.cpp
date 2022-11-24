@@ -20,7 +20,7 @@ void Piece::set_position(Position destination)
 
 bool Piece::IsLegalMove(Position destination)
 {
-   if (IsWithinBoard(destination) && !IsFriendly(destination)) 
+   if (destination.IsWithinBoard() && !IsFriendly(destination)) 
    {
       return true;
    }
@@ -97,23 +97,10 @@ unordered_set<Position> Piece::diagonal()
 bool Piece::IsAvailable(Position destination)
 {
    bool dest_is_empty = chess_->PieceAt(destination) == NULL;
-   bool in_bounds = IsWithinBoard(destination);
+   bool in_bounds = destination.IsWithinBoard();
    bool not_curr_pos = destination != position();
 
    if (dest_is_empty && in_bounds && not_curr_pos) 
-   {
-      return true;
-   }
-   return false;
-}
-
-
-bool Piece::IsWithinBoard(Position destination)
-{
-   bool row_in_range = 0 <= destination.row && destination.row < kBoardSize;
-   bool col_in_range = 0 <= destination.col && destination.col < kBoardSize;
-
-   if (row_in_range && col_in_range) 
    {
       return true;
    }

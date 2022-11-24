@@ -67,6 +67,27 @@ struct Position
       col = y;
    }
 
+   /** @brief Check if the destination is within the bounds of the gameboard
+   *
+   *   Check if the row and column of the provide destination position is 
+   *   greater than or equal to 0 and less then the size of the board.
+   *
+   *   @param destination The position to check
+   *   @return bool True if within bounds, otherwise false;
+   */
+   bool IsWithinBoard()
+   {
+      bool row_in_range = 0 <= row && row < kBoardSize;
+      bool col_in_range = 0 <= col && col < kBoardSize;
+
+      if (row_in_range && col_in_range) 
+      {
+         return true;
+      }
+      return false;
+   }
+
+
    friend bool operator==(const Position lhs, const Position rhs)
    {
       return lhs.row == rhs.row && lhs.col == rhs.col;
