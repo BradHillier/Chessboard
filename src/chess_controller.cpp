@@ -36,16 +36,20 @@ Position GetSelectedPiece()
 
 PieceNum** GetBoard()
 {
+    return ChessBoard.board();
 }
 
 bool GetCurrentPlayer()
 {
+    return ChessBoard.current_player();
 }
 
 bool GetIsGameOver()
 {
+    return ChessBoard.is_game_over();
 }
 
 void ResetGame()
 {
+    ChessBoard.Reset();
 }
