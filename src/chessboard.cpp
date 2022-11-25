@@ -72,12 +72,11 @@ PieceNum** Chessboard::board()
 
 bool Chessboard::Move(Position destination)
 {
-    Piece* occupant;
+    Piece* occupant = PieceAt(destination);
+    bool moves_contains_dest = selected_->LegalMoves().count(destination) != 0;
 
-    if (selected_ != NULL && selected_->LegalMoves().contains(destination))
+    if (selected_ != NULL && moves_contains_dest)
     {
-       // take opponents piece if one exists (can't move to occupied position)
-       occupant = PieceAt(destination);
        if (occupant != NULL)
        {
           occupant->RemoveFromBoard();
