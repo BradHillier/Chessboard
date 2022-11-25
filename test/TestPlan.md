@@ -1,8 +1,7 @@
 # Test Plan        
         
 We will use a combination of record and playback style test cases and descriptive user "scripts" detailing actions that must be taking to test a specific feature.        
-        
-## Menu Testing        
+               
 ### Entering play from main menu      
 **Description :** Starts the game from the main menu.        
 **Input :** User presses "1" on the keyboard to start the game.        
@@ -35,7 +34,10 @@ We will use a combination of record and playback style test cases and descriptiv
 **Input :** Have the user enter the quit command (or click the quit button)        
 **Output :** Quits out of the program        
         
-## Quit from Play        
+### Quit from Play
+**Description:** Quits to the `main menu` from the current ongoing game
+**Input:** User presses `Q` on their keyboard while in the `playing state`
+**Output:** The user is taken to the `main menu`       
         
 ### Quit by clicking window’s X button
 **Description :** Quits the program when the user clicks the X button on the game window        
@@ -62,11 +64,20 @@ We will use a combination of record and playback style test cases and descriptiv
 **Input :** User selects a piece and an illegal move with the piece        
 **Output :** Piece returns to it’s original position and user must select a valid move        
         
-### promote pawn when reaching other end of the board        
+### Pawn Promotion
+**Description:** Promotes a `pawn` piece to a `queen` when it reaches other end of the board
+**Input:** Make a `valid` move that takes a pawn piece to the `other end` of the board
+**Output:** Converts the pawn piece into a queen        
+
+### Friendly Pieces
+**Description:** Does not allow to take `friendly` pieces
+**Input:** User tries to move their piece to a current position of `another friendly` piece on the board
+**Output:** The move will not process and the selected piece will get deselected       
         
-### cant take friendly piece        
-        
-### take enemy piece        
+### Take enemy piece
+**Description:** Takes an enemy piece `out of the board` when the user make a valid move to the position of an `enemy piece`
+**Input:** Make a `valid` move that takes a pawn piece to the `other end` of the board
+**Output:** Removes the enemy piece from the board and moves the user's selected piece to the now empty position       
           
 ### victory check
 **description:** checks if the king is dead and discerns the winner        
@@ -76,4 +87,17 @@ We will use a combination of record and playback style test cases and descriptiv
 ### Return to main menu upon victory by hitting enter
 **Description :** Once the game is concluded, either player can press enter to go back to the main menu.        
 **Input :** Either user presses the "Enter" upon the conclusion of the game.        
-**Output :** The Main Menu screen.        
+**Output :** The Main Menu screen.      
+
+
+
+
+
+
+
+
+
+
+
+
+
