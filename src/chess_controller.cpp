@@ -2,7 +2,7 @@
 
 Controller::Controller()
 {
-    game_ = new ChessBoard;
+    game_ = new Chessboard;
 }
 
 Controller::~Controller()
@@ -14,42 +14,42 @@ void Controller::ProcessClick(Position position)
 {
     // Assumes that ChessBoard's selected() getter method 
     // returns NULL if no piece is currently selected
-    if (ChessBoard.selected() == NULL)
+    if (game_->selected() == kOffTheBoard)
     {
-        Chessboard.Select(position);
+        game_->Select(position);
     }
     else
     {
-        ChessBoard.Move(position);
+        game_->Move(position);
     }
 }
 
-unordered_set<Position> GetLegalMoves()
+unordered_set<Position> Controller::GetLegalMoves()
 {   
-    return ChessBoard.LegalMoves();    
+    return game_->LegalMoves();    
 }
 
-Position GetSelectedPiece()
+Position Controller::GetSelectedPiece()
 {
-    return ChessBoard.Selected();
+    return game_->selected();
 }
 
-PieceNum** GetBoard()
+PieceNum** Controller::GetBoard()
 {
-    return ChessBoard.board();
+    return game_->board();
 }
 
-bool GetCurrentPlayer()
+bool Controller::GetCurrentPlayer()
 {
-    return ChessBoard.current_player();
+    return game_->current_player();
 }
 
-bool GetIsGameOver()
+bool Controller::GetIsGameOver()
 {
-    return ChessBoard.is_game_over();
+    return game_->is_game_over();
 }
 
-void ResetGame()
+void Controller::ResetGame()
 {
-    ChessBoard.Reset();
+    game_->Reset();
 }

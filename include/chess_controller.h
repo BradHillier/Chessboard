@@ -11,7 +11,7 @@ class Controller
     private:
     
         /** The internal representation of the game chessboard */
-        Chessboard game_;
+        Chessboard* game_;
     
     public:
 
