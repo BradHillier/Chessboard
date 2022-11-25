@@ -58,7 +58,7 @@ class Controller
         *       
         *   @return Position
         */ 
-        PieceNum** GetBoard();
+        array<array<PieceNum, kBoardSize>, kBoardSize> GetBoard();
 
         /** @brief Returns game_'s current player
         *       
