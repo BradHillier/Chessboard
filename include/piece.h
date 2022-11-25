@@ -144,6 +144,14 @@ class Piece
       */
       Position position();
 
+      /** @brief get the pieces starting position on the board
+      *
+      *   a getter method for the `starting_position_` data member
+      *
+      *   @return Position containing the piece's starting row and column
+      */
+      Position starting_position();
+
       /** @brief Move the piece from its current positon to the provided one
       *
       *   First checking if the provided destinations is both within the

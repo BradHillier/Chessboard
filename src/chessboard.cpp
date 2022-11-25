@@ -25,8 +25,10 @@ Chessboard::Chessboard()
       { 1, 1, 1, 1, 1, 1, 1, 1},
       { 2, 3, 4, 6, 5, 4, 3, 2}
    };
-   for (int row = 0; row < kBoardSize; row++) {
-      for (int col = 0; col < kBoardSize; col++) {
+   for (int row = 0; row < kBoardSize; row++) 
+   {
+      for (int col = 0; col < kBoardSize; col++) 
+      {
          PieceNum piece_type = (PieceNum)initial_layout[row][col];
          CreatePiece(piece_type, Position(row, col));
       }
@@ -41,6 +43,11 @@ Chessboard::~Chessboard()
 
 unordered_set<Position> Chessboard::LegalMoves()
 {
+   if (selected_ != NULL)
+   {
+      return selected_->LegalMoves();
+   }
+   return unordered_set<Position>();
 }
 
 
@@ -58,7 +65,8 @@ bool Chessboard::current_player()
 
 Position Chessboard::selected()
 {
-   if (selected_ == NULL) {
+   if (selected_ == NULL) 
+   {
       return kOffTheBoard;
    } 
    return selected_->position();
@@ -74,7 +82,8 @@ bool Chessboard::Move(Position destination)
 {
    // below is just for testing, this will get replaced
 
-    if (selected_ != NULL && selected_->MoveTo(destination)) {
+    if (selected_ != NULL && selected_->MoveTo(destination)) 
+    {
        selected_ = NULL;
        return true;
     }
@@ -87,7 +96,8 @@ bool Chessboard::Select(Position position)
 {
    // below is just for testing, this will get replaced
 
-    if (PieceAt(position) != NULL) {
+    if (PieceAt(position) != NULL) 
+    {
        selected_ = PieceAt(position);
        return true;
     }
@@ -122,12 +132,23 @@ void Chessboard::SetDefaultValues()
 void Chessboard::Reset()
 {
    SetDefaultValues();
-   PlacePiecesInStartingPositions();
+   PlaceInStartingPositions(white_pieces);
+   PlaceInStartingPositions(black_pieces);
 }
 
 
-void Chessboard::PlacePiecesInStartingPositions()
+void Chessboard::PlaceInStartingPositions(unordered_set<Piece*> pieces)
 {
+   for (const auto &piece : pieces)
+   {
+      Piece* start_occupant = PieceAt(piece->starting_position());
+
+      if (start_occupant != NULL)
+      {
+         start_occupant->RemoveFromBoard();
+      }
+      piece->MoveTo(piece->starting_position());
+   }
 }
 
 
@@ -138,7 +159,8 @@ bool Chessboard::CreatePiece(PieceNum piece_type, Position position)
 
    colour = (piece_type < 0) ? kBlack : kWhite;
 
-   switch (piece_type) {
+   switch (piece_type) 
+   {
       case kWPawn:
       case kBPawn:
          piece = new Pawn(this, position, colour);
@@ -167,11 +189,15 @@ bool Chessboard::CreatePiece(PieceNum piece_type, Position position)
          board_[position.row][position.col] = NULL;
          return false;
    }
+
    // add the piece to the set containing all pieces of the same colour
    board_[position.row][position.col] = piece;
-   if (colour == kWhite) {
+   if (colour == kWhite) 
+   {
       white_pieces.insert(piece);
-   } else {
+   } 
+   else 
+   {
       black_pieces.insert(piece);
    }
    return true;
