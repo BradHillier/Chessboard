@@ -89,6 +89,7 @@ bool Chessboard::Move(Position destination)
        if (successfully_moved) 
        {
           DeselectPiece();
+          current_player_ = !current_player_
           return true;
        }
     }
