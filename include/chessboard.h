@@ -2,7 +2,9 @@
 #define CHESSBOARD
 #include "globals.h"
 #include <unordered_set>
+#include <array>
 using std::unordered_set;
+using std::array;
 
 // These are all included specifically for Print()
 #include <iostream>
@@ -139,7 +141,7 @@ class Chessboard
       *
       *   @return A pointer to an 8x8 2D array of PieceNums
       */
-      PieceNum** board();
+      array< array<PieceNum, kBoardSize>, kBoardSize> board();
 
       /** @brief Attempt to move the selected piece to the provided position
       *
