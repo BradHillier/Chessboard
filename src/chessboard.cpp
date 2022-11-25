@@ -38,6 +38,10 @@ Chessboard::Chessboard()
 
 Chessboard::~Chessboard()
 {
+   for (auto &piece : all_pieces)
+   {
+      delete piece;
+   }
 }
 
 
