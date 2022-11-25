@@ -4,3 +4,6 @@
 *.gch
 .DS_Store
 *.dSYM
+bin/main
+bin/backend_test_program
+

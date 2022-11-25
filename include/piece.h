@@ -63,15 +63,6 @@ class Piece
       /** reference to the Chessboard the piece exists on */
       Chessboard* chess_;
 
-      /** @brief Check if the destination is within the bounds of the gameboard
-      *
-      *   Check if the row and column of the provide destination position is 
-      *   greater than or equal to 0 and less then the size of the board.
-      *
-      *   @param destination The position to check
-      *   @return bool True if within bounds, otherwise false;
-      */
-      bool IsWithinBoard(Position destination);
 
       /** @brief Check if the provided Position contains a piece of the same colour
       *   
@@ -152,6 +143,14 @@ class Piece
       *   @return Position containing the piece's row and column
       */
       Position position();
+
+      /** @brief get the pieces starting position on the board
+      *
+      *   a getter method for the `starting_position_` data member
+      *
+      *   @return Position containing the piece's starting row and column
+      */
+      Position starting_position();
 
       /** @brief Move the piece from its current positon to the provided one
       *
