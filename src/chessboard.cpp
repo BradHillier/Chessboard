@@ -72,18 +72,24 @@ PieceNum** Chessboard::board()
 
 bool Chessboard::Move(Position destination)
 {
-    Piece* occupant = PieceAt(destination);
+    Piece* occupant  = PieceAt(destination);
     bool moves_contains_dest = selected_->LegalMoves().count(destination) != 0;
+    bool successfully_moved;
 
     if (selected_ != NULL && moves_contains_dest)
     {
-       if (occupant != NULL)
+       // if occupant exists it must be an enemy, otherwise it would not
+       // be in the selected pieces available moves
+       if (occupant !== NULL)
        {
           occupant->RemoveFromBoard();
        }
-       selected_->MoveTo(destination);
-       DeselectPiece();
-       return true;
+       // should only be false if destination is the piece's current position
+       successfully_moved = selected->MoveTo(destination); 
+       if (successfully_moved) {
+          DeselectPiece();
+          return true;
+       }
     }
     return false;
 }
@@ -197,4 +203,4 @@ void Chessboard::Print()
       cout << "|" << endl;
    }
    cout << string(kBoardSize * cell_width + 1, '-') << endl << endl;
-}
+
