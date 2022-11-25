@@ -144,8 +144,8 @@ class Chessboard
       /** @brief Attempt to move the selected piece to the provided position
       *
       *   If a piece is currently selected, get its available moves and check
-      *   if the provide move is in the set. If so, use the piece's set
-      *   position method to move it and return true. otherwise return false
+      *   if the provide move is in the set. If so, use the piece's MoveTo
+      *   method to move it and return true. otherwise return false
       *   if no piece is selected return false.
       *
       *   @param destination The position to move the selected piece to
