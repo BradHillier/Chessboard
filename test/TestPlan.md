@@ -30,12 +30,12 @@ We will use a combination of record and playback style test cases and descriptiv
 **Input :** User presses "1" to enter the playing state, then presses "1" again to return to the main menu        
 **Output :** The program should display the main menu, then a chessboard in its initial state, and finally the main menu again.        
         
-###Quit from Main Menu
+### Quit from Main Menu
 **Description :** Have a quit option accessible from the main menu to exit the program        
 **Input :** Have the user enter the quit command (or click the quit button)        
 **Output :** Quits out of the program        
         
-Quit from Play        
+## Quit from Play        
         
 ### Quit by clicking window’s X button
 **Description :** Quits the program when the user clicks the X button on the game window        
@@ -67,8 +67,7 @@ Quit from Play
 ### cant take friendly piece        
         
 ### take enemy piece        
-        
-        
+          
 ### victory check
 **description:** checks if the king is dead and discerns the winner        
 **input:** user moves their piece onto the enemy king        
