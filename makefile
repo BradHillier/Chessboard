@@ -9,7 +9,7 @@ STATE_HEADERS = include/playing.h include/help.h include/credits.h include/main_
 UI_HEADERS = include/sdl_chess_game.h $(STATE_HEADERS)
                                                                                    
 SHARED = include/globals.h
-OPTIONS = -Wall -Wextra
+OPTIONS = -g -Wall -Wextra
                                                                                    
 
 all: $(EXECUTABLES)
@@ -73,7 +73,7 @@ objects/king.o: src/king.cpp include/king.h include/piece.h $(SHARED)
 
 objects/state.o: src/state.cpp include/state.h
 	@echo "\nstate.o needs updating"
-	g++ $(OPTINOS) -c $< -o $@
+	g++ $(OPTIONS) -c $< -o $@
 
 objects/playing.o: src/playing.cpp include/playing.h include/state.h
 	@echo "\nplaying.o needs updating"
