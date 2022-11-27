@@ -14,7 +14,7 @@ public:
     void enter();
     void leave();
 
-    virtual void DisplayOptions() override;
+    virtual void Render() override;
     virtual void HandleInput() override;
 };
 

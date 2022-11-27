@@ -11,5 +11,15 @@ Pawn::Pawn(Chessboard* board, Position position, bool colour)
 
 unordered_set<Position> Pawn::LegalMoves()
 {
+   unordered_set<Position> moves;
+   if (Colour() == kBlack)
+   {
+      moves.insert(position() + Position(1, 0));
+   }
+   else 
+   {
+      moves.insert(position() + Position(-1, 0));
+   }
+   return moves;
 }
 

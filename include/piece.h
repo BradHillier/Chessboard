@@ -51,7 +51,7 @@ class Piece
       */
       bool IsAvailable(Position destination);
 
-      void ExploreOffset(unordered_set<Position> &set, Position offset);
+      void ExploreOffset(unordered_set<Position> &set, Position offset, int depth=INT_MAX);
 
     protected:
 
@@ -114,13 +114,13 @@ class Piece
       /** This is used to return an unordered set of the all diagonal Positions on the 
           board that are the available and legal Positions to move a piece.
       */
-      unordered_set<Position> diagonal();
+      unordered_set<Position> diagonal(int depth=INT_MAX);
 
       /** This is used to return an unordered set of the all vertical and
           all horizontal Positions on the board that are the furthest 
           possible and legal Positions to move a piece.
       */
-      unordered_set<Position> straights();        
+      unordered_set<Position> straights(int depth=INT_MAX);        
 
    public:
 

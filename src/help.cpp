@@ -26,20 +26,34 @@ bool Help::LoopCondition()
 }
 
 
-void Help::DisplayOptions()
+void Help::Render()
 {
-   cout<<"############################"<<endl;
-   cout<<"######SOME HELP TEXT########"<<endl;
-   cout<<"############################"<<endl;
+   const char* help_text =
+   "This page will contain text on how to use\n"
+   "the program and how to play the game in  \n"
+   "order to help the user understand how to \n"
+   "play. We might aslo include some other   \n"
+   "helpful information here.                \n";
 
-   cout<<endl;
-   cout<<endl;
+   chgText(Yellow);
+   parent_->center(parent_->game_title);
+   chgText(DefCol);
 
-   cout<<"********************"<<endl;
-   cout<<"********************"<<endl;
+   cout << string(2, '\n');
 
-   cout<<endl;
-   cout<<endl;
+   chgFormat(Bold);
+   parent_->center("HELP");
+   chgFormat(DefForm);
+
+   cout << string(1, '\n');
+
+   parent_->center(help_text);
+
+   cout << string(2, '\n');
+
+   long width, height;
+   getTermSize(height, width);
+   cout << string(width, '_') << endl;
 
    cout<<"1. Main Menu"<<endl;
    cout<<"2. Quit"<<endl;
@@ -48,15 +62,20 @@ void Help::DisplayOptions()
 
 void Help::HandleInput()
 {
-   int num;
-   cin >> num;
+   char num;
+   bool input_recieved = false;
+   do 
+   {
+      input_recieved = keyQuick(num);
+   } 
+   while (!input_recieved);
 
    switch (num)
    {
-      case 1:
+      case '1':
          parent_->ChangeState(SDLChessGame::main_menu);
          break;
-      case 2:
+      case '2':
          leave();
          exit(0); 
    }

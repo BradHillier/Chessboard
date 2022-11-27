@@ -12,7 +12,8 @@ void State::loop()
 {
     enter();
     do {
-       DisplayOptions();
+       clear();
+       Render();
        HandleInput();
     } while (LoopCondition());
     leave();

@@ -26,32 +26,43 @@ void MainMenu::enter()
 }
 
 
-void MainMenu::DisplayOptions()
+void MainMenu::Render()
 {
-   cout<<"1. play"<<endl;
-   cout<<"2. credits"<<endl;
-   cout<<"3. help"<<endl;
-   cout<<"4. quit"<<endl;
+   chgText(Yellow);
+   parent_->center(parent_->game_title);
+   chgText(DefCol);
+
+   cout << string(2, '\n');
+   const char* menu_options = 
+   "1. start   \n"
+   "2. help    \n"
+   "3. credits \n"
+   "4. exit    \n";
+   parent_->center(menu_options);
 }
 
 
 void MainMenu::HandleInput()
 {
-   int num;
-   cin >> num;
+   char num;
+   bool isSuccessful = false;
+   do
+   {
+      isSuccessful = keyQuick(num);
+   } while (!isSuccessful);
 
    switch (num)
    {
-      case 1:
+      case '1':
          parent_->ChangeState(SDLChessGame::playing);
          break;
-      case 2:
-         parent_->ChangeState(SDLChessGame::credits);
-         break;
-      case 3:
+      case '2':
          parent_->ChangeState(SDLChessGame::help);
          break;
-      case 4:
+      case '3':
+         parent_->ChangeState(SDLChessGame::credits);
+         break;
+      case '4':
          leave();
          exit(0);
    }

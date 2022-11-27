@@ -4,6 +4,8 @@
 #ifndef GLOBALS
 #define GLOBALS
 #include <bits/stdc++.h>
+#include <cmath>
+using std::abs;
 
 
 /** @brief the colour of a specific chess piece or player
@@ -80,6 +82,17 @@ struct Position
       bool col_in_range = 0 <= col && col < kBoardSize;
 
       if (row_in_range && col_in_range) 
+      {
+         return true;
+      }
+      return false;
+   }
+
+   bool Within(int max, Position other)
+   {
+      Position difference = other - *this;
+
+      if (abs(difference.row) <= max && abs(difference.col) <= max)
       {
          return true;
       }

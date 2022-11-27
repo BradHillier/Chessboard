@@ -1,4 +1,4 @@
-EXECUTABLES = bin/main bin/backend_test_program 
+EXECUTABLES = bin/main 
 
 UI_OBJS = objects/sdl_chess_game.o
 GAME_OBJS = objects/piece.o objects/chessboard.o objects/pawn.o objects/rook.o objects/knight.o objects/bishop.o objects/queen.o objects/king.o 
@@ -14,13 +14,9 @@ OPTIONS = -Wall -Wextra
 
 all: $(EXECUTABLES)
 
-bin/main: src/main.cpp objects/chess_controller.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) 
+bin/main: src/main.cpp objects/chess_controller.o objects/effects.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) 
 	@echo "\nbuilding state machine"
-	g++ $(OPTIONS) src/main.cpp objects/chess_controller.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) -o $@
-                                                                                   
-bin/backend_test_program: src/backend_test_program.cpp  $(GAME_OBJS)                                                         
-	@echo "\nbuilding main"                                                         
-	g++ $(OPTIONS) src/backend_test_program.cpp $(GAME_OBJS) -o $@                                                
+	g++ $(OPTIONS) src/main.cpp objects/chess_controller.o objects/effects.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) -o $@
 
 #=============================================================================
 #	MODULES
@@ -94,10 +90,16 @@ objects/credits.o: src/credits.cpp include/credits.h include/state.h
 objects/main_menu.o: src/main_menu.cpp include/main_menu.h include/state.h
 	@echo "\nmain_menu.o needs updating"
 	g++ $(OPTIONS) -c $< -o $@
-                                                                                   
+
+#=============================================================================
+#	Extra
+#=============================================================================
+objects/effects.o: src/effects.cpp include/effects.h                                                                                
+	@echo "\neffects needs updating"
+	g++ $(OPTIONS) -c $< -o $@
 #=============================================================================
 #	PHONY
 #=============================================================================
 
 clean:                                                                             
-	rm objects/chess_controller.o $(GAME_OBJS) $(UI_OBJS) $(STATE_OBJS) $(EXECUTABLES) 
+	rm objects/effects.o objects/chess_controller.o $(GAME_OBJS) $(UI_OBJS) $(STATE_OBJS) $(EXECUTABLES) 

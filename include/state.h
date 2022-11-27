@@ -2,6 +2,7 @@
 #define STATE_H
 
 #include <iostream>
+#include "../include/effects.h"
 using namespace std;
 
 
@@ -24,9 +25,10 @@ class State
        virtual ~State() {}
 
        virtual void enter() = 0; //initialize
-       virtual void DisplayOptions() = 0;
-       virtual void HandleInput() = 0;
+       virtual void Render() = 0;
        virtual void leave() = 0; //leave state, free memory
+
+       virtual void HandleInput() = 0;
        
        void loop();
 };

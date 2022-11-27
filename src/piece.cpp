@@ -52,11 +52,12 @@ bool Piece::IsEnemy(Position position)
 }
 
 
-void Piece::ExploreOffset(unordered_set<Position> &set, Position offset)
+
+void Piece::ExploreOffset(unordered_set<Position> &set, Position offset, int depth)
 {
    Position direction = position() + offset;
 
-   while (IsLegalMove(direction))
+   while (IsLegalMove(direction) && position().Within(depth, direction))
    {
       set.insert(direction);
       if (IsEnemy(direction))
@@ -68,7 +69,8 @@ void Piece::ExploreOffset(unordered_set<Position> &set, Position offset)
 }
 
 
-unordered_set<Position> Piece::straights()
+
+unordered_set<Position> Piece::straights(int depth)
 {
    unordered_set <Position> strts;
 
@@ -81,7 +83,7 @@ unordered_set<Position> Piece::straights()
 }
 
 
-unordered_set<Position> Piece::diagonal()
+unordered_set<Position> Piece::diagonal(int depth)
 {
    unordered_set <Position> diags;
 
