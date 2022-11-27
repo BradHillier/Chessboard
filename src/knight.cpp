@@ -11,4 +11,17 @@ Knight::Knight(Chessboard* board, Position position, bool colour)
 
 unordered_set<Position> Knight::LegalMoves()
 {
+    unordered_set<Position> moves;
+    for(int i = 0; i < 1; i++){
+        moves.insert(position() + Position(1,2));
+        moves.insert(position() + Position(1,-2));
+        moves.insert(position() + Position(-1,2));
+        moves.insert(position() + Position(-1,-2));
+        moves.insert(position() + Position(2,1));
+        moves.insert(position() + Position(2,-1));
+        moves.insert(position() + Position(-2,1));
+        moves.insert(position() + Position(-2,-1));
+    }
+
+    return moves;
 }

@@ -120,7 +120,13 @@ class Piece
           all horizontal Positions on the board that are the furthest 
           possible and legal Positions to move a piece.
       */
-      unordered_set<Position> straights();        
+      unordered_set<Position> straights();
+
+    /**   This is used to return an unordered set of all diagonal, vertical, 
+          and horizontal Positions on the board that are the available and 
+          legal Positions to move a piece.    
+    */     
+      unordered_set<Position> straights_and_diagonal();   
 
    public:
 
