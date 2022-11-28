@@ -11,7 +11,5 @@ Rook::Rook(Chessboard* board, Position position, bool colour)
 
 unordered_set<Position> Rook::LegalMoves()
 {
-    unordered_set<Position> moves = straights();
-        
-    return moves;
+    return straights();
 }

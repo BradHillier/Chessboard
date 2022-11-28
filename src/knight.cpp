@@ -12,14 +12,28 @@ Knight::Knight(Chessboard* board, Position position, bool colour)
 unordered_set<Position> Knight::LegalMoves()
 {
     unordered_set<Position> moves;
-    for(int i = 0; i < 1; i++){
+    if(IsLegalMove(position() + Position(1,2)) != false){
         moves.insert(position() + Position(1,2));
+    }
+    if(IsLegalMove(position() + Position(1,-2)) != false){
         moves.insert(position() + Position(1,-2));
+    }
+    if(IsLegalMove(position() + Position(-1,2)) != false){
         moves.insert(position() + Position(-1,2));
+    }
+    if(IsLegalMove(position() + Position(-1,-2)) != false){
         moves.insert(position() + Position(-1,-2));
+    }
+    if(IsLegalMove(position() + Position(2,1)) != false){
         moves.insert(position() + Position(2,1));
+    }
+    if(IsLegalMove(position() + Position(2,-1)) != false){
         moves.insert(position() + Position(2,-1));
+    }
+    if(IsLegalMove(position() + Position(-2,1)) != false){
         moves.insert(position() + Position(-2,1));
+    }
+    if(IsLegalMove(position() + Position(-2,-1)) != false){
         moves.insert(position() + Position(-2,-1));
     }
 
