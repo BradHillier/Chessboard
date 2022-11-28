@@ -95,6 +95,22 @@ unordered_set<Position> Piece::diagonal(int depth)
    return diags;
 }
 
+unordered_set<Position> Piece::straights_and_diagonal()
+{
+    unordered_set<Position> strts_and_diags;
+
+    ExploreOffset(strts_and_diags, Position(0,1));
+    ExploreOffset(strts_and_diags, Position(0,-1));
+    ExploreOffset(strts_and_diags, Position(1,0));
+    ExploreOffset(strts_and_diags, Position(-1,0));
+    ExploreOffset(strts_and_diags, Position(1,1));
+    ExploreOffset(strts_and_diags, Position(1,-1));
+    ExploreOffset(strts_and_diags, Position(-1,-1));
+    ExploreOffset(strts_and_diags, Position(-1,1));
+
+    return strts_and_diags;
+}
+
 
 bool Piece::IsAvailable(Position destination)
 {
