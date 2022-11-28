@@ -126,9 +126,9 @@ bool Chessboard::Move(Position destination)
 
 bool Chessboard::Select(Position position)
 {
-   // below is just for testing, this will get replaced
+    Piece* piece = PieceAt(position);
 
-    if (PieceAt(position) != NULL) 
+    if (piece != NULL && piece->Colour() == current_player_) 
     {
        selected_ = PieceAt(position);
        return true;
