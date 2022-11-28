@@ -99,12 +99,26 @@ array< array<PieceNum, kBoardSize>, kBoardSize> Chessboard::board()
 
 bool Chessboard::Move(Position destination)
 {
-   // below is just for testing, this will get replaced
+    Piece* occupant  = PieceAt(destination);
+    bool moves_contains_dest = selected_->LegalMoves().count(destination) != 0;
+    bool successfully_moved;
 
-    if (selected_ != NULL && selected_->MoveTo(destination)) 
+    if (selected_ != NULL && moves_contains_dest)
     {
-       selected_ = NULL;
-       return true;
+       // if occupant exists it must be an enemy, otherwise it would not
+       // be in the selected pieces available moves
+       if (occupant != NULL)
+       {
+          occupant->RemoveFromBoard();
+       }
+       // should only be false if destination is the piece's current position
+       successfully_moved = selected_->MoveTo(destination); 
+       if (successfully_moved) 
+       {
+          DeselectPiece();
+          current_player_ = !current_player_;
+          return true;
+       }
     }
     return false;
 }
