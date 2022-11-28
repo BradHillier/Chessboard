@@ -16,7 +16,8 @@ unordered_set<Position> Pawn::LegalMoves()
     if(Colour() == kBlack){
         if(IsEnemy(position() + Position(1,1))){
             moves.insert(position()+Position(1,1));
-        }else if(IsEnemy(position() + Position(-1,1))){
+        }
+        if(IsEnemy(position() + Position(-1,1))){
             moves.insert(position() + Position(-1,1));
         }
         if(IsLegalMove((position() + Position(0,1)))){
@@ -32,7 +33,8 @@ unordered_set<Position> Pawn::LegalMoves()
     if(Colour() == kWhite){
         if(IsEnemy(position() + Position(-1,-1)) && IsLegalMove(position() + Position(-1,-1))){
             moves.insert(position()+Position(-1,-1));
-        }else if(IsEnemy(position() + Position(1,-1)) && IsLegalMove(position() + Position(1,-1))){
+        }
+        if(IsEnemy(position() + Position(1,-1)) && IsLegalMove(position() + Position(1,-1))){
             moves.insert(position() + Position(1,-1));
         }
         if(IsLegalMove((position() + Position(0,-1)))){
