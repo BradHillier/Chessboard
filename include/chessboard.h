@@ -45,6 +45,8 @@ class Chessboard
       /** set of all black pieces on and off the gameboard */
       unordered_set<Piece*> black_pieces;
 
+      unordered_set<Piece*> all_pieces;
+
       /** @brief create a new Piece of the specified type and place it on the board
       *
       *   Using a simplified integer representation of the initial piece setup, *   clear all old piece from the board and replace them with new ones

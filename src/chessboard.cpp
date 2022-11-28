@@ -38,6 +38,10 @@ Chessboard::Chessboard()
 
 Chessboard::~Chessboard()
 {
+   for (auto &piece : all_pieces)
+   {
+      delete piece;
+   }
 }
 
 
@@ -232,6 +236,7 @@ bool Chessboard::CreatePiece(PieceNum piece_type, Position position)
    {
       black_pieces.insert(piece);
    }
+   all_pieces.insert(piece);
    return true;
 }
 
