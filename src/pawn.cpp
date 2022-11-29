@@ -14,27 +14,26 @@ unordered_set<Position> Pawn::LegalMoves()
    unordered_set<Position> moves;
    int sign = (Colour() == kBlack) ? 1 : -1;
 
-   if (IsEnemy(position() + Position(sign * 1,1))) 
+   if (IsEnemy(position() + Position(sign * 1, 1))) 
    {
-      moves.insert(position()+Position(sign * 1,1));
+      moves.insert(position()+Position(sign * 1, 1));
    }
-   if (IsEnemy(position() + Position(sign * 1,-1))) 
+   if (IsEnemy(position() + Position(sign * 1, -1))) 
    {
-      moves.insert(position() + Position(sign * 1,-1));
+      moves.insert(position() + Position(sign * 1, -1));
    }
-   if (IsLegalMove((position() + Position(sign * 1,0)))) 
+
+   if (IsAvailable(position() + Position(sign * 1, 0)))
    {
-      // needs to be en empty position
-      moves.insert(position() + Position(sign * 1,0));
+      moves.insert(position() + Position(sign * 1, 0));
    }
-   if (position() == starting_position()) 
+
+   if (position() == starting_position())
    {
-      if (IsLegalMove(position()+Position(sign * 2,0))) 
-      { 
-         // needs to be en empty position
-         moves.insert(position() + Position(sign * 2,0));
+      if (IsAvailable(position() + Position(sign * 2, 0)))
+      {
+         moves.insert(position() + Position(sign * 2, 0));
       }
    }
    return moves;
 }
-
