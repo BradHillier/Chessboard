@@ -38,18 +38,6 @@ class Piece
       */
       void set_position(Position position);
 
-      /** @brief check if a Position is a valid place to move the piece
-      *
-      *   Checks that the destination is empty, is not the position the piece is 
-      *   already in, is within the bounds of the board, or the destinaion
-      *   is off the board.
-      *
-      *    @warning This method does not check if a piece already residing
-      *             at the desitination can be taken
-      *    @param destination The Position being examinec
-      *    @return bool True if all requirements met, otherwise false
-      */
-      bool IsAvailable(Position destination);
 
       void ExploreOffset(unordered_set<Position> &set, Position offset, int depth=INT_MAX);
 
@@ -127,6 +115,19 @@ class Piece
           legal Positions to move a piece.    
     */     
       unordered_set<Position> straights_and_diagonal();   
+
+      /** @brief check if a Position is a valid place to move the piece
+      *
+      *   Checks that the destination is empty, is not the position the piece is 
+      *   already in, is within the bounds of the board, or the destinaion
+      *   is off the board.
+      *
+      *    @warning This method does not check if a piece already residing
+      *             at the desitination can be taken
+      *    @param destination The Position being examinec
+      *    @return bool True if all requirements met, otherwise false
+      */
+      bool IsAvailable(Position destination);
 
    public:
 
