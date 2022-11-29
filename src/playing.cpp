@@ -71,6 +71,12 @@ void Playing::HandleInput()
       }
       controller_->ProcessClick(position_from_coords(row, col));
       break;
+   case '4':
+      if (controller_->GetSelectedPiece() != kOffTheBoard) 
+      {
+         controller_->Deselect();
+      }
+      
    }
 }
 
@@ -116,6 +122,7 @@ void Playing::DisplayMenuOptions()
    if (controller_->GetSelectedPiece() != kOffTheBoard) 
    {
       cout << "3. Move currently selected piece" << endl;
+      cout << "4. Delect the currently selected piece" << endl;
    } 
    else 
    {

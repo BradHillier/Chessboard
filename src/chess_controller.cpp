@@ -39,6 +39,11 @@ Position Controller::GetSelectedPiece()
     return game_->selected();
 }
 
+void Controller::Deselect()
+{
+   game_->DeselectPiece();
+}
+
 
 array<array<PieceNum, kBoardSize>, kBoardSize> Controller::GetBoard()
 {

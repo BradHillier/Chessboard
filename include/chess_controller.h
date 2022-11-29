@@ -66,6 +66,8 @@ class Controller
         */ 
         bool GetCurrentPlayer();
 
+        void Deselect();
+
         /** @brief Get the game over status from the game_
         *   and return it.
         *    
