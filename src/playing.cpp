@@ -64,6 +64,11 @@ void Playing::HandleInput()
       moveCursor(15, 0);
       cout << "Enter the row and column: ";
       cin >> col >> row;
+      if (cin.fail())
+      {
+         cin.clear();
+         cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      }
       controller_->ProcessClick(position_from_coords(row, col));
       break;
    }
