@@ -38,7 +38,7 @@ void SDLChessGame::RunLoop()
 }
 
 
-bool  SDLChessGame::ChangeState(state next)
+void  SDLChessGame::ChangeState(state next)
 {
    current_state_ = next;
 }

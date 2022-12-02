@@ -2,7 +2,7 @@
 #define CREDITS_H
 
 #include "state.h"
-#include <sstream>;
+#include <sstream>
 using std::stringstream;
 using std::getline;
 
@@ -15,8 +15,8 @@ class Credits : public State
        Credits(SDLChessGame* parent);
        virtual ~Credits();
 
-       void enter();
-       void leave();
+       void enter() override;
+       void leave() override;
        virtual void Render() override;
        virtual void HandleInput() override;
 };

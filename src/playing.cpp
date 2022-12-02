@@ -17,7 +17,7 @@ Playing::Playing(SDLChessGame* parent)
    float average_padding = (cell_width - content_size) * 0.5;
    left_padding = string(floor(average_padding), ' ');
    right_padding = string(ceil(average_padding), ' ');
-   PieceColour current_bg_colour = kWhite;
+   current_bg_colour = kWhite;
 }
 
 
@@ -188,6 +188,8 @@ string Playing::GetPieceUnicode(PieceNum piece)
          return "\u265E";
       case kBPawn:
          return "\u265F";
+      case kEmpty:
+         return "";
    }
 }
 

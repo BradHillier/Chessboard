@@ -19,7 +19,7 @@ class SDLChessGame
       const char* game_title;
       state current_state();
 
-      bool ChangeState(state next);
+      void ChangeState(state next);
       void RunLoop();
       void center(string text);
 

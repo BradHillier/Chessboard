@@ -143,7 +143,12 @@ bool Chessboard::Select(Position position)
 
 bool Chessboard::DeselectPiece()
 {
-   selected_ = NULL;
+   if (selected_ != NULL)
+   {
+      selected_ = NULL;
+      return true;
+   }
+   return false;
 }
 
 

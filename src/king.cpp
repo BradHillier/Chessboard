@@ -8,6 +8,10 @@ King::King(Chessboard* board, Position position, bool colour)
    piece_num_ = colour ? kWKing : kBKing;
 }
 
+King::~King()
+{
+}
+
 
 unordered_set<Position> King::LegalMoves()
 {

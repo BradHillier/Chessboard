@@ -11,8 +11,8 @@ public:
     Help(SDLChessGame* parent);
     virtual ~Help();
 
-    void enter();
-    void leave();
+    void enter() override;
+    void leave() override;
 
     virtual void Render() override;
     virtual void HandleInput() override;

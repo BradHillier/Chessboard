@@ -74,10 +74,10 @@ unordered_set<Position> Piece::straights(int depth)
 {
    unordered_set <Position> strts;
 
-   ExploreOffset(strts, Position(0,1));
-   ExploreOffset(strts, Position(0,-1));
-   ExploreOffset(strts, Position(1,0));
-   ExploreOffset(strts, Position(-1,0));
+   ExploreOffset(strts, Position(0,1), depth);
+   ExploreOffset(strts, Position(0,-1), depth);
+   ExploreOffset(strts, Position(1,0), depth);
+   ExploreOffset(strts, Position(-1,0), depth);
    
    return strts;
 }
@@ -87,10 +87,10 @@ unordered_set<Position> Piece::diagonal(int depth)
 {
    unordered_set <Position> diags;
 
-   ExploreOffset(diags, Position(1,1));
-   ExploreOffset(diags, Position(1,-1));
-   ExploreOffset(diags, Position(-1,-1));
-   ExploreOffset(diags, Position(-1,1));
+   ExploreOffset(diags, Position(1,1), depth);
+   ExploreOffset(diags, Position(1,-1), depth);
+   ExploreOffset(diags, Position(-1,-1), depth);
+   ExploreOffset(diags, Position(-1,1), depth);
 
    return diags;
 }
