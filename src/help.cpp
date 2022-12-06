@@ -29,11 +29,12 @@ bool Help::LoopCondition()
 void Help::Render()
 {
    const char* help_text =
-   "This page will contain text on how to use\n"
-   "the program and how to play the game in  \n"
-   "order to help the user understand how to \n"
-   "play. We might aslo include some other   \n"
-   "helpful information here.                \n";
+   "Navigation: Follow the instructions\n"
+   "on each screen to navigate using\n"
+   "using the numbers\n"
+   "The game follows standard chess\n"
+   "rules and a winner is determined by\n"
+   "the taking of a king piece\n";
 
    chgText(Yellow);
    parent_->center(parent_->game_title);
