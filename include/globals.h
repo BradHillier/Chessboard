@@ -3,8 +3,9 @@
 // https://google.github.io/styleguide/cppguide.html#Constant_Names
 #ifndef GLOBALS
 #define GLOBALS
-#include <bits/stdc++.h>
-#include <cmath>
+#include <cmath>      // abs
+#include <climits>    // INT_MIN
+#include <functional> // hash
 using std::abs;
 
 
