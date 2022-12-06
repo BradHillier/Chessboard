@@ -61,15 +61,18 @@ void Playing::HandleInput()
       leave();
       exit(0); 
    case '3':
-      moveCursor(15, 0);
-      cout << "Enter the row and column: ";
-      cin >> col >> row;
-      if (cin.fail())
+      if (!controller_->GetIsGameOver())
       {
-         cin.clear();
-         cin.ignore(numeric_limits<streamsize>::max(), '\n');
+         moveCursor(15, 0);
+         cout << "Enter the row and column: ";
+         cin >> col >> row;
+         if (cin.fail())
+         {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+         }
+         controller_->ProcessClick(position_from_coords(row, col));
       }
-      controller_->ProcessClick(position_from_coords(row, col));
       break;
    case '4':
       if (controller_->GetSelectedPiece() != kOffTheBoard) 
@@ -108,9 +111,17 @@ void Playing::leave()
 void Playing::DisplaySelectedPiece()
 {
    PieceColour player = controller_->GetCurrentPlayer();
+   string colour = ((player == kWhite) ? "White" : "Black");
 
-   cout << "Current Player: ";
-   cout << ((player == kWhite) ? "White" : "Black") << endl;
+   if (controller_->GetIsGameOver())
+   {
+      // this should probably be moved to a seperate method
+      parent_->center("Winner: " + colour);
+   } 
+   else 
+   {
+      cout << "Current Player: " << colour << endl;
+   }
 }
 
 
@@ -119,14 +130,17 @@ void Playing::DisplayMenuOptions()
    cout << "1. Main Menu" << endl;
    cout << "2. Quit" << endl;
 
-   if (controller_->GetSelectedPiece() != kOffTheBoard) 
+   if (!controller_->GetIsGameOver())
    {
-      cout << "3. Move currently selected piece" << endl;
-      cout << "4. Delect the currently selected piece" << endl;
-   } 
-   else 
-   {
-      cout << "3. select a piece" << endl;
+      if (controller_->GetSelectedPiece() != kOffTheBoard) 
+      {
+         cout << "3. Move currently selected piece" << endl;
+         cout << "4. Delect the currently selected piece" << endl;
+      } 
+      else 
+      {
+         cout << "3. select a piece" << endl;
+      }
    }
 }
 

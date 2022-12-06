@@ -101,6 +101,8 @@ class Chessboard
       */
       friend class Piece;
 
+      bool IsWon();
+
    public:
       Chessboard();
       ~Chessboard();

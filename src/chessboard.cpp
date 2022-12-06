@@ -119,11 +119,32 @@ bool Chessboard::Move(Position destination)
        if (successfully_moved) 
        {
           DeselectPiece();
-          current_player_ = !current_player_;
+          if (IsWon())
+          {
+             is_game_over_ = true;
+          } else {
+             current_player_ = !current_player_;
+          }
           return true;
        }
     }
     return false;
+}
+
+bool Chessboard::IsWon()
+{
+   // check if current player won
+   for (const auto &piece : all_pieces)
+   {
+      if (piece->piece_num() == kWKing || piece->piece_num() == kBKing)
+      {
+         if (piece->position() == kOffTheBoard)
+         {
+            return true;
+         }
+      }
+   }
+   return false;
 }
 
 
