@@ -1,0 +1,561 @@
+#include <iostream>
+#include <SDL2/SDL.h> //use 32 bit
+#include <vector>
+#include <SDL2/SDL_ttf.h> //use 64 bit
+#include <string>
+#include <cstdlib>
+
+const int WIDTH = 800 , HEIGHT = 600, fps = 30;
+using namespace std;
+enum class GameState {Run,Exit};
+
+
+//https://www.youtube.com/watch?v=jq3Bg7XXjWw
+class Sprite{
+
+    private:
+        SDL_Surface *image;
+        SDL_Rect rect;
+
+        int origin_x;
+        int origin_y;
+
+    public:
+        //constructor
+        Sprite(Uint32 color , int x ,int y , int w = 50, int h = 50){
+            
+            //deafault last 4 parameters 0,0,0,0
+            image = SDL_CreateRGBSurface(0,w,h,32,0,0,0,0);
+
+            //fill rect with color, NULL -> entire rect
+            SDL_FillRect(image,NULL,color);
+
+            rect = image->clip_rect;
+
+            origin_x = rect.w/2;
+            origin_y =rect.h/2;
+           
+            rect.x = x - origin_x;
+            rect.y = y - origin_y;
+
+        }
+
+        void update(){}
+        
+        //draws sprite on surface
+        void draw(SDL_Surface *dest){
+
+            SDL_BlitSurface(image, NULL, dest , &rect);
+
+        }
+
+        SDL_Surface* get_image() const{
+
+            return image;
+
+        }
+
+        bool operator==(const Sprite &other) const{
+            
+            return(image == other.get_image());
+
+        }
+};
+
+class SpriteGroup{
+
+    private:
+
+        //is pointer type so taht group can change the actula sprite
+        vector <Sprite*> sprites;
+        int size;
+
+    public:
+
+        SpriteGroup copy(){
+            SpriteGroup new_group;
+
+            for (int i = 0; i < size; i++){
+
+                new_group.add(sprites[i]);
+            }
+            
+            return new_group;
+        }
+
+        void add (Sprite *sprite){
+
+            sprites.push_back(sprite);
+
+            size = sprites.size();
+
+        }
+
+        void remove (Sprite sprite_object){
+
+            for(int i = 0; i < size; i++){
+                if(*sprites[i] == sprite_object){
+                    
+                    sprites.erase(sprites.begin() + i);
+
+                }
+                
+
+            }
+
+            size = sprites.size();
+            
+        }
+
+        bool has (Sprite sprite_object){
+
+            for(int i = 0; i < size; i++){
+                if(*sprites[i] == sprite_object){
+                    
+                    return true;
+                }
+            
+            }
+            return false;
+        }
+
+        void update (){
+            
+            if(! sprites.empty()){
+                for(int i = 0; i < size; i++){
+                sprites[i]-> update();
+                }
+            }
+  
+        }
+
+        void draw (SDL_Surface * dest){
+            
+            if(! sprites.empty()){
+                for(int i = 0; i < size; i++){
+                sprites[i]-> draw(dest);
+                }
+            }
+  
+        }
+
+        void clear(){
+            sprites.clear();
+            size = sprites.size();
+        }
+
+        int length(){
+            
+            return size;
+        }
+
+
+
+        vector <Sprite*> get_sprites(){
+            return sprites;
+        }
+
+
+
+};
+
+//*****VERY IMPORTANT**********
+/*
+ *limit frame rate otherwise program 
+ *runs as fast as it can, 
+ *not good for performance
+*/
+void limit_Fps(Uint32 start_tick){
+
+    if ((1000/fps) > SDL_GetTicks() - start_tick)
+        {
+            //SDL delay slows down SDL
+            SDL_Delay(1000/fps - (SDL_GetTicks()- start_tick));
+        }
+
+}
+
+//optimization -> make a struct with labels ,menus, selected, position and make an array of that struct
+int menu(SDL_Surface* screen, TTF_Font* font){
+
+    //variable dec
+    Uint32 time;//ticks
+    //bool is_running;//bool value
+    int x,y; //mouse cord at any instance
+    const int menu_items = 2; //no . of menu items
+    const char* labels[menu_items] = {"RUN" , "EXIT"}; //menu items in a string array
+
+    SDL_Surface* menus[menu_items] ; //surface for each menu item
+    bool is_selected[menu_items] = {0,0}; // bool array to store which option is selected
+
+    SDL_Color color_effects[2] = {{255,255,255},{0,0,255}}; // color effects array white & blue
+
+    menus[0] = TTF_RenderText_Solid(font, labels[0],color_effects[0]);//color when nothing is happening
+    menus[1] = TTF_RenderText_Solid(font, labels[1],color_effects[0]);//color when mouse hovers
+
+    //position of the menu components
+    SDL_Rect position[menu_items];
+
+    //RUN
+    position[0].x = screen->clip_rect.w/2 -  menus[0]->clip_rect.w/2;//x axis of the first menu item
+    position[0].y = screen->clip_rect.h/2 -  menus[0]->clip_rect.h;//y axis of the first menu items
+
+    //QUIT
+    position[1].x = screen->clip_rect.w/2 -  menus[0]->clip_rect.w/2;//x axis of the second menu item
+    position[1].y = screen->clip_rect.h/2 +  menus[0]->clip_rect.h;//y axis of the second menu items
+
+    //fill the screen with black color
+    SDL_FillRect(screen,&screen->clip_rect,SDL_MapRGB(screen->format,0x00,0x00,0x00));
+
+    //loop outside main
+    SDL_Event ev;//mouse event in menu
+
+    while (1){
+
+        time = SDL_GetTicks();
+        
+        while(SDL_PollEvent(&ev)){
+
+            switch(ev.type){
+
+                case SDL_QUIT:
+
+                    //for loop to free all the surfaces when quit is clicked
+                    for (int i = 0; i < menu_items; i++){
+                        SDL_FreeSurface(menus[i]);
+                    }
+                    return 1;
+
+                case SDL_MOUSEMOTION:
+
+                    //get the mouse cord
+                    x = ev.motion.x;
+                    y = ev.motion.y;
+
+                    //for loop check if mouse is on the menu item and change color if it is
+                    for (int i = 0; i < menu_items; i++){
+                        
+                        //check all four sides of the rect
+                        if(x>=position[i].x && x <= position[i].x + position[i].w && y >= position[i].y && y <= position[i].y + position[i].h){
+
+                            //change color if is selcted
+                            if(!is_selected[i]){
+                                is_selected[i] = 1;
+                                SDL_FreeSurface(menus[i]);
+                                menus[i] = TTF_RenderText_Solid(font,labels[i],color_effects[1]);
+                            }
+                        }
+                        else{
+                            //change color if not selected
+                            if(is_selected[i]){
+                                is_selected[i] = 0;
+                                SDL_FreeSurface(menus[i]);
+                                menus[i] = TTF_RenderText_Solid(font,labels[i],color_effects[0]);
+                            }
+                        }
+                        
+                
+                    }
+            
+                case SDL_MOUSEBUTTONDOWN:
+                x = ev.button.x;
+                y = ev.button.y;
+
+                for (int i = 0; i < menu_items; i++)
+                {
+                if(x>=position[i].x && x <= position[i].x + position[i].w && y >= position[i].y && y <= position[i].y + position[i].h){
+                        
+                        for (int j = 0; j < menu_items; j++){
+                            SDL_FreeSurface(menus[j]);
+                        }
+                        return i; //0/1
+
+                }
+                }
+                break;
+
+                case SDL_KEYDOWN:
+                    if(ev.key.keysym.sym == SDLK_ESCAPE){
+
+                        for (int i = 0; i < menu_items; i++){
+                            SDL_FreeSurface(menus[i]);
+                        }
+                        return 0;
+                    }
+                        
+            }
+
+        }
+
+    for (int i = 0; i < menu_items; i++){
+        SDL_BlitSurface(menus[i],NULL,screen,&position[i]);
+    }
+
+    //SDL_RenderPresent();
+
+    limit_Fps(time);
+
+
+    }
+    
+
+}
+
+
+
+int main(int argc, char *argv[]){
+
+    // Initialization
+    SDL_Init(SDL_INIT_EVERYTHING);
+    TTF_Init();
+
+    SDL_Window *window = SDL_CreateWindow("Hello" , SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,WIDTH,HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI);
+
+    if (NULL == window){
+
+        cout<< " could not create window" << SDL_GetError() << endl;
+
+        return 0;
+
+    }
+
+    
+    //GameState _gs = GameState::Run;
+
+    //getting surface for window
+    SDL_Surface * screen = SDL_GetWindowSurface(window);
+
+    /*
+    //font dec
+    TTF_Font * font = TTF_OpenFont("air.ttf", 20);
+
+    //show menu
+    int menu_variable = menu(screen,font);
+    */
+   
+    //creating color black, red, vlue , green
+    Uint32 Black = SDL_MapRGB(screen->format, 0 , 0 , 0);
+    Uint32 Red = SDL_MapRGB(screen->format, 255 , 0 , 0);
+    Uint32 Green = SDL_MapRGB(screen->format, 0 , 255 , 0);
+    Uint32 Blue = SDL_MapRGB(screen->format, 0 , 0 , 255);
+
+    //fill black : (NULL means entire screen will be black) need to update window after this since this only updates screen(surface)
+    SDL_FillRect (screen, NULL, Black);
+    //updates window with surface
+    
+    //variable dec for starting instance
+    Uint32 starting_tick;
+
+    
+    /////////////////SPRITE////////////////
+
+    Sprite box (Red, WIDTH/2,HEIGHT/2); //create srite
+    box.draw(screen); //draw sprite to screen
+    
+
+    ///////////////Sprite Group //////////////////
+
+    
+    Sprite box_blue (Blue, WIDTH/2-100,HEIGHT/2+70); //create srite
+    Sprite box_green (Green, WIDTH/2+200,HEIGHT/2+170); //create srite
+
+    SpriteGroup active_sprites;
+    active_sprites.add(&box_blue);
+    active_sprites.add(&box_green);
+
+    active_sprites.draw(screen);
+
+
+    SDL_UpdateWindowSurface(window);//updates window
+
+    // Main Loop
+    SDL_Event windowEvent;
+
+    /*
+    //main loop changes by menu function
+    bool running = true;
+    
+    if(menu_variable == 1){
+        running = false;
+    }
+
+    //int x,y ;
+    */
+
+    int x,y ;
+
+    while (true)
+    {
+        //get tick = gets the millisecond value since the initialization
+        //get the instance where SDL starts running
+        starting_tick = SDL_GetTicks();
+
+        if (SDL_PollEvent (&windowEvent)){ //find alternative 
+
+            if (SDL_QUIT == windowEvent.type){
+                
+                break;
+            }
+
+        }
+
+        //getting window co-ord
+        
+        SDL_GetWindowPosition(window , &x , &y );
+
+        cout<< x << "," << y << endl;
+        
+
+        //limiting fps
+        //********make a function for this**************
+        limit_Fps(starting_tick);
+        
+    }
+
+    //destroys window
+    SDL_DestroyWindow(window);
+    //free memory
+    //TTF_CloseFont(font);
+    TTF_Quit();
+    SDL_Quit();    
+
+
+    return 0;
+}
+
+
+
+for (int row = 0; row < kBoardSize; row++) 
+   {
+      for (int col = 0; col < kBoardSize; col++) 
+      {
+         switch(layout[row][col]){
+        case 1:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + 700,PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(1),NULL,&rect);
+            break;
+        case 2:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(2),NULL,&rect);
+            break;
+        case 3:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(3),NULL,&rect);
+            break;
+        case 4:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(4),NULL,&rect);
+            break;
+        case 5:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(5),NULL,&rect);
+            break;
+        case 6:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(6),NULL,&rect);
+            break;
+        case -1:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(-1),NULL,&rect);
+            break;
+        case -2:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(-2),NULL,&rect);
+            break;
+        case -3:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(-3),NULL,&rect);
+            break;
+        case -4:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(-4),NULL,&rect);
+            break;
+        case -5:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(-5),NULL,&rect);
+            break;
+        case -6:
+            SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+            SDL_RenderCopy(ren,pieces.at(-6),NULL,&rect);
+            break;
+        deafault:
+            break;
+
+        }
+    }
+}
+
+
+switch(layout[row][col]){
+    case 1:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + 700,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(1),NULL,&rect);
+        break;
+    case 2:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(2),NULL,&rect);
+        break;
+    case 3:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(3),NULL,&rect);
+        break;
+    case 4:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(4),NULL,&rect);
+        break;
+    case 5:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(5),NULL,&rect);
+        break;
+    case 6:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(6),NULL,&rect);
+        break;
+    case -1:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(-1),NULL,&rect);
+        break;
+    case -2:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(-2),NULL,&rect);
+        break;
+    case -3:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(-3),NULL,&rect);
+        break;
+    case -4:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(-4),NULL,&rect);
+        break;
+    case -5:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(-5),NULL,&rect);
+        break;
+    case -6:
+        SDL_Rect rect{PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_RenderCopy(ren,pieces.at(-6),NULL,&rect);
+        break;
+    deafault:
+        break;
+
+}
+
+
+//hard coded pieces rects
+        SDL_Rect black_rook{PIECE_X_OFFSET,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect black_knight{PIECE_X_OFFSET+120,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect black_bishop{PIECE_X_OFFSET+240,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect black_queen{PIECE_X_OFFSET+360,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect black_king{PIECE_X_OFFSET+480,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect black_bishop_second{PIECE_X_OFFSET+600,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect black_knight_second{PIECE_X_OFFSET+720,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect black_rook_second{PIECE_X_OFFSET+840,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
+
+        SDL_Rect white_rook{PIECE_X_OFFSET,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect white_knight{PIECE_X_OFFSET+120,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect white_bishop{PIECE_X_OFFSET+240,PIECE_Y_OFFSET+ 820 ,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect white_queen{PIECE_X_OFFSET+360,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect white_king{PIECE_X_OFFSET+480,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect white_bishop_second{PIECE_X_OFFSET+600,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect white_knight_second{PIECE_X_OFFSET+720,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
+        SDL_Rect white_rook_second{PIECE_X_OFFSET+840,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
