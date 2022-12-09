@@ -276,101 +276,60 @@ void Play::update(){
         {
             for (int col = 0; col < 8; col++) 
             {
+                rect.x = PIECE_X_OFFSET + (120*col);
+                rect.y = PIECE_Y_OFFSET + (120*row);
+                rect.w = PIECE_WIDTH;
+                rect.h = PIECE_HEIGHT;
+                if (controller->GetSelectedPiece() == Position(row, col)) {
+                   SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                   SDL_RenderFillRect(ren, &rect);
+                } else if (controller->GetLegalMoves().contains(Position(row, col))) {
+                   SDL_SetRenderDrawColor(ren, 255, 255, 0, SDL_ALPHA_OPAQUE);
+                   SDL_RenderDrawRect(ren, &rect);
+                }
                 switch(controller->GetBoard()[row][col]){
                 case -1:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-1],NULL,&rect);
                     break;
                 case -2:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-2],NULL,&rect);
                     break;
                 case -3:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-3],NULL,&rect);
                     break;
                 case -4:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-4],NULL,&rect);
                     break;
                 case -5:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-5],NULL,&rect);
                     break;
                 case -6:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-6],NULL,&rect);
                     break;
                 case 1:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[1],NULL,&rect);
                     break;
-                    
                 case 2:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[2],NULL,&rect);
                     break;
                 case 3:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[3],NULL,&rect);
                     break;
                 case 4:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[4],NULL,&rect);
                     break;
                 case 5:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[5],NULL,&rect);
                     break;
                 case 6:
-                    rect.x = PIECE_X_OFFSET + (120*col);
-                    rect.y = PIECE_Y_OFFSET + (120*row);
-                    rect.w = PIECE_WIDTH;
-                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[6],NULL,&rect);
                     break;
                   
                 default:
                     break;
-
                 }
             }
         }
-    
-
         SDL_RenderPresent(ren);
         limit_Fps(starting_tick);   
     }
