@@ -94,7 +94,6 @@ void Menu::update(){
                         break;
                    }
             }
-        
         }
 
         //using sdl enums for all gamestates
@@ -182,6 +181,8 @@ void Help::exit(){}
 
 Play::Play(/* args */){
 
+    controller = new Controller();
+
     backgroundTexture = IMG_LoadTexture(ren,"PLAY_SCREEN.png"); //menu background.png (temp for now) path to the background
 
     W_King_Texture = IMG_LoadTexture(ren,"W_King.png");
@@ -201,9 +202,6 @@ Play::Play(/* args */){
     if(!backgroundTexture){
         cout << "Play constructor: Load background" << SDL_GetError()<<endl;
     }    
-
-    
-
 }
 
 Play::~Play(){
@@ -250,39 +248,22 @@ void Play::update(){
                     if(e.key.keysym.sym == SDLK_1){
                         //change state, go back to main menu
                         currGameState = menu; //get outta the loop when change state
+                        controller->ResetGame();
                         break;
                     }
                 case SDL_MOUSEBUTTONDOWN:
                     SDL_GetMouseState(&source_x,&source_y);
-                    source_x = source_x/120 + 1;
-                    source_y = (abs((source_y - 960)) / 120 )+ 1;
-                    cout << "Source Co-ordinates are x : " << source_x<< " y : "<< source_y<<endl;
-                    break;
-                case SDL_MOUSEBUTTONUP:
-                    SDL_GetMouseState(&dest_x,&dest_y);
-                    dest_x = dest_x/120 + 1;
-                    dest_y = (abs((dest_y - 960)) / 120 )+ 1;
-                    cout << "Destination Co-ordinates are x : " << dest_x<<" y : "<< dest_y<<endl;
+                    source_x = 7 - (abs(source_x-960)) / 120;
+                    source_y = 7 - (abs(source_y - 960)) /120 ;
+                    controller->ProcessClick(Position(source_y, source_x));
                     break;
                     
             }
-
-        
-        
-
-           
         }
-
-        
-
-        map<int,SDL_Texture*> pieces={{-1,B_Pawn_Texture} , {-2,B_Rook_Texture} , {-3, B_Knight_Texture},
+        map<int,SDL_Texture*> pieces = {{-1,B_Pawn_Texture} , {-2,B_Rook_Texture} , {-3, B_Knight_Texture},
                                  {-4,B_Bishop_Texture} , {-5,B_Queen_Texture }, {-6 ,B_King_Texture},
                                  {1,W_Pawn_Texture} , {2,W_Rook_Texture} , {3, W_Knight_Texture},
                                  {4,W_Bishop_Texture} , {5,W_Queen_Texture } , {6 ,W_King_Texture}};
-
-        
-
-
 
         SDL_RenderClear(ren);
         //background rect
@@ -290,58 +271,95 @@ void Play::update(){
         //background copied to renderer
         SDL_RenderCopy(ren,backgroundTexture,NULL,&rect); // NULL stretches the image to the entire screen
 
+
         for (int row = 0; row < 8; row++) 
         {
             for (int col = 0; col < 8; col++) 
             {
-                switch(layout[row][col]){
+                switch(controller->GetBoard()[row][col]){
                 case -1:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-1],NULL,&rect);
                     break;
                 case -2:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-2],NULL,&rect);
                     break;
                 case -3:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-3],NULL,&rect);
                     break;
                 case -4:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-4],NULL,&rect);
                     break;
                 case -5:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-5],NULL,&rect);
                     break;
                 case -6:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[-6],NULL,&rect);
                     break;
                 case 1:
-                    rect= {PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[1],NULL,&rect);
                     break;
                     
                 case 2:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[2],NULL,&rect);
                     break;
                 case 3:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[3],NULL,&rect);
                     break;
                 case 4:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[4],NULL,&rect);
                     break;
                 case 5:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[5],NULL,&rect);
                     break;
                 case 6:
-                    rect={PIECE_X_OFFSET + (120*col),PIECE_Y_OFFSET + (120*row),PIECE_WIDTH,PIECE_HEIGHT};
+                    rect.x = PIECE_X_OFFSET + (120*col);
+                    rect.y = PIECE_Y_OFFSET + (120*row);
+                    rect.w = PIECE_WIDTH;
+                    rect.h = PIECE_HEIGHT;
                     SDL_RenderCopy(ren,pieces[6],NULL,&rect);
                     break;
                   
@@ -351,65 +369,6 @@ void Play::update(){
                 }
             }
         }
-        /*
-    
-        //hard coded pieces rects
-        SDL_Rect black_rook{PIECE_X_OFFSET,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect black_knight{PIECE_X_OFFSET+120,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect black_bishop{PIECE_X_OFFSET+240,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect black_queen{PIECE_X_OFFSET+360,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect black_king{PIECE_X_OFFSET+480,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect black_bishop_second{PIECE_X_OFFSET+600,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect black_knight_second{PIECE_X_OFFSET+720,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect black_rook_second{PIECE_X_OFFSET+840,PIECE_Y_OFFSET,PIECE_WIDTH,PIECE_HEIGHT};
-
-        SDL_Rect white_rook{PIECE_X_OFFSET,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect white_knight{PIECE_X_OFFSET+120,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect white_bishop{PIECE_X_OFFSET+240,PIECE_Y_OFFSET+ 820 ,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect white_queen{PIECE_X_OFFSET+360,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect white_king{PIECE_X_OFFSET+480,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect white_bishop_second{PIECE_X_OFFSET+600,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect white_knight_second{PIECE_X_OFFSET+720,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
-        SDL_Rect white_rook_second{PIECE_X_OFFSET+840,PIECE_Y_OFFSET + 820,PIECE_WIDTH,PIECE_HEIGHT};
-
-        
-
-        //loading black pawns
-        for(int i = 0; i<8;i++){
-
-            SDL_Rect black_pawn{PIECE_X_OFFSET + (120*i),PIECE_Y_OFFSET + 120,PIECE_WIDTH,PIECE_HEIGHT};
-            SDL_RenderCopy(ren,B_Pawn_Texture,NULL,&black_pawn);
-        }
-
-        //loading white pawns
-        for(int i = 0; i<8;i++){
-
-            SDL_Rect white_pawn{PIECE_X_OFFSET + (120*i),PIECE_Y_OFFSET + 700,PIECE_WIDTH,PIECE_HEIGHT};
-            SDL_RenderCopy(ren,W_Pawn_Texture,NULL,&white_pawn);
-        }
-
-        ///////////////will do these in a loop as well//////////////////////
-
-        //black pieces copied to renderer
-        SDL_RenderCopy(ren,B_Rook_Texture,NULL,&black_rook);
-        SDL_RenderCopy(ren,B_Knight_Texture,NULL,&black_knight);
-        SDL_RenderCopy(ren,B_Bishop_Texture,NULL,&black_bishop);
-        SDL_RenderCopy(ren,B_Queen_Texture,NULL,&black_queen);
-        SDL_RenderCopy(ren,B_King_Texture,NULL,&black_king);
-        SDL_RenderCopy(ren,B_Bishop_Texture,NULL,&black_bishop_second);
-        SDL_RenderCopy(ren,B_Knight_Texture,NULL,&black_knight_second);
-        SDL_RenderCopy(ren,B_Rook_Texture,NULL,&black_rook_second);
-
-        //white pieces copied to renderer
-        SDL_RenderCopy(ren,W_Rook_Texture,NULL,&white_rook);
-        SDL_RenderCopy(ren,W_Knight_Texture,NULL,&white_knight);
-        SDL_RenderCopy(ren,W_Bishop_Texture,NULL,&white_bishop);
-        SDL_RenderCopy(ren,W_Queen_Texture,NULL,&white_queen);
-        SDL_RenderCopy(ren,W_King_Texture,NULL,&white_king);
-        SDL_RenderCopy(ren,W_Bishop_Texture,NULL,&white_bishop_second);
-        SDL_RenderCopy(ren,W_Knight_Texture,NULL,&white_knight_second);
-        SDL_RenderCopy(ren,W_Rook_Texture,NULL,&white_rook_second);
-        */
     
 
         SDL_RenderPresent(ren);
@@ -473,7 +432,7 @@ void Credits::update(){
         }
 
         SDL_RenderClear(ren);
-        SDL_Rect rect{0,0,960,960};
+        SDL_Rect rect = {0,0,960,960};
         SDL_RenderCopy(ren,backgroundTexture,NULL,&rect); // NULL stretches the image to the entire screen
         SDL_RenderPresent(ren);
         

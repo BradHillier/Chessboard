@@ -1,4 +1,22 @@
-EXECUTABLES = bin/main 
+ifeq ($(OS),Windows_NT)                                                            
+   OS_NAME = windows                                                               
+	LINKER_FLAGS=-lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+
+	LIBRARY_PATHS+=-Lsrc\SDL2_image-2.6.2\i686-w64-mingw32\lib
+	LIBRARY_PATHS+=-Lsrc\lib
+
+	INCLUDE_PATHS+=-Isrc\SDL2_image-2.6.2\i686-w64-mingw32\include\SDL2
+	INCLUDE_PATHS+=-Isrc\include
+else                                                                               
+   OS_NAME = macOS                                                                 
+   LIBRARY_PATHS=$(shell pkg-config --cflags --libs sdl2 sdl2_ttf sdl2_image)   
+endif   
+
+
+
+
+
+EXECUTABLES = bin/main FrontEnd/SDL_TEST/graphical
 
 UI_OBJS = objects/sdl_chess_game.o
 GAME_OBJS = objects/piece.o objects/chessboard.o objects/pawn.o objects/rook.o objects/knight.o objects/bishop.o objects/queen.o objects/king.o 
@@ -13,6 +31,29 @@ OPTIONS = -g -Wall -Wextra -std=c++20
                                                                                    
 
 all: $(EXECUTABLES)
+
+
+
+
+#=============================================================================
+# FRONT END
+#=============================================================================
+
+FrontEnd/SDL_TEST/graphical: FrontEnd/SDL_TEST/graphical.o FrontEnd/SDL_TEST/GameState.o objects/chess_controller.o  $(GAME_OBJS)
+	@echo "Building executable file"
+	g++ $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(OPTIONS) $^ -o $@ $(LINKER_FLAGS)
+
+FrontEnd/SDL_TEST/graphical.o: FrontEnd/SDL_TEST/main.cpp FrontEnd/SDL_TEST/Gamestate.cpp
+	@echo "buiding main object"
+	g++ -c $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(OPTIONS) $< -o $@ $(LINKER_FLAGS)
+
+FrontEnd/SDL_TEST/GameState.o: FrontEnd/SDL_TEST/GameState.cpp FrontEnd/SDL_TEST/globals.h
+	@echo "Building gamestate object"
+	g++ -c $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(OPTIONS) $< -o $@ $(LINKER_FLAGS)
+
+#=============================================================================
+#	ORIGINAL MAKEFILE
+#=============================================================================
 
 bin/main: src/main.cpp objects/chess_controller.o objects/effects.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) 
 	@echo "\nbuilding state machine"
@@ -103,3 +144,4 @@ objects/effects.o: src/effects.cpp include/effects.h
 
 clean:                                                                             
 	rm objects/effects.o objects/chess_controller.o $(GAME_OBJS) $(UI_OBJS) $(STATE_OBJS) $(EXECUTABLES) 
+	rm FrontEnd/SDL_TEST/*.o FrontEnd/SDL_TEST/graphical

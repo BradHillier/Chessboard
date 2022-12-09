@@ -1,6 +1,8 @@
 #pragma once
 #include "globals.h"
+#include "../../include/chess_controller.h"
 #include <map>
+
 //#include "Mouse.h"
 
 ////////game state/////////
@@ -78,6 +80,8 @@ public:
     void update();
     void exit();
 
+    Controller* controller;
+
     SDL_Texture * W_King_Texture;
     SDL_Texture * W_Queen_Texture;
     SDL_Texture * W_Rook_Texture;
@@ -102,7 +106,6 @@ public:
       { 1, 1, 1, 1, 1, 1, 1, 1},
       { 2, 3, 4, 6, 5, 4, 3, 2}
    };
-    
 };
 
 ////////////credits state///////////
