@@ -27,7 +27,7 @@ STATE_HEADERS = include/playing.h include/help.h include/credits.h include/main_
 UI_HEADERS = include/sdl_chess_game.h $(STATE_HEADERS)
                                                                                    
 SHARED = include/globals.h
-OPTIONS = -g -Wall -Wextra -std=c++20
+OPTIONS = -g -Wall -Wextra -std=c++17
                                                                                    
 
 all: $(EXECUTABLES)

@@ -283,7 +283,7 @@ void Play::update(){
                 if (controller->GetSelectedPiece() == Position(row, col)) {
                    SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
                    SDL_RenderFillRect(ren, &rect);
-                } else if (controller->GetLegalMoves().contains(Position(row, col))) {
+                } else if (controller->GetLegalMoves().count(Position(row, col)) != 0) {
                    SDL_SetRenderDrawColor(ren, 255, 255, 0, SDL_ALPHA_OPAQUE);
                    SDL_RenderDrawRect(ren, &rect);
                 }

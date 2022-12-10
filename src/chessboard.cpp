@@ -106,7 +106,7 @@ bool Chessboard::Move(Position destination)
     Piece* occupant  = PieceAt(destination);
     bool successfully_moved;
 
-    if (selected_ != NULL && selected_->LegalMoves().contains(destination))
+    if (selected_ != NULL && selected_->LegalMoves().count(destination) != 0)
     {
        // if occupant exists it must be an enemy, otherwise it would not
        // be in the selected pieces available moves
