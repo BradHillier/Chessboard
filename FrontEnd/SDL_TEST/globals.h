@@ -11,13 +11,17 @@ using namespace std; // i know this is not like b everyone but did not wanna use
 
 static int k = SDL_Init(SDL_INIT_EVERYTHING); // initialised everything
 
+const int SCREEN_WIDTH = 960;
+const int SCREEN_HEIGHT = SCREEN_WIDTH;
+
 /////////pieces/////////////
 
-const int PIECE_WIDTH = 100;
-const int PIECE_HEIGHT = 100;
+const int PIECE_WIDTH = SCREEN_WIDTH / 8; 
+const int PIECE_HEIGHT = PIECE_WIDTH;
 
-const int PIECE_X_OFFSET = 10;
-const int PIECE_Y_OFFSET = 10;
+const int PIECE_X_OFFSET = PIECE_WIDTH / 12;
+const int PIECE_Y_OFFSET = PIECE_X_OFFSET;
+
 
 const int fps = 30;
 

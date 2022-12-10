@@ -5,7 +5,7 @@
 //////////////////////////////
 
 // i tried putting it in .h but with whatever lil testing i did it seems to like it here
-SDL_Window * GameState::win = SDL_CreateWindow("STATE MACHINE" , SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED, 960,960,0); // width and height are hard coded for now
+SDL_Window * GameState::win = SDL_CreateWindow("STATE MACHINE" , SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0); // width and height are hard coded for now
 SDL_Renderer * GameState::ren = SDL_CreateRenderer(win,-1,0); //rendererer
 
 GameState * GameState::menu = new Menu;
@@ -99,7 +99,7 @@ void Menu::update(){
         //using sdl enums for all gamestates
 
         SDL_RenderClear(ren);
-        SDL_Rect rect = {0,0,960,960};
+        SDL_Rect rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
         SDL_RenderCopy(ren,backgroundTexture,NULL,&rect); // NULL stretches the image to the entire screen
         SDL_RenderPresent(ren);
         limit_Fps(starting_tick);
@@ -163,7 +163,7 @@ void Help::update(){
 
 
         SDL_RenderClear(ren);
-        SDL_Rect rect = {0,0,960,960};
+        SDL_Rect rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
         SDL_RenderCopy(ren,backgroundTexture,NULL,&rect); // NULL stretches the image to the entire screen
         SDL_RenderPresent(ren);
         limit_Fps(starting_tick);
@@ -253,8 +253,8 @@ void Play::update(){
                     }
                 case SDL_MOUSEBUTTONDOWN:
                     SDL_GetMouseState(&source_x,&source_y);
-                    source_x = 7 - (abs(source_x-960)) / 120;
-                    source_y = 7 - (abs(source_y - 960)) /120 ;
+                    source_x = 7 - (abs(source_x - SCREEN_WIDTH)) / PIECE_WIDTH;
+                    source_y = 7 - (abs(source_y - SCREEN_HEIGHT)) / PIECE_WIDTH;
                     controller->ProcessClick(Position(source_y, source_x));
                     break;
                     
@@ -267,7 +267,7 @@ void Play::update(){
 
         SDL_RenderClear(ren);
         //background rect
-        SDL_Rect rect = {0,0,960,960};
+        SDL_Rect rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
         //background copied to renderer
         SDL_RenderCopy(ren,backgroundTexture,NULL,&rect); // NULL stretches the image to the entire screen
 
@@ -276,11 +276,15 @@ void Play::update(){
         {
             for (int col = 0; col < 8; col++) 
             {
-                rect.x = PIECE_X_OFFSET + (120*col);
-                rect.y = PIECE_Y_OFFSET + (120*row);
-                rect.w = PIECE_WIDTH;
-                rect.h = PIECE_HEIGHT;
+                rect.x = PIECE_X_OFFSET + (PIECE_WIDTH*col);
+                rect.y = PIECE_Y_OFFSET + (PIECE_HEIGHT*row);
+                rect.w = PIECE_WIDTH - 2 * PIECE_X_OFFSET;
+                rect.h = PIECE_HEIGHT - 2 * PIECE_Y_OFFSET;
                 if (controller->GetSelectedPiece() == Position(row, col)) {
+                   rect.x = SCREEN_WIDTH * col / kBoardSize;
+                   rect.y = SCREEN_WIDTH * row / kBoardSize;
+                   rect.w = PIECE_WIDTH;
+                   rect.h = PIECE_HEIGHT;
                    SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
                    SDL_RenderFillRect(ren, &rect);
                 } else if (controller->GetLegalMoves().count(Position(row, col)) != 0) {
@@ -391,7 +395,7 @@ void Credits::update(){
         }
 
         SDL_RenderClear(ren);
-        SDL_Rect rect = {0,0,960,960};
+        SDL_Rect rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
         SDL_RenderCopy(ren,backgroundTexture,NULL,&rect); // NULL stretches the image to the entire screen
         SDL_RenderPresent(ren);
         
