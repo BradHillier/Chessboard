@@ -4,3 +4,5 @@
 *.gch
 .DS_Store
 *.dSYM
+bin/*
+FrontEnd/SDL_TEST/graphical

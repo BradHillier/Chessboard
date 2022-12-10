@@ -7,7 +7,7 @@ using namespace std;
 char get_cmd()
 {
    char c;
-   cout << "enter either 'M', 'S' or 'Q': ";
+   cout << "enter either 'M', 'S', 'R'  or 'Q': ";
    cin >> c;
    return toupper(c);
 }
@@ -47,6 +47,9 @@ int main()
             cout << "You entered " << x << ", " << y << endl;;
             board.Select(Position(x, y));
             break;
+         case 'R':
+            cout << "reseting the board";
+            board.Reset();
       }
    } while (c != 'Q');
 }

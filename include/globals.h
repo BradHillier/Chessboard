@@ -3,7 +3,10 @@
 // https://google.github.io/styleguide/cppguide.html#Constant_Names
 #ifndef GLOBALS
 #define GLOBALS
-#include <bits/stdc++.h>
+#include <cmath>      // abs
+#include <climits>    // INT_MIN
+#include <functional> // hash
+using std::abs;
 
 
 /** @brief the colour of a specific chess piece or player
@@ -66,6 +69,37 @@ struct Position
       row = x;
       col = y;
    }
+
+   /** @brief Check if the destination is within the bounds of the gameboard
+   *
+   *   Check if the Piece's row and column are greater than or equal to 0 
+   *   and less then the size of the board.
+   *
+   *   @return bool True if within bounds, otherwise false;
+   */
+   bool IsWithinBoard()
+   {
+      bool row_in_range = 0 <= row && row < kBoardSize;
+      bool col_in_range = 0 <= col && col < kBoardSize;
+
+      if (row_in_range && col_in_range) 
+      {
+         return true;
+      }
+      return false;
+   }
+
+   bool Within(int max, Position other)
+   {
+      Position difference = other - *this;
+
+      if (abs(difference.row) <= max && abs(difference.col) <= max)
+      {
+         return true;
+      }
+      return false;
+   }
+
 
    friend bool operator==(const Position lhs, const Position rhs)
    {

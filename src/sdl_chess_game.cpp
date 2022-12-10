@@ -1,4 +1,5 @@
 #include "../include/sdl_chess_game.h"
+#include "../include/playing.h"
 
 
 SDLChessGame::SDLChessGame()
@@ -8,8 +9,15 @@ SDLChessGame::SDLChessGame()
    help_state_ = new Help(this);
    credits_state_ = new Credits(this);
 
-   currState = main_menu_state_;
-   controller = new Controller();
+   current_state_ = main_menu;
+
+   game_title = 
+   "  _____ _                   _                         _ \n"
+   " / ____| |                 | |                       | |\n"
+   "| |    | |__   ___  ___ ___| |__   ___   __ _ _ __ __| |\n"
+   "| |    | '_ \\ / _ \\/ __/ __| '_ \\ / _ \\ / _` | '__/ _` |\n"
+   "| |____| | | |  __/\\__ \\__ \\ |_) | (_) | (_| | | | (_| |\n"
+   " \\_____|_| |_|\\___||___/___/_.__/ \\___/ \\__,_|_|  \\__,_|\n";
 }
 
 
@@ -25,42 +33,49 @@ SDLChessGame::~SDLChessGame()
 void SDLChessGame::RunLoop()
 {
    while (true) {
-      currState->loop();
+      InstanceOf(current_state())->loop();
    }
 }
 
 
-bool  SDLChessGame::ChangeState(state next)
+void  SDLChessGame::ChangeState(state next)
 {
-   switch (next) {
-      case main_menu:
-         currState = main_menu_state_;
-         break;
-      case playing:
-         currState = playing_state_;
-         break;
-      case credits:
-         currState = credits_state_;
-         break;
-      case help:
-         currState = help_state_;
-         break;
-   }
+   current_state_ = next;
 }
 
 
 SDLChessGame::state SDLChessGame::current_state() 
 {
-   if (currState == main_menu_state_) {
-      return main_menu;
-   } 
-   if (currState == playing_state_) {
-      return playing;
-   } 
-   if (currState == help_state_) {
-      return help;
+   return current_state_;
+}
+
+void SDLChessGame::center(string text)
+{
+   long width, height;
+   getTermSize(height, width);
+   float padding_size; 
+
+   stringstream strm(text);
+   string line;
+
+   while (getline(strm, line))
+   {
+      padding_size = (width / 2) - (line.size() / 2);
+      string padding = string(padding_size, ' ');
+      cout << padding << line << endl;
    }
-   if (currState == credits_state_) {
-      return credits;
+}
+
+State* SDLChessGame::InstanceOf(state s)
+{
+   switch (s) {
+      case main_menu:
+         return main_menu_state_;
+      case playing:
+         return playing_state_;
+      case credits:
+         return credits_state_;
+      case help:
+         return help_state_;
    }
 }

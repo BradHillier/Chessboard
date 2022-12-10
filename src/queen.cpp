@@ -10,5 +10,6 @@ Queen::Queen(Chessboard* board, Position position, bool colour)
 
 
 unordered_set<Position> Queen::LegalMoves()
-{
+{    
+    return straights_and_diagonal();
 }

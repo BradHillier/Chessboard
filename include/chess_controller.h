@@ -11,7 +11,7 @@ class Controller
     private:
     
         /** The internal representation of the game chessboard */
-        Chessboard game_;
+        Chessboard* game_;
     
     public:
 
@@ -34,8 +34,8 @@ class Controller
         *
         *   Get all available moves for the currently selected piece. 
         *   If a piece is selected, call its LegalMoves() method and return
-        *   the resulting vector. If no piece is selected, 
-        *   return an empty vector 
+        *   the resulting set. If no piece is selected, 
+        *   return an empty set 
         *
         *   @return vector<Position>
         */
@@ -58,13 +58,15 @@ class Controller
         *       
         *   @return Position
         */ 
-        PieceNum** GetBoard();
+        array<array<PieceNum, kBoardSize>, kBoardSize> GetBoard();
 
         /** @brief Returns game_'s current player
         *       
         *   @return bool
         */ 
         bool GetCurrentPlayer();
+
+        void Deselect();
 
         /** @brief Get the game over status from the game_
         *   and return it.

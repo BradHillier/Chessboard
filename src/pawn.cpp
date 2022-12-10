@@ -11,41 +11,29 @@ Pawn::Pawn(Chessboard* board, Position position, bool colour)
 
 unordered_set<Position> Pawn::LegalMoves()
 {
-    unordered_set<Position> moves;
+   unordered_set<Position> moves;
+   int sign = (Colour() == kBlack) ? 1 : -1;
 
-    if(Colour() == kBlack){
-        if(IsEnemy(position() + Position(1,1))){
-            moves.insert(position()+Position(1,1));
-        }
-        if(IsEnemy(position() + Position(-1,1))){
-            moves.insert(position() + Position(-1,1));
-        }
-        if(IsLegalMove((position() + Position(0,1)))){
-            moves.insert(position() + Position(0,1));
-        }
-        if(position() == starting_position()){
-            if(IsLegalMove(position()+Position(0,2))){ 
-                moves.insert(position() + Position(0,2));
-            }
-        }
-    }
+   if (IsEnemy(position() + Position(sign * 1, 1))) 
+   {
+      moves.insert(position()+Position(sign * 1, 1));
+   }
+   if (IsEnemy(position() + Position(sign * 1, -1))) 
+   {
+      moves.insert(position() + Position(sign * 1, -1));
+   }
 
-    if(Colour() == kWhite){
-        if(IsEnemy(position() + Position(-1,-1)) && IsLegalMove(position() + Position(-1,-1))){
-            moves.insert(position()+Position(-1,-1));
-        }
-        if(IsEnemy(position() + Position(1,-1)) && IsLegalMove(position() + Position(1,-1))){
-            moves.insert(position() + Position(1,-1));
-        }
-        if(IsLegalMove((position() + Position(0,-1)))){
-            moves.insert(position() + Position(0,-1));
-        }
-        if(position() == starting_position()){
-            if(IsLegalMove(position()+Position(0,-2))){ 
-                moves.insert(position() + Position(0,-2));
-            }
-        }
-    }
-    
-    return moves;
+   if (IsAvailable(position() + Position(sign * 1, 0)))
+   {
+      moves.insert(position() + Position(sign * 1, 0));
+   }
+
+   if (position() == starting_position())
+   {
+      if (IsAvailable(position() + Position(sign * 2, 0)))
+      {
+         moves.insert(position() + Position(sign * 2, 0));
+      }
+   }
+   return moves;
 }

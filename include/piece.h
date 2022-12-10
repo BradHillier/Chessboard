@@ -38,20 +38,8 @@ class Piece
       */
       void set_position(Position position);
 
-      /** @brief check if a Position is a valid place to move the piece
-      *
-      *   Checks that the destination is empty, is not the position the piece is 
-      *   already in, is within the bounds of the board, or the destinaion
-      *   is off the board.
-      *
-      *    @warning This method does not check if a piece already residing
-      *             at the desitination can be taken
-      *    @param destination The Position being examinec
-      *    @return bool True if all requirements met, otherwise false
-      */
-      bool IsAvailable(Position destination);
 
-      void ExploreOffset(unordered_set<Position> &set, Position offset);
+      void ExploreOffset(unordered_set<Position> &set, Position offset, int depth=INT_MAX);
 
     protected:
 
@@ -63,15 +51,6 @@ class Piece
       /** reference to the Chessboard the piece exists on */
       Chessboard* chess_;
 
-      /** @brief Check if the destination is within the bounds of the gameboard
-      *
-      *   Check if the row and column of the provide destination position is 
-      *   greater than or equal to 0 and less then the size of the board.
-      *
-      *   @param destination The position to check
-      *   @return bool True if within bounds, otherwise false;
-      */
-      bool IsWithinBoard(Position destination);
 
       /** @brief Check if the provided Position contains a piece of the same colour
       *   
@@ -123,13 +102,32 @@ class Piece
       /** This is used to return an unordered set of the all diagonal Positions on the 
           board that are the available and legal Positions to move a piece.
       */
-      unordered_set<Position> diagonal();
+      unordered_set<Position> diagonal(int depth=INT_MAX);
 
       /** This is used to return an unordered set of the all vertical and
           all horizontal Positions on the board that are the furthest 
           possible and legal Positions to move a piece.
       */
-      unordered_set<Position> straights();        
+      unordered_set<Position> straights(int depth=INT_MAX);        
+
+    /**   This is used to return an unordered set of all diagonal, vertical, 
+          and horizontal Positions on the board that are the available and 
+          legal Positions to move a piece.    
+    */     
+      unordered_set<Position> straights_and_diagonal();   
+
+      /** @brief check if a Position is a valid place to move the piece
+      *
+      *   Checks that the destination is empty, is not the position the piece is 
+      *   already in, is within the bounds of the board, or the destinaion
+      *   is off the board.
+      *
+      *    @warning This method does not check if a piece already residing
+      *             at the desitination can be taken
+      *    @param destination The Position being examinec
+      *    @return bool True if all requirements met, otherwise false
+      */
+      bool IsAvailable(Position destination);
 
    public:
 
@@ -152,6 +150,14 @@ class Piece
       *   @return Position containing the piece's row and column
       */
       Position position();
+
+      /** @brief get the pieces starting position on the board
+      *
+      *   a getter method for the `starting_position_` data member
+      *
+      *   @return Position containing the piece's starting row and column
+      */
+      Position starting_position();
 
       /** @brief Move the piece from its current positon to the provided one
       *

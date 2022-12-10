@@ -2,7 +2,9 @@
 #define CHESSBOARD
 #include "globals.h"
 #include <unordered_set>
+#include <array>
 using std::unordered_set;
+using std::array;
 
 // These are all included specifically for Print()
 #include <iostream>
@@ -42,6 +44,8 @@ class Chessboard
 
       /** set of all black pieces on and off the gameboard */
       unordered_set<Piece*> black_pieces;
+
+      unordered_set<Piece*> all_pieces;
 
       /** @brief create a new Piece of the specified type and place it on the board
       *
@@ -88,7 +92,7 @@ class Chessboard
       *   in another pieces starting position it first removes the incorrectly 
       *   placed piece from the board and then replaces it with the correct piece.
       */
-      void PlacePiecesInStartingPositions();
+      void PlaceInStartingPositions(unordered_set<Piece*> pieces);
 
       /** This allows all Piece movement on the board to happen directly on
       *   the piece objects. This was done to prevent the possibility of the 
@@ -96,6 +100,8 @@ class Chessboard
       *   Position stored on each individual Piece.
       */
       friend class Piece;
+
+      bool IsWon();
 
    public:
       Chessboard();
@@ -139,13 +145,13 @@ class Chessboard
       *
       *   @return A pointer to an 8x8 2D array of PieceNums
       */
-      PieceNum** board();
+      array< array<PieceNum, kBoardSize>, kBoardSize> board();
 
       /** @brief Attempt to move the selected piece to the provided position
       *
       *   If a piece is currently selected, get its available moves and check
-      *   if the provide move is in the set. If so, use the piece's set
-      *   position method to move it and return true. otherwise return false
+      *   if the provide move is in the set. If so, use the piece's MoveTo
+      *   method to move it and return true. otherwise return false
       *   if no piece is selected return false.
       *
       *   @param destination The position to move the selected piece to

@@ -1,4 +1,22 @@
-EXECUTABLES = bin/main bin/backend_test_program 
+ifeq ($(OS),Windows_NT)                                                            
+   OS_NAME = windows                                                               
+	LINKER_FLAGS=-lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+
+	LIBRARY_PATHS+=-Lsrc\SDL2_image-2.6.2\i686-w64-mingw32\lib
+	LIBRARY_PATHS+=-Lsrc\lib
+
+	INCLUDE_PATHS+=-Isrc\SDL2_image-2.6.2\i686-w64-mingw32\include\SDL2
+	INCLUDE_PATHS+=-Isrc\include
+else                                                                               
+   OS_NAME = macOS                                                                 
+   LIBRARY_PATHS=$(shell pkg-config --cflags --libs sdl2 sdl2_ttf sdl2_image)   
+endif   
+
+
+
+
+
+EXECUTABLES = bin/main FrontEnd/SDL_TEST/graphical
 
 UI_OBJS = objects/sdl_chess_game.o
 GAME_OBJS = objects/piece.o objects/chessboard.o objects/pawn.o objects/rook.o objects/knight.o objects/bishop.o objects/queen.o objects/king.o 
@@ -9,18 +27,37 @@ STATE_HEADERS = include/playing.h include/help.h include/credits.h include/main_
 UI_HEADERS = include/sdl_chess_game.h $(STATE_HEADERS)
                                                                                    
 SHARED = include/globals.h
-OPTIONS = -Wall -Wextra
+OPTIONS = -g -Wall -Wextra -std=c++20
                                                                                    
 
 all: $(EXECUTABLES)
 
-bin/main: src/main.cpp objects/chess_controller.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) 
+
+
+
+#=============================================================================
+# FRONT END
+#=============================================================================
+
+FrontEnd/SDL_TEST/graphical: FrontEnd/SDL_TEST/graphical.o FrontEnd/SDL_TEST/GameState.o objects/chess_controller.o  $(GAME_OBJS)
+	@echo "Building executable file"
+	g++ $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(OPTIONS) $^ -o $@ $(LINKER_FLAGS)
+
+FrontEnd/SDL_TEST/graphical.o: FrontEnd/SDL_TEST/main.cpp FrontEnd/SDL_TEST/Gamestate.cpp
+	@echo "buiding main object"
+	g++ -c $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(OPTIONS) $< -o $@ $(LINKER_FLAGS)
+
+FrontEnd/SDL_TEST/GameState.o: FrontEnd/SDL_TEST/GameState.cpp FrontEnd/SDL_TEST/globals.h
+	@echo "Building gamestate object"
+	g++ -c $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(OPTIONS) $< -o $@ $(LINKER_FLAGS)
+
+#=============================================================================
+#	ORIGINAL MAKEFILE
+#=============================================================================
+
+bin/main: src/main.cpp objects/chess_controller.o objects/effects.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) 
 	@echo "\nbuilding state machine"
-	g++ $(OPTIONS) src/main.cpp objects/chess_controller.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) -o $@
-                                                                                   
-bin/backend_test_program: src/backend_test_program.cpp  $(GAME_OBJS)                                                         
-	@echo "\nbuilding main"                                                         
-	g++ $(OPTIONS) src/backend_test_program.cpp $(GAME_OBJS) -o $@                                                
+	g++ $(OPTIONS) src/main.cpp objects/chess_controller.o objects/effects.o $(GAME_OBJS) $(STATE_OBJS) $(UI_OBJS) -o $@
 
 #=============================================================================
 #	MODULES
@@ -77,7 +114,7 @@ objects/king.o: src/king.cpp include/king.h include/piece.h $(SHARED)
 
 objects/state.o: src/state.cpp include/state.h
 	@echo "\nstate.o needs updating"
-	g++ $(OPTINOS) -c $< -o $@
+	g++ $(OPTIONS) -c $< -o $@
 
 objects/playing.o: src/playing.cpp include/playing.h include/state.h
 	@echo "\nplaying.o needs updating"
@@ -94,10 +131,17 @@ objects/credits.o: src/credits.cpp include/credits.h include/state.h
 objects/main_menu.o: src/main_menu.cpp include/main_menu.h include/state.h
 	@echo "\nmain_menu.o needs updating"
 	g++ $(OPTIONS) -c $< -o $@
-                                                                                   
+
+#=============================================================================
+#	Extra
+#=============================================================================
+objects/effects.o: src/effects.cpp include/effects.h                                                                                
+	@echo "\neffects needs updating"
+	g++ $(OPTIONS) -c $< -o $@
 #=============================================================================
 #	PHONY
 #=============================================================================
 
 clean:                                                                             
-	rm objects/chess_controller.o $(GAME_OBJS) $(UI_OBJS) $(STATE_OBJS) $(EXECUTABLES) 
+	rm objects/effects.o objects/chess_controller.o $(GAME_OBJS) $(UI_OBJS) $(STATE_OBJS) $(EXECUTABLES) 
+	rm FrontEnd/SDL_TEST/*.o FrontEnd/SDL_TEST/graphical

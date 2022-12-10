@@ -11,10 +11,10 @@ public:
     MainMenu(SDLChessGame* parent);
     virtual ~MainMenu();
 
-    void enter();
-    void leave();
+    void enter() override;
+    void leave() override;
+    virtual void Render() override;
 
-    virtual void DisplayOptions() override;
     virtual void HandleInput() override;
 };
 

@@ -38,6 +38,10 @@ Chessboard::Chessboard()
 
 Chessboard::~Chessboard()
 {
+   for (auto &piece : all_pieces)
+   {
+      delete piece;
+   }
 }
 
 
@@ -73,30 +77,82 @@ Position Chessboard::selected()
 }
 
 
-PieceNum** Chessboard::board()
+array< array<PieceNum, kBoardSize>, kBoardSize> Chessboard::board()
 {
+   array< array<PieceNum, kBoardSize>, kBoardSize> board_repr;
+   Piece* curr_piece;
+
+   for (int row = 0; row < kBoardSize; row++)
+   {
+      for (int col = 0; col < kBoardSize; col++)
+      {
+         curr_piece = PieceAt(Position(row, col));
+         if (curr_piece != NULL)
+         {
+            board_repr[row][col] = curr_piece->piece_num();
+         } 
+         else 
+         {
+            board_repr[row][col] = kEmpty;
+         }
+      }
+   }
+   return board_repr;
 }
 
 
 bool Chessboard::Move(Position destination)
 {
-   // below is just for testing, this will get replaced
+    Piece* occupant  = PieceAt(destination);
+    bool successfully_moved;
 
-    if (selected_ != NULL && selected_->MoveTo(destination)) 
+    if (selected_ != NULL && selected_->LegalMoves().contains(destination))
     {
-       selected_ = NULL;
-       return true;
+       // if occupant exists it must be an enemy, otherwise it would not
+       // be in the selected pieces available moves
+       if (occupant != NULL)
+       {
+          occupant->RemoveFromBoard();
+       }
+       // should only be false if destination is the piece's current position
+       successfully_moved = selected_->MoveTo(destination); 
+       if (successfully_moved) 
+       {
+          DeselectPiece();
+          if (IsWon())
+          {
+             is_game_over_ = true;
+          } else {
+             current_player_ = !current_player_;
+          }
+          return true;
+       }
     }
     return false;
+}
 
+bool Chessboard::IsWon()
+{
+   // check if current player won
+   for (const auto &piece : all_pieces)
+   {
+      if (piece->piece_num() == kWKing || piece->piece_num() == kBKing)
+      {
+         if (piece->position() == kOffTheBoard)
+         {
+            return true;
+         }
+      }
+   }
+   return false;
 }
 
 
 bool Chessboard::Select(Position position)
 {
-   // below is just for testing, this will get replaced
+    Piece* piece = PieceAt(position);
 
-    if (PieceAt(position) != NULL) 
+    if (piece != NULL && piece->Colour() == current_player_) 
     {
        selected_ = PieceAt(position);
        return true;
@@ -107,12 +163,22 @@ bool Chessboard::Select(Position position)
 
 bool Chessboard::DeselectPiece()
 {
+   if (selected_ != NULL)
+   {
+      selected_ = NULL;
+      return true;
+   }
+   return false;
 }
 
 
 Piece* Chessboard::PieceAt(Position position)
 {
-   return board_[position.row][position.col];
+   if (position.IsWithinBoard())
+   {
+      return board_[position.row][position.col];
+   }
+   return NULL;
 }
 
 
@@ -127,12 +193,23 @@ void Chessboard::SetDefaultValues()
 void Chessboard::Reset()
 {
    SetDefaultValues();
-   PlacePiecesInStartingPositions();
+   PlaceInStartingPositions(white_pieces);
+   PlaceInStartingPositions(black_pieces);
 }
 
 
-void Chessboard::PlacePiecesInStartingPositions()
+void Chessboard::PlaceInStartingPositions(unordered_set<Piece*> pieces)
 {
+   for (const auto &piece : pieces)
+   {
+      Piece* start_occupant = PieceAt(piece->starting_position());
+
+      if (start_occupant != NULL)
+      {
+         start_occupant->RemoveFromBoard();
+      }
+      piece->MoveTo(piece->starting_position());
+   }
 }
 
 
@@ -184,6 +261,7 @@ bool Chessboard::CreatePiece(PieceNum piece_type, Position position)
    {
       black_pieces.insert(piece);
    }
+   all_pieces.insert(piece);
    return true;
 }
 

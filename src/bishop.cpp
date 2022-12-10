@@ -11,4 +11,5 @@ Bishop::Bishop(Chessboard* board, Position position, bool colour)
 
 unordered_set<Position> Bishop::LegalMoves()
 {
+   return diagonal();
 }

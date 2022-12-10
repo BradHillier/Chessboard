@@ -25,21 +25,33 @@ bool Credits::LoopCondition()
 }
 
 
-void Credits::DisplayOptions() 
+void Credits::Render() 
 {
-   cout<<"Brad"<<endl;
-   cout<<"Josh"<<endl;
-   cout<<"Ricardo"<<endl;
-   cout<<"Rishabh"<<endl;
+   const char* credits_text = 
+   "Brad    - Awarded 3 war hero medals\n"
+   "Josh    - First man on the moon    \n"
+   "Ricardo - Last name Fernandes      \n"
+   "Rishabh - Nobel peace prize winner \n";
 
-   cout<<endl;
-   cout<<endl;
+   chgText(Yellow);
+   parent_->center(parent_->game_title);
+   chgText(DefCol);
 
-   cout<<"********************"<<endl;
-   cout<<"********************"<<endl;
+   cout << string(2, '\n');
 
-   cout<<endl;
-   cout<<endl;
+   chgFormat(Bold);
+   parent_->center("CREDITS");
+   chgFormat(DefForm);
+
+   cout << endl;
+
+   parent_->center(credits_text);
+
+   cout << string(2, '\n');
+
+   long width, height;
+   getTermSize(height, width);
+   cout << string(width, '_') << endl;
 
    cout<<"1. Main Menu"<<endl;
    cout<<"2. Quit"<<endl;
@@ -48,15 +60,20 @@ void Credits::DisplayOptions()
 
 void Credits::HandleInput() 
 {
-   int num;
-   cin >> num;
+   char num;
+   bool input_recieved = false;
+   do 
+   {
+      input_recieved = keyQuick(num);
+   } 
+   while (!input_recieved);
 
    switch (num)
    {
-      case 1:
+      case '1':
          parent_->ChangeState(SDLChessGame::main_menu);
          break;
-      case 2:
+      case '2':
          leave();
          exit(0); 
    }
@@ -68,3 +85,4 @@ void Credits::leave()
     cout<<"Leaving Credits State"<<endl;
     cout<<endl;
 }
+
