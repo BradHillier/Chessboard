@@ -79,7 +79,7 @@ We will use a combination of record and playback style test cases and descriptiv
 **Input:** Make a `valid` move that takes a pawn piece to the `other end` of the board
 **Output:** Removes the enemy piece from the board and moves the user's selected piece to the now empty position       
           
-### victory check
+### Victory check
 **description:** checks if the king is dead and discerns the winner        
 **input:** user moves their piece onto the enemy king        
 **output:** displays the winning colour in the console        
