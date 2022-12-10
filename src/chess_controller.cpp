@@ -23,7 +23,14 @@ void Controller::ProcessClick(Position position)
     }
     else
     {
-        game_->Move(position);
+        PieceNum occupant = game_->PieceIn(position);
+        if (occupant != kEmpty && game_->ColourIn(position) == game_->current_player())
+        {
+           game_->Select(position);
+        }
+        else {
+           game_->Move(position);
+        }
     }
 }
 
