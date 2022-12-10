@@ -103,6 +103,7 @@ class Chessboard
 
       bool IsWon();
 
+
    public:
       Chessboard();
       ~Chessboard();
@@ -196,6 +197,10 @@ class Chessboard
       *   @return true is a piece was successfully deselected otherwise false
       */
       bool DeselectPiece();
+
+      PieceNum PieceIn(Position position);
+
+      PieceColour ColourIn(Position position);
 
 
       /** @brief Reset the game board to its initial state

@@ -181,6 +181,24 @@ Piece* Chessboard::PieceAt(Position position)
    return NULL;
 }
 
+PieceNum Chessboard::PieceIn(Position position)
+{
+   Piece* occupant = PieceAt(position);
+
+   if (occupant != NULL)
+   {
+      return occupant->piece_num();
+   }
+   return kEmpty;
+}
+
+PieceColour Chessboard::ColourIn(Position position)
+{
+   PieceNum piece = PieceIn(position);
+
+   return (piece < 0) ? kBlack : kWhite;
+}
+
 
 void Chessboard::SetDefaultValues()
 {
