@@ -27,7 +27,7 @@ STATE_HEADERS = include/playing.h include/help.h include/credits.h include/main_
 UI_HEADERS = include/sdl_chess_game.h $(STATE_HEADERS)
                                                                                    
 SHARED = include/globals.h
-OPTIONS = -g -Wall -Wextra -std=c++17
+OPTIONS = -g -Wall -Wextra -std=c++20 
                                                                                    
 
 all: $(EXECUTABLES)
@@ -39,7 +39,7 @@ all: $(EXECUTABLES)
 # FRONT END
 #=============================================================================
 
-FrontEnd/SDL_TEST/graphical: FrontEnd/SDL_TEST/graphical.o FrontEnd/SDL_TEST/GameState.o objects/chess_controller.o  $(GAME_OBJS)
+bin/chessboard: FrontEnd/SDL_TEST/graphical.o FrontEnd/SDL_TEST/GameState.o objects/chess_controller.o  $(GAME_OBJS)
 	@echo "Building executable file"
 	g++ $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(OPTIONS) $^ -o $@ $(LINKER_FLAGS)
 

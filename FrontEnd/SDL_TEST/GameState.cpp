@@ -4,8 +4,11 @@
 /////////Global space/////////
 //////////////////////////////
 
+string APP_PATH = SDL_GetPrefPath("Prometheus", "Chessboard"); // the location of Assets and user data
+
+
 // i tried putting it in .h but with whatever lil testing i did it seems to like it here
-SDL_Window * GameState::win = SDL_CreateWindow("STATE MACHINE" , SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0); // width and height are hard coded for now
+SDL_Window * GameState::win = SDL_CreateWindow("Chessboard" , SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE); // width and height are hard coded for now
 SDL_Renderer * GameState::ren = SDL_CreateRenderer(win,-1,0); //rendererer
 
 GameState * GameState::menu = new Menu;
@@ -15,6 +18,8 @@ GameState * GameState::play = new Play;
 
 GameState * GameState::currGameState = menu;
 
+
+
 //Mouse* GameState::mouse = new Mouse(ren);
 
 void GameState::shutdown(){
@@ -22,8 +27,7 @@ void GameState::shutdown(){
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
     SDL_Quit();
-    exit();
-
+    ::exit(0);
 }
 
 void GameState::limit_Fps(Uint32 start_tick){
@@ -33,7 +37,6 @@ void GameState::limit_Fps(Uint32 start_tick){
             //SDL delay slows down SDL
             SDL_Delay(1000/fps - (SDL_GetTicks()- start_tick));
         }
-
 }
 
 ///////////////////////////
@@ -42,10 +45,11 @@ void GameState::limit_Fps(Uint32 start_tick){
 
 Menu::Menu(/* args */)
 {
-    backgroundTexture = IMG_LoadTexture(ren,"MENU_SCREEN.png"); //menu background.png (temp for now) path to the background
+
+    backgroundTexture = IMG_LoadTexture(ren,(APP_PATH + "MENU_SCREEN.png").c_str()); //menu background.png (temp for now) path to the background
 
     //error checking 
-    if(!backgroundTexture){
+    if (!backgroundTexture){
         cout << "Menu constructor: Load background" << SDL_GetError()<<endl;
     }    
 }
@@ -116,7 +120,7 @@ void Menu::exit(){}
 
 Help::Help(/* args */){
 
-    backgroundTexture = IMG_LoadTexture(ren,"HELP_SCREEN.png"); //menu background.png (temp for now) path to the background
+    backgroundTexture = IMG_LoadTexture(ren, (APP_PATH + "HELP_SCREEN.png").c_str());
 
     //error checking 
     if(!backgroundTexture){
@@ -183,21 +187,24 @@ Play::Play(/* args */){
 
     controller = new Controller();
 
-    backgroundTexture = IMG_LoadTexture(ren,"PLAY_SCREEN.png"); //menu background.png (temp for now) path to the background
+    width = SCREEN_WIDTH;
+    height = SCREEN_HEIGHT;
 
-    W_King_Texture = IMG_LoadTexture(ren,"W_King.png");
-    W_Queen_Texture = IMG_LoadTexture(ren,"W_Queen.png");
-    W_Rook_Texture = IMG_LoadTexture(ren,"W_Rook.png");
-    W_Knight_Texture = IMG_LoadTexture(ren,"W_Knight.png"); 
-    W_Bishop_Texture = IMG_LoadTexture(ren,"W_Bishop.png");
-    W_Pawn_Texture = IMG_LoadTexture(ren,"W_Pawn.png");
+    backgroundTexture = IMG_LoadTexture(ren,(APP_PATH + "PLAY_SCREEN.png").c_str()); //menu background.png (temp for now) path to the background
 
-    B_King_Texture = IMG_LoadTexture(ren,"B_King.png");
-    B_Queen_Texture = IMG_LoadTexture(ren,"B_Queen.png");
-    B_Rook_Texture = IMG_LoadTexture(ren,"B_Rook.png");
-    B_Knight_Texture = IMG_LoadTexture(ren,"B_Knight.png"); 
-    B_Bishop_Texture = IMG_LoadTexture(ren,"B_Bishop.png");
-    B_Pawn_Texture = IMG_LoadTexture(ren,"B_Pawn.png");
+    W_King_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_King.png").c_str());
+    W_Queen_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_Queen.png").c_str());
+    W_Rook_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_Rook.png").c_str());
+    W_Knight_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_Knight.png").c_str()); 
+    W_Bishop_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_Bishop.png").c_str());
+    W_Pawn_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_Pawn.png").c_str());
+
+    B_King_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_King.png").c_str());
+    B_Queen_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_Queen.png").c_str());
+    B_Rook_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_Rook.png").c_str());
+    B_Knight_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_Knight.png").c_str()); 
+    B_Bishop_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_Bishop.png").c_str());
+    B_Pawn_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_Pawn.png").c_str());
     //error checking 
     if(!backgroundTexture){
         cout << "Play constructor: Load background" << SDL_GetError()<<endl;
@@ -222,15 +229,29 @@ Play::~Play(){
     SDL_DestroyTexture(B_Bishop_Texture);
     SDL_DestroyTexture(B_Pawn_Texture);
 }
-
 void Play::enter(){}
-
 void Play::update(){
 
     Uint32 starting_tick;
+    
 
     while (currGameState == GameState::play)
     {
+        SDL_GetRendererOutputSize(ren, &width, &height);
+        int board_pixels = min(width, height);
+        if (board_pixels == height || height - width < height / 12 ) {
+           // stops pieces from clipping the bottom of the screen
+           board_pixels -= board_pixels / 8;
+        }
+        int piece_width = round(board_pixels / kBoardSize);
+        int piece_height = 2 * piece_width;
+        int tile_height = 15 * piece_width / 16;
+        int piece_x_offset = tile_height / 4;
+        int piece_y_offset = piece_x_offset;
+
+
+        int start_x = (width - board_pixels) / 2;
+
         starting_tick = SDL_GetTicks();
         int source_x,source_y, dest_x,dest_y;
         SDL_Event e;
@@ -243,9 +264,7 @@ void Play::update(){
                 case SDL_KEYDOWN:
                     if(e.key.keysym.sym == SDLK_ESCAPE){
                         shutdown();
-                        break;
-                    }
-                    if(e.key.keysym.sym == SDLK_1){
+                    } else if (e.key.keysym.sym == SDLK_1){
                         //change state, go back to main menu
                         currGameState = menu; //get outta the loop when change state
                         controller->ResetGame();
@@ -253,8 +272,8 @@ void Play::update(){
                     }
                 case SDL_MOUSEBUTTONDOWN:
                     SDL_GetMouseState(&source_x,&source_y);
-                    source_x = 7 - (abs(source_x - SCREEN_WIDTH)) / PIECE_WIDTH;
-                    source_y = 7 - (abs(source_y - SCREEN_HEIGHT)) / PIECE_WIDTH;
+                    source_x = (source_x - start_x) / piece_width;
+                    source_y = (source_y - piece_width) / tile_height;
                     controller->ProcessClick(Position(source_y, source_x));
                     break;
                     
@@ -266,31 +285,63 @@ void Play::update(){
                                  {4,W_Bishop_Texture} , {5,W_Queen_Texture } , {6 ,W_King_Texture}};
 
         SDL_RenderClear(ren);
-        //background rect
-        SDL_Rect rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
-        //background copied to renderer
-        SDL_RenderCopy(ren,backgroundTexture,NULL,&rect); // NULL stretches the image to the entire screen
 
+
+        //background rect
+        SDL_Rect rect = {0,piece_width + 1, board_pixels, board_pixels};
 
         for (int row = 0; row < 8; row++) 
         {
             for (int col = 0; col < 8; col++) 
             {
-                rect.x = PIECE_X_OFFSET + (PIECE_WIDTH*col);
-                rect.y = PIECE_Y_OFFSET + (PIECE_HEIGHT*row);
-                rect.w = PIECE_WIDTH - 2 * PIECE_X_OFFSET;
-                rect.h = PIECE_HEIGHT - 2 * PIECE_Y_OFFSET;
+                // Adjust rect for drawing highlights
+                rect.x = start_x + piece_width * col;
+                rect.y = piece_width + tile_height * (row);
+                rect.w = piece_width;
+                rect.h = tile_height;
+
+                // draw tile background color
+                if ( (col + row) % 2 == 0 ) {   // current tile is white
+                   SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
+                   SDL_RenderFillRect(ren, &rect);
+                } else {                        // current tile is black
+                   SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); SDL_RenderFillRect(ren, &rect);
+                }
+
+                // highlight selected player
                 if (controller->GetSelectedPiece() == Position(row, col)) {
-                   rect.x = SCREEN_WIDTH * col / kBoardSize;
-                   rect.y = SCREEN_WIDTH * row / kBoardSize;
-                   rect.w = PIECE_WIDTH;
-                   rect.h = PIECE_HEIGHT;
                    SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
                    SDL_RenderFillRect(ren, &rect);
-                } else if (controller->GetLegalMoves().count(Position(row, col)) != 0) {
-                   SDL_SetRenderDrawColor(ren, 255, 255, 0, SDL_ALPHA_OPAQUE);
-                   SDL_RenderDrawRect(ren, &rect);
                 }
+                // highlight legal moves
+                if (controller->GetLegalMoves().count(Position(row, col)) != 0) {
+                   SDL_SetRenderDrawColor(ren,255, 200, 0, SDL_ALPHA_OPAQUE);
+                   SDL_RenderFillRect(ren, &rect);
+                }
+
+                // fill in center so it looks like an outline
+                int padding = tile_height / 16;
+                padding *= 1;
+
+                rect.x = start_x + piece_width * col + padding;
+                rect.y = piece_width + tile_height * row + padding;
+                rect.w = piece_width - 2 * padding;
+                rect.h = tile_height - 2 * padding;
+
+                if ( (col + row) % 2 == 0 ) {   // current tile is white
+                   SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
+                   SDL_RenderFillRect(ren, &rect);
+                } else {                        // current tile is black
+                   SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
+                   SDL_RenderFillRect(ren, &rect);
+                }
+                // highlight legal moves
+               
+                // Adjust rect for drawing pieces
+                rect.x = start_x + piece_width * col;
+                rect.y = tile_height * row - (piece_width - tile_height) - piece_y_offset;
+                rect.w = piece_width;
+                rect.h = piece_height;
                 switch(controller->GetBoard()[row][col]){
                 case -1:
                     SDL_RenderCopy(ren,pieces[-1],NULL,&rect);
@@ -334,6 +385,23 @@ void Play::update(){
                 }
             }
         }
+        for (int col = 0; col < 8; col++) 
+        {
+             // Adjust rect for drawing bottom of board
+             rect.x = start_x + piece_width * col;
+             rect.y = piece_width + tile_height * 8;
+             rect.w = piece_width;
+             rect.h = piece_width / 4;
+
+             if (col % 2 == 0) {
+                SDL_SetRenderDrawColor(ren,31, 31, 40, SDL_ALPHA_OPAQUE);
+             } else {
+                SDL_SetRenderDrawColor(ren,152, 161, 177, SDL_ALPHA_OPAQUE);
+             }
+             SDL_RenderFillRect(ren, &rect);
+        }
+
+        SDL_SetRenderDrawColor(ren, 144, 148, 156, SDL_ALPHA_OPAQUE);
         SDL_RenderPresent(ren);
         limit_Fps(starting_tick);   
     }
@@ -349,7 +417,7 @@ void Play::exit(){}
 
 Credits::Credits(/* args */){
 
-    backgroundTexture = IMG_LoadTexture(ren,"CREDITS_SCREEN.png"); //menu background.png (temp for now) path to the background
+    backgroundTexture = IMG_LoadTexture(ren, (APP_PATH + "CREDITS_SCREEN.png").c_str()); //menu background.png (temp for now) path to the background
 
     //error checking 
     if(!backgroundTexture){

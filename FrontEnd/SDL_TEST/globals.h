@@ -11,8 +11,8 @@ using namespace std; // i know this is not like b everyone but did not wanna use
 
 static int k = SDL_Init(SDL_INIT_EVERYTHING); // initialised everything
 
-const int SCREEN_WIDTH = 960;
-const int SCREEN_HEIGHT = SCREEN_WIDTH;
+const int SCREEN_WIDTH = 500;
+const int SCREEN_HEIGHT = 562;
 
 /////////pieces/////////////
 

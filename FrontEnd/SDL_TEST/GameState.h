@@ -81,6 +81,8 @@ public:
     void exit();
 
     Controller* controller;
+    int width;
+    int height;
 
     SDL_Texture * W_King_Texture;
     SDL_Texture * W_Queen_Texture;
