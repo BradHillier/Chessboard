@@ -282,6 +282,7 @@ void Play::update()
              rect.w = piece_width;
              rect.h = tile_height;
 
+
              // draw tile background color
              if ( (col + row) % 2 == 0 ) {   // current tile is white
                 SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
@@ -290,11 +291,7 @@ void Play::update()
                 SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); SDL_RenderFillRect(ren, &rect);
              }
 
-             // highlight selected player
-             if (controller->GetSelectedPiece() == Position(row, col)) {
-                SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
-                SDL_RenderFillRect(ren, &rect);
-             }
+             HighlightSelectedPiece(row, col);
              // highlight legal moves
              if (controller->GetLegalMoves().count(Position(row, col)) != 0) {
                 SDL_SetRenderDrawColor(ren,255, 200, 0, SDL_ALPHA_OPAQUE);
@@ -317,10 +314,6 @@ void Play::update()
                 SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
                 SDL_RenderFillRect(ren, &rect);
              }
-             // highlight legal moves
-            
-             padding *= 8;
-             // Adjust rect for drawing pieces
              DrawPiece(row, col);
          }
      }
@@ -360,6 +353,21 @@ void Play::AdjustRectSizes()
    tile_height = 5 * piece_width / 6;
    top_padding = (height - tile_height * 8) / 2;
    piece_y_offset = tile_height / 2;
+}
+
+void Play::HighlightSelectedPiece(int row, int col)
+{
+   SDL_Rect rect;
+
+   if (controller->GetSelectedPiece() == Position(row, col)) 
+   {
+      rect.x = start_x + piece_width * col;
+      rect.y = top_padding + tile_height * (row);
+      rect.w = piece_width;
+      rect.h = tile_height;
+      SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+      SDL_RenderFillRect(ren, &rect);
+   }
 }
 
 void Play::DrawPiece(int row, int col)

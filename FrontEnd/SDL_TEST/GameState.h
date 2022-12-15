@@ -74,8 +74,9 @@ class Play : public GameState
 {
 private:
    map<PieceNum, SDL_Texture*> pieces;
-   void DrawPiece(int row, int col);
    void AdjustRectSizes();
+   void HighlightSelectedPiece(int row, int col);
+   void DrawPiece(int row, int col);
 
    int start_x;
    int piece_width;
