@@ -272,11 +272,11 @@ void Play::update()
          for (int col = 0; col < 8; col++) 
          {
              DrawTileBackground(row, col);
-             HighlightLegalMoves(row, col);
-             DrawPiece(row, col);
          }
      }
+     HighlightLegalMoves();
      HighlightSelectedPiece();
+     DrawPieces();
      for (int col = 0; col < 8; col++) 
      {
           // Adjust rect for drawing bottom of board
@@ -318,18 +318,16 @@ void Play::AdjustRectSizes()
 
 void Play::DrawTileBackground(int row, int col)
 {
-   SDL_Rect rect;
-   rect.x = start_x + piece_width * col;
-   rect.y = top_padding + tile_height * (row);
-   rect.w = piece_width;
-   rect.h = tile_height;
+   SDL_Rect rect = TileAt(Position(row, col));
    
-   if ( (col + row) % 2 == 0 ) // current tile is white
+   if ( (col + row) % 2 == 0 ) 
    {   
+      // current tile is white
       SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
    } 
-   else // current tile is black
-   {                        
+   else 
+   {    
+      // current tile is black                    
       SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
    }
    SDL_RenderFillRect(ren, &rect);
@@ -343,7 +341,24 @@ void Play::HighlightSelectedPiece()
       SDL_Rect selected_rect = TileAt(piece_pos);
       SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
       SDL_RenderFillRect(ren, &selected_rect);
+      FillCenterOfRect(selected_rect, piece_pos);
    }
+}
+
+// used to adjust the border size of a highlighted tile
+void Play::FillCenterOfRect(SDL_Rect rect, Position position)
+{
+   AddPadding(rect, tile_height / 16);
+   if ( (position.col + position.row) % 2 == 0 ) 
+   {   // current tile is white
+      SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
+   } 
+   else 
+   {                       
+      // current tile is black
+      SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
+   }
+   SDL_RenderFillRect(ren, &rect);
 }
 
 SDL_Rect Play::TileAt(Position position)
@@ -356,54 +371,46 @@ SDL_Rect Play::TileAt(Position position)
    return rect;
 }
 
-void Play::HighlightLegalMoves(int row, int col)
+void Play::AddPadding(SDL_Rect &rect, int padding)
+{
+   rect.x += padding;
+   rect.y += padding;
+   rect.w -= 2 * padding;
+   rect.h -= 2 * padding;
+}
+
+void Play::HighlightLegalMoves()
 {
    SDL_Rect rect;
-   // highlight legal moves
-   rect.x = start_x + piece_width * col;
-   rect.y = top_padding + tile_height * (row);
-   rect.w = piece_width;
-   rect.h = tile_height;
 
-   if (controller->GetLegalMoves().count(Position(row, col)) != 0) 
+   unordered_set<Position> legal_moves = controller->GetLegalMoves();
+   for (const auto &move : legal_moves)
    {
+      rect = TileAt(move);
       SDL_SetRenderDrawColor(ren,255, 200, 0, SDL_ALPHA_OPAQUE);
       SDL_RenderFillRect(ren, &rect);
-   }
-
-   // fill in center so it looks like an outline
-   int padding = tile_height / 16;
-   padding *= 1;
-
-   rect.x = start_x + piece_width * col + padding;
-   rect.y = top_padding + tile_height * row + padding;
-   rect.w = piece_width - 2 * padding;
-   rect.h = tile_height - 2 * padding;
-
-   if ( (col + row) % 2 == 0 ) 
-   {   // current tile is white
-      SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
-      SDL_RenderFillRect(ren, &rect);
-   } 
-   else 
-   {                        // current tile is black
-      SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
-      SDL_RenderFillRect(ren, &rect);
+      FillCenterOfRect(rect, move);
    }
 }
 
-void Play::DrawPiece(int row, int col)
+void Play::DrawPieces()
 {
-   PieceNum piece = controller->GetBoard()[row][col];
    SDL_Rect rect;
 
-   if (piece != kEmpty)
+   for (int row = 0; row < kBoardSize; row++) 
    {
-      rect.x = start_x + piece_width * col;
-      rect.y = (top_padding - piece_width) + tile_height * row - piece_y_offset;
-      rect.w = piece_width;
-      rect.h = piece_height;
-      SDL_RenderCopy(ren, pieces[piece], NULL, &rect);
+      for (int col = 0; col < kBoardSize; col++) 
+      {
+         PieceNum piece = controller->GetBoard()[row][col];
+         if (piece != kEmpty)
+         {
+            rect.x = start_x + piece_width * col;
+            rect.y = (top_padding - piece_width) + tile_height * row - piece_y_offset;
+            rect.w = piece_width;
+            rect.h = piece_height;
+            SDL_RenderCopy(ren, pieces[piece], NULL, &rect);
+         }
+      }
    }
 }
 

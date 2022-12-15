@@ -77,9 +77,11 @@ private:
    void AdjustRectSizes();
    void DrawTileBackground(int row, int col);
    void HighlightSelectedPiece();
-   void HighlightLegalMoves(int row, int col);
-   void DrawPiece(int row, int col);
+   void HighlightLegalMoves();
+   void DrawPieces();
+   void AddPadding(SDL_Rect &rect, int padding);
    SDL_Rect TileAt(Position position);
+   void FillCenterOfRect(SDL_Rect rect, Position position);
 
    int start_x;
    int piece_width;
