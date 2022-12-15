@@ -13,10 +13,7 @@ else
 endif   
 
 
-
-
-
-EXECUTABLES = bin/main FrontEnd/SDL_TEST/graphical
+EXECUTABLES = bin/main bin/chessboard
 
 UI_OBJS = objects/sdl_chess_game.o
 GAME_OBJS = objects/piece.o objects/chessboard.o objects/pawn.o objects/rook.o objects/knight.o objects/bishop.o objects/queen.o objects/king.o 
