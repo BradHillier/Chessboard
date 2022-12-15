@@ -72,6 +72,9 @@ public:
 
 class Play : public GameState{
 
+private:
+   void DrawPiece(int row, int col, SDL_Rect rect, map<PieceNum,SDL_Texture*> pieces);
+
 public:
     Play(/* args */);
     virtual ~Play();

@@ -8,7 +8,15 @@ string APP_PATH = SDL_GetPrefPath("Prometheus", "Chessboard"); // the location o
 
 
 // i tried putting it in .h but with whatever lil testing i did it seems to like it here
-SDL_Window * GameState::win = SDL_CreateWindow("Chessboard" , SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE); // width and height are hard coded for now
+SDL_Window * GameState::win = SDL_CreateWindow(
+   "Chessboard" ,
+   SDL_WINDOWPOS_UNDEFINED,
+   SDL_WINDOWPOS_UNDEFINED,
+   SCREEN_WIDTH,
+   SCREEN_HEIGHT,
+   SDL_WINDOW_RESIZABLE
+); // width and height are hard coded for now
+
 SDL_Renderer * GameState::ren = SDL_CreateRenderer(win,-1,0); //rendererer
 
 GameState * GameState::menu = new Menu;
@@ -243,11 +251,14 @@ void Play::update(){
            // stops pieces from clipping the bottom of the screen
            board_pixels -= board_pixels / 8;
         }
+
         int piece_width = round(board_pixels / kBoardSize);
         int piece_height = 2 * piece_width;
-        int tile_height = 15 * piece_width / 16;
+        int tile_height = 5 * piece_width / 6;
         int piece_x_offset = tile_height / 4;
         int piece_y_offset = piece_x_offset;
+
+        int top_padding = (height - tile_height * 8) / 2;
 
 
         int start_x = (width - board_pixels) / 2;
@@ -273,16 +284,26 @@ void Play::update(){
                 case SDL_MOUSEBUTTONDOWN:
                     SDL_GetMouseState(&source_x,&source_y);
                     source_x = (source_x - start_x) / piece_width;
-                    source_y = (source_y - piece_width) / tile_height;
+                    source_y = (source_y - top_padding) / tile_height;
                     controller->ProcessClick(Position(source_y, source_x));
                     break;
                     
             }
         }
-        map<int,SDL_Texture*> pieces = {{-1,B_Pawn_Texture} , {-2,B_Rook_Texture} , {-3, B_Knight_Texture},
-                                 {-4,B_Bishop_Texture} , {-5,B_Queen_Texture }, {-6 ,B_King_Texture},
-                                 {1,W_Pawn_Texture} , {2,W_Rook_Texture} , {3, W_Knight_Texture},
-                                 {4,W_Bishop_Texture} , {5,W_Queen_Texture } , {6 ,W_King_Texture}};
+        map<PieceNum, SDL_Texture*> pieces = {
+           {kBPawn, B_Pawn_Texture},
+           {kBRook, B_Rook_Texture}, 
+           {kBKnight, B_Knight_Texture},
+           {kBBishop, B_Bishop_Texture},
+           {kBQueen, B_Queen_Texture },
+           {kBKing, B_King_Texture},
+           {kWPawn, W_Pawn_Texture},
+           {kWRook, W_Rook_Texture},
+           {kWKnight, W_Knight_Texture},
+           {kWBishop, W_Bishop_Texture},
+           {kWQueen, W_Queen_Texture }, 
+           {kWKing, W_King_Texture}
+        };
 
         SDL_RenderClear(ren);
 
@@ -296,7 +317,7 @@ void Play::update(){
             {
                 // Adjust rect for drawing highlights
                 rect.x = start_x + piece_width * col;
-                rect.y = piece_width + tile_height * (row);
+                rect.y = top_padding + tile_height * (row);
                 rect.w = piece_width;
                 rect.h = tile_height;
 
@@ -324,7 +345,7 @@ void Play::update(){
                 padding *= 1;
 
                 rect.x = start_x + piece_width * col + padding;
-                rect.y = piece_width + tile_height * row + padding;
+                rect.y = top_padding + tile_height * row + padding;
                 rect.w = piece_width - 2 * padding;
                 rect.h = tile_height - 2 * padding;
 
@@ -337,59 +358,20 @@ void Play::update(){
                 }
                 // highlight legal moves
                
+                padding *= 8;
                 // Adjust rect for drawing pieces
                 rect.x = start_x + piece_width * col;
-                rect.y = tile_height * row - (piece_width - tile_height) - piece_y_offset;
+                rect.y = (top_padding - piece_width) + tile_height * row - padding;
                 rect.w = piece_width;
                 rect.h = piece_height;
-                switch(controller->GetBoard()[row][col]){
-                case -1:
-                    SDL_RenderCopy(ren,pieces[-1],NULL,&rect);
-                    break;
-                case -2:
-                    SDL_RenderCopy(ren,pieces[-2],NULL,&rect);
-                    break;
-                case -3:
-                    SDL_RenderCopy(ren,pieces[-3],NULL,&rect);
-                    break;
-                case -4:
-                    SDL_RenderCopy(ren,pieces[-4],NULL,&rect);
-                    break;
-                case -5:
-                    SDL_RenderCopy(ren,pieces[-5],NULL,&rect);
-                    break;
-                case -6:
-                    SDL_RenderCopy(ren,pieces[-6],NULL,&rect);
-                    break;
-                case 1:
-                    SDL_RenderCopy(ren,pieces[1],NULL,&rect);
-                    break;
-                case 2:
-                    SDL_RenderCopy(ren,pieces[2],NULL,&rect);
-                    break;
-                case 3:
-                    SDL_RenderCopy(ren,pieces[3],NULL,&rect);
-                    break;
-                case 4:
-                    SDL_RenderCopy(ren,pieces[4],NULL,&rect);
-                    break;
-                case 5:
-                    SDL_RenderCopy(ren,pieces[5],NULL,&rect);
-                    break;
-                case 6:
-                    SDL_RenderCopy(ren,pieces[6],NULL,&rect);
-                    break;
-                  
-                default:
-                    break;
-                }
+                DrawPiece(row, col, rect, pieces);
             }
         }
         for (int col = 0; col < 8; col++) 
         {
              // Adjust rect for drawing bottom of board
              rect.x = start_x + piece_width * col;
-             rect.y = piece_width + tile_height * 8;
+             rect.y = top_padding + tile_height * 8;
              rect.w = piece_width;
              rect.h = piece_width / 4;
 
@@ -405,7 +387,15 @@ void Play::update(){
         SDL_RenderPresent(ren);
         limit_Fps(starting_tick);   
     }
+}
 
+void Play::DrawPiece(int row, int col, SDL_Rect rect, map<PieceNum, SDL_Texture*> pieces)
+{
+  PieceNum piece = controller->GetBoard()[row][col];
+  if (piece != kEmpty)
+  {
+     SDL_RenderCopy(ren, pieces[piece], NULL, &rect);
+  }
 }
 
 void Play::exit(){}
