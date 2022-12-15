@@ -191,52 +191,48 @@ void Help::exit(){}
 //////////play/////////////
 ///////////////////////////
 
-Play::Play(/* args */){
-
+Play::Play()
+{
     controller = new Controller();
 
     width = SCREEN_WIDTH;
     height = SCREEN_HEIGHT;
 
-    backgroundTexture = IMG_LoadTexture(ren,(APP_PATH + "PLAY_SCREEN.png").c_str()); //menu background.png (temp for now) path to the background
+    // load white pieces
+    pieces[kWKing] = IMG_LoadTexture(ren, (APP_PATH + "W_King.png").c_str());
+    pieces[kWQueen] = IMG_LoadTexture(ren, (APP_PATH + "W_Queen.png").c_str());
+    pieces[kWRook] = IMG_LoadTexture(ren, (APP_PATH + "W_Rook.png").c_str());
+    pieces[kWKnight] = IMG_LoadTexture(ren, (APP_PATH + "W_Knight.png").c_str()); 
+    pieces[kWBishop] = IMG_LoadTexture(ren, (APP_PATH + "W_Bishop.png").c_str());
+    pieces[kWPawn] = IMG_LoadTexture(ren, (APP_PATH + "W_Pawn.png").c_str());
 
-    W_King_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_King.png").c_str());
-    W_Queen_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_Queen.png").c_str());
-    W_Rook_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_Rook.png").c_str());
-    W_Knight_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_Knight.png").c_str()); 
-    W_Bishop_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_Bishop.png").c_str());
-    W_Pawn_Texture = IMG_LoadTexture(ren, (APP_PATH + "W_Pawn.png").c_str());
+    // load black pieces
+    pieces[kBKing] = IMG_LoadTexture(ren, (APP_PATH + "B_King.png").c_str());
+    pieces[kBQueen] = IMG_LoadTexture(ren, (APP_PATH + "B_Queen.png").c_str());
+    pieces[kBRook] = IMG_LoadTexture(ren, (APP_PATH + "B_Rook.png").c_str());
+    pieces[kBKnight] = IMG_LoadTexture(ren, (APP_PATH + "B_Knight.png").c_str()); 
+    pieces[kBBishop] = IMG_LoadTexture(ren, (APP_PATH + "B_Bishop.png").c_str());
+    pieces[kBPawn] = IMG_LoadTexture(ren, (APP_PATH + "B_Pawn.png").c_str());
 
-    B_King_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_King.png").c_str());
-    B_Queen_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_Queen.png").c_str());
-    B_Rook_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_Rook.png").c_str());
-    B_Knight_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_Knight.png").c_str()); 
-    B_Bishop_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_Bishop.png").c_str());
-    B_Pawn_Texture = IMG_LoadTexture(ren, (APP_PATH + "B_Pawn.png").c_str());
-    //error checking 
-    if(!backgroundTexture){
-        cout << "Play constructor: Load background" << SDL_GetError()<<endl;
-    }    
+   // check that pieces loaded successfully
+   for (const auto &asset : pieces)
+   {
+      if (!asset.second)
+      {
+        cout << "Play constructor: " << SDL_GetError()<<endl;
+      }
+   }
 }
 
-Play::~Play(){
-
-    SDL_DestroyTexture(backgroundTexture); //it only loads it once but just for good measure, we prevent any memory leaks 
-
-    SDL_DestroyTexture(W_King_Texture);
-    SDL_DestroyTexture(W_Queen_Texture);
-    SDL_DestroyTexture(W_Rook_Texture);
-    SDL_DestroyTexture(W_Knight_Texture);
-    SDL_DestroyTexture(W_Bishop_Texture);
-    SDL_DestroyTexture(W_Pawn_Texture);
-
-    SDL_DestroyTexture(B_King_Texture);
-    SDL_DestroyTexture(B_Queen_Texture);
-    SDL_DestroyTexture(B_Rook_Texture);
-    SDL_DestroyTexture(B_Knight_Texture);
-    SDL_DestroyTexture(B_Bishop_Texture);
-    SDL_DestroyTexture(B_Pawn_Texture);
+Play::~Play()
+{
+   // delete all piece assets
+   for (const auto &asset : pieces)
+   {
+      SDL_DestroyTexture(asset.second);
+   }
 }
+
 void Play::enter(){}
 void Play::update(){
 
@@ -287,23 +283,8 @@ void Play::update(){
                     source_y = (source_y - top_padding) / tile_height;
                     controller->ProcessClick(Position(source_y, source_x));
                     break;
-                    
             }
         }
-        map<PieceNum, SDL_Texture*> pieces = {
-           {kBPawn, B_Pawn_Texture},
-           {kBRook, B_Rook_Texture}, 
-           {kBKnight, B_Knight_Texture},
-           {kBBishop, B_Bishop_Texture},
-           {kBQueen, B_Queen_Texture },
-           {kBKing, B_King_Texture},
-           {kWPawn, W_Pawn_Texture},
-           {kWRook, W_Rook_Texture},
-           {kWKnight, W_Knight_Texture},
-           {kWBishop, W_Bishop_Texture},
-           {kWQueen, W_Queen_Texture }, 
-           {kWKing, W_King_Texture}
-        };
 
         SDL_RenderClear(ren);
 
@@ -364,7 +345,7 @@ void Play::update(){
                 rect.y = (top_padding - piece_width) + tile_height * row - padding;
                 rect.w = piece_width;
                 rect.h = piece_height;
-                DrawPiece(row, col, rect, pieces);
+                DrawPiece(row, col, rect);
             }
         }
         for (int col = 0; col < 8; col++) 
@@ -389,7 +370,7 @@ void Play::update(){
     }
 }
 
-void Play::DrawPiece(int row, int col, SDL_Rect rect, map<PieceNum, SDL_Texture*> pieces)
+void Play::DrawPiece(int row, int col, SDL_Rect rect)
 {
   PieceNum piece = controller->GetBoard()[row][col];
   if (piece != kEmpty)
