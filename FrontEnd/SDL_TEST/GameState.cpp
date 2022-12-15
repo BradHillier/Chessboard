@@ -266,17 +266,11 @@ void Play::update()
          }
      }
 
-     SDL_RenderClear(ren);
-     for (int row = 0; row < 8; row++) 
-     {
-         for (int col = 0; col < 8; col++) 
-         {
-             DrawTileBackground(row, col);
-         }
-     }
-     HighlightLegalMoves();
-     HighlightSelectedPiece();
-     DrawPieces();
+      SDL_RenderClear(ren);
+      DrawBoard();
+      HighlightLegalMoves();
+      HighlightSelectedPiece();
+      DrawPieces();
      for (int col = 0; col < 8; col++) 
      {
           // Adjust rect for drawing bottom of board
@@ -293,7 +287,7 @@ void Play::update()
           }
           SDL_RenderFillRect(ren, &rect);
      }
-
+     
      SDL_SetRenderDrawColor(ren, 144, 148, 156, SDL_ALPHA_OPAQUE);
      SDL_RenderPresent(ren);
      limit_Fps(starting_tick);   
@@ -316,10 +310,8 @@ void Play::AdjustRectSizes()
    piece_y_offset = tile_height / 2;
 }
 
-void Play::DrawTileBackground(int row, int col)
+void Play::SetTileRenderColor(int row, int col)
 {
-   SDL_Rect rect = TileAt(Position(row, col));
-   
    if ( (col + row) % 2 == 0 ) 
    {   
       // current tile is white
@@ -330,7 +322,19 @@ void Play::DrawTileBackground(int row, int col)
       // current tile is black                    
       SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
    }
-   SDL_RenderFillRect(ren, &rect);
+}
+
+void Play::DrawBoard()
+{
+   for (int row = 0; row < kBoardSize; row++) 
+   {
+      for (int col = 0; col < kBoardSize; col++) 
+      {
+         SDL_Rect rect = TileAt(Position(row, col));
+         SetTileRenderColor(row, col);
+         SDL_RenderFillRect(ren, &rect);
+      }
+   }
 }
 
 void Play::HighlightSelectedPiece()
@@ -349,15 +353,7 @@ void Play::HighlightSelectedPiece()
 void Play::FillCenterOfRect(SDL_Rect rect, Position position)
 {
    AddPadding(rect, tile_height / 16);
-   if ( (position.col + position.row) % 2 == 0 ) 
-   {   // current tile is white
-      SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
-   } 
-   else 
-   {                       
-      // current tile is black
-      SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
-   }
+   SetTileRenderColor(position.row, position.col);
    SDL_RenderFillRect(ren, &rect);
 }
 
