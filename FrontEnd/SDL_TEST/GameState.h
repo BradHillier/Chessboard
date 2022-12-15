@@ -70,11 +70,20 @@ public:
 
 ////////////play state///////////
 
-class Play : public GameState{
-
+class Play : public GameState
+{
 private:
    map<PieceNum, SDL_Texture*> pieces;
-   void DrawPiece(int row, int col, SDL_Rect rect);
+   void DrawPiece(int row, int col);
+   void AdjustRectSizes();
+
+   int start_x;
+   int piece_width;
+   int piece_height; 
+   int tile_height;
+   int top_padding;
+   int board_pixels;
+   int piece_y_offset;
 
 public:
     Play();
@@ -87,31 +96,6 @@ public:
     Controller* controller;
     int width;
     int height;
-
-    SDL_Texture * W_King_Texture;
-    SDL_Texture * W_Queen_Texture;
-    SDL_Texture * W_Rook_Texture;
-    SDL_Texture * W_Knight_Texture;
-    SDL_Texture * W_Bishop_Texture;
-    SDL_Texture * W_Pawn_Texture;
-
-    SDL_Texture * B_King_Texture;
-    SDL_Texture * B_Queen_Texture;
-    SDL_Texture * B_Rook_Texture;
-    SDL_Texture * B_Knight_Texture;
-    SDL_Texture * B_Bishop_Texture;
-    SDL_Texture * B_Pawn_Texture;
-
-    int layout[8][8] = {
-      {-2,-3,-4,-6,-5,-4,-3,-2},
-      {-1,-1,-1,-1,-1,-1,-1,-1},
-      { 0, 0, 0, 0, 0, 0, 0, 0},
-      { 0, 0, 0, 0, 0, 0, 0, 0},
-      { 0, 0, 0, 0, 0, 0, 0, 0},
-      { 0, 0, 0, 0, 0, 0, 0, 0},
-      { 1, 1, 1, 1, 1, 1, 1, 1},
-      { 2, 3, 4, 6, 5, 4, 3, 2}
-   };
 };
 
 ////////////credits state///////////

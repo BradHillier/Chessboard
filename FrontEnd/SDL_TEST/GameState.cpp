@@ -234,149 +234,147 @@ Play::~Play()
 }
 
 void Play::enter(){}
-void Play::update(){
-
+void Play::update()
+{
     Uint32 starting_tick;
-    
+    AdjustRectSizes();
 
-    while (currGameState == GameState::play)
-    {
-        SDL_GetRendererOutputSize(ren, &width, &height);
-        int board_pixels = min(width, height);
-        if (board_pixels == height || height - width < height / 12 ) {
-           // stops pieces from clipping the bottom of the screen
-           board_pixels -= board_pixels / 8;
-        }
+     starting_tick = SDL_GetTicks();
+     int source_x,source_y, dest_x,dest_y;
+     SDL_Event e;
+     while (SDL_PollEvent(&e))
+     {
+         switch (e.type){
+             case SDL_QUIT:
+                 shutdown();
+                 break;
+             case SDL_KEYDOWN:
+                 if(e.key.keysym.sym == SDLK_ESCAPE){
+                     shutdown();
+                 } else if (e.key.keysym.sym == SDLK_1){
+                     //change state, go back to main menu
+                     currGameState = menu; //get outta the loop when change state
+                     controller->ResetGame();
+                     break;
+                 }
+             case SDL_MOUSEBUTTONDOWN:
+                 SDL_GetMouseState(&source_x,&source_y);
+                 source_x = (source_x - start_x) / piece_width;
+                 source_y = (source_y - top_padding) / tile_height;
+                 controller->ProcessClick(Position(source_y, source_x));
+                 break;
+         }
+     }
 
-        int piece_width = round(board_pixels / kBoardSize);
-        int piece_height = 2 * piece_width;
-        int tile_height = 5 * piece_width / 6;
-        int piece_x_offset = tile_height / 4;
-        int piece_y_offset = piece_x_offset;
-
-        int top_padding = (height - tile_height * 8) / 2;
-
-
-        int start_x = (width - board_pixels) / 2;
-
-        starting_tick = SDL_GetTicks();
-        int source_x,source_y, dest_x,dest_y;
-        SDL_Event e;
-        while (SDL_PollEvent(&e))
-        {
-            switch (e.type){
-                case SDL_QUIT:
-                    shutdown();
-                    break;
-                case SDL_KEYDOWN:
-                    if(e.key.keysym.sym == SDLK_ESCAPE){
-                        shutdown();
-                    } else if (e.key.keysym.sym == SDLK_1){
-                        //change state, go back to main menu
-                        currGameState = menu; //get outta the loop when change state
-                        controller->ResetGame();
-                        break;
-                    }
-                case SDL_MOUSEBUTTONDOWN:
-                    SDL_GetMouseState(&source_x,&source_y);
-                    source_x = (source_x - start_x) / piece_width;
-                    source_y = (source_y - top_padding) / tile_height;
-                    controller->ProcessClick(Position(source_y, source_x));
-                    break;
-            }
-        }
-
-        SDL_RenderClear(ren);
+     SDL_RenderClear(ren);
 
 
-        //background rect
-        SDL_Rect rect = {0,piece_width + 1, board_pixels, board_pixels};
+     //background rect
+     SDL_Rect rect = {0,piece_width + 1, board_pixels, board_pixels};
 
-        for (int row = 0; row < 8; row++) 
-        {
-            for (int col = 0; col < 8; col++) 
-            {
-                // Adjust rect for drawing highlights
-                rect.x = start_x + piece_width * col;
-                rect.y = top_padding + tile_height * (row);
-                rect.w = piece_width;
-                rect.h = tile_height;
-
-                // draw tile background color
-                if ( (col + row) % 2 == 0 ) {   // current tile is white
-                   SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
-                   SDL_RenderFillRect(ren, &rect);
-                } else {                        // current tile is black
-                   SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); SDL_RenderFillRect(ren, &rect);
-                }
-
-                // highlight selected player
-                if (controller->GetSelectedPiece() == Position(row, col)) {
-                   SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
-                   SDL_RenderFillRect(ren, &rect);
-                }
-                // highlight legal moves
-                if (controller->GetLegalMoves().count(Position(row, col)) != 0) {
-                   SDL_SetRenderDrawColor(ren,255, 200, 0, SDL_ALPHA_OPAQUE);
-                   SDL_RenderFillRect(ren, &rect);
-                }
-
-                // fill in center so it looks like an outline
-                int padding = tile_height / 16;
-                padding *= 1;
-
-                rect.x = start_x + piece_width * col + padding;
-                rect.y = top_padding + tile_height * row + padding;
-                rect.w = piece_width - 2 * padding;
-                rect.h = tile_height - 2 * padding;
-
-                if ( (col + row) % 2 == 0 ) {   // current tile is white
-                   SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
-                   SDL_RenderFillRect(ren, &rect);
-                } else {                        // current tile is black
-                   SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
-                   SDL_RenderFillRect(ren, &rect);
-                }
-                // highlight legal moves
-               
-                padding *= 8;
-                // Adjust rect for drawing pieces
-                rect.x = start_x + piece_width * col;
-                rect.y = (top_padding - piece_width) + tile_height * row - padding;
-                rect.w = piece_width;
-                rect.h = piece_height;
-                DrawPiece(row, col, rect);
-            }
-        }
-        for (int col = 0; col < 8; col++) 
-        {
-             // Adjust rect for drawing bottom of board
+     for (int row = 0; row < 8; row++) 
+     {
+         for (int col = 0; col < 8; col++) 
+         {
+             // Adjust rect for drawing highlights
              rect.x = start_x + piece_width * col;
-             rect.y = top_padding + tile_height * 8;
+             rect.y = top_padding + tile_height * (row);
              rect.w = piece_width;
-             rect.h = piece_width / 4;
+             rect.h = tile_height;
 
-             if (col % 2 == 0) {
-                SDL_SetRenderDrawColor(ren,31, 31, 40, SDL_ALPHA_OPAQUE);
-             } else {
-                SDL_SetRenderDrawColor(ren,152, 161, 177, SDL_ALPHA_OPAQUE);
+             // draw tile background color
+             if ( (col + row) % 2 == 0 ) {   // current tile is white
+                SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
+                SDL_RenderFillRect(ren, &rect);
+             } else {                        // current tile is black
+                SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); SDL_RenderFillRect(ren, &rect);
              }
-             SDL_RenderFillRect(ren, &rect);
-        }
 
-        SDL_SetRenderDrawColor(ren, 144, 148, 156, SDL_ALPHA_OPAQUE);
-        SDL_RenderPresent(ren);
-        limit_Fps(starting_tick);   
-    }
+             // highlight selected player
+             if (controller->GetSelectedPiece() == Position(row, col)) {
+                SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+                SDL_RenderFillRect(ren, &rect);
+             }
+             // highlight legal moves
+             if (controller->GetLegalMoves().count(Position(row, col)) != 0) {
+                SDL_SetRenderDrawColor(ren,255, 200, 0, SDL_ALPHA_OPAQUE);
+                SDL_RenderFillRect(ren, &rect);
+             }
+
+             // fill in center so it looks like an outline
+             int padding = tile_height / 16;
+             padding *= 1;
+
+             rect.x = start_x + piece_width * col + padding;
+             rect.y = top_padding + tile_height * row + padding;
+             rect.w = piece_width - 2 * padding;
+             rect.h = tile_height - 2 * padding;
+
+             if ( (col + row) % 2 == 0 ) {   // current tile is white
+                SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
+                SDL_RenderFillRect(ren, &rect);
+             } else {                        // current tile is black
+                SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
+                SDL_RenderFillRect(ren, &rect);
+             }
+             // highlight legal moves
+            
+             padding *= 8;
+             // Adjust rect for drawing pieces
+             DrawPiece(row, col);
+         }
+     }
+     for (int col = 0; col < 8; col++) 
+     {
+          // Adjust rect for drawing bottom of board
+          rect.x = start_x + piece_width * col;
+          rect.y = top_padding + tile_height * 8;
+          rect.w = piece_width;
+          rect.h = piece_width / 4;
+
+          if (col % 2 == 0) {
+             SDL_SetRenderDrawColor(ren,31, 31, 40, SDL_ALPHA_OPAQUE);
+          } else {
+             SDL_SetRenderDrawColor(ren,152, 161, 177, SDL_ALPHA_OPAQUE);
+          }
+          SDL_RenderFillRect(ren, &rect);
+     }
+
+     SDL_SetRenderDrawColor(ren, 144, 148, 156, SDL_ALPHA_OPAQUE);
+     SDL_RenderPresent(ren);
+     limit_Fps(starting_tick);   
 }
 
-void Play::DrawPiece(int row, int col, SDL_Rect rect)
+void Play::AdjustRectSizes()
 {
-  PieceNum piece = controller->GetBoard()[row][col];
-  if (piece != kEmpty)
-  {
-     SDL_RenderCopy(ren, pieces[piece], NULL, &rect);
-  }
+   SDL_GetRendererOutputSize(ren, &width, &height);
+
+   board_pixels = min(width, height);
+   if (board_pixels == height || height - width < height / 12 ) {
+     // stops pieces from clipping the bottom of the screen
+     board_pixels -= board_pixels / 8;
+   }
+   start_x = (width - board_pixels) / 2;
+   piece_width = round(board_pixels / kBoardSize);
+   piece_height = 2 * piece_width;
+   tile_height = 5 * piece_width / 6;
+   top_padding = (height - tile_height * 8) / 2;
+   piece_y_offset = tile_height / 2;
+}
+
+void Play::DrawPiece(int row, int col)
+{
+   PieceNum piece = controller->GetBoard()[row][col];
+   SDL_Rect rect;
+
+   if (piece != kEmpty)
+   {
+      rect.x = start_x + piece_width * col;
+      rect.y = (top_padding - piece_width) + tile_height * row - piece_y_offset;
+      rect.w = piece_width;
+      rect.h = piece_height;
+      SDL_RenderCopy(ren, pieces[piece], NULL, &rect);
+   }
 }
 
 void Play::exit(){}
