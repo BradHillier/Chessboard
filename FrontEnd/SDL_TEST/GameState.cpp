@@ -267,59 +267,20 @@ void Play::update()
      }
 
      SDL_RenderClear(ren);
-
-
-     //background rect
-     SDL_Rect rect = {0,piece_width + 1, board_pixels, board_pixels};
-
      for (int row = 0; row < 8; row++) 
      {
          for (int col = 0; col < 8; col++) 
          {
-             // Adjust rect for drawing highlights
-             rect.x = start_x + piece_width * col;
-             rect.y = top_padding + tile_height * (row);
-             rect.w = piece_width;
-             rect.h = tile_height;
-
-
-             // draw tile background color
-             if ( (col + row) % 2 == 0 ) {   // current tile is white
-                SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
-                SDL_RenderFillRect(ren, &rect);
-             } else {                        // current tile is black
-                SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); SDL_RenderFillRect(ren, &rect);
-             }
-
-             HighlightSelectedPiece(row, col);
-             // highlight legal moves
-             if (controller->GetLegalMoves().count(Position(row, col)) != 0) {
-                SDL_SetRenderDrawColor(ren,255, 200, 0, SDL_ALPHA_OPAQUE);
-                SDL_RenderFillRect(ren, &rect);
-             }
-
-             // fill in center so it looks like an outline
-             int padding = tile_height / 16;
-             padding *= 1;
-
-             rect.x = start_x + piece_width * col + padding;
-             rect.y = top_padding + tile_height * row + padding;
-             rect.w = piece_width - 2 * padding;
-             rect.h = tile_height - 2 * padding;
-
-             if ( (col + row) % 2 == 0 ) {   // current tile is white
-                SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
-                SDL_RenderFillRect(ren, &rect);
-             } else {                        // current tile is black
-                SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
-                SDL_RenderFillRect(ren, &rect);
-             }
+             DrawTileBackground(row, col);
+             HighlightLegalMoves(row, col);
              DrawPiece(row, col);
          }
      }
+     HighlightSelectedPiece();
      for (int col = 0; col < 8; col++) 
      {
           // Adjust rect for drawing bottom of board
+          SDL_Rect rect;
           rect.x = start_x + piece_width * col;
           rect.y = top_padding + tile_height * 8;
           rect.w = piece_width;
@@ -355,17 +316,78 @@ void Play::AdjustRectSizes()
    piece_y_offset = tile_height / 2;
 }
 
-void Play::HighlightSelectedPiece(int row, int col)
+void Play::DrawTileBackground(int row, int col)
 {
    SDL_Rect rect;
+   rect.x = start_x + piece_width * col;
+   rect.y = top_padding + tile_height * (row);
+   rect.w = piece_width;
+   rect.h = tile_height;
+   
+   if ( (col + row) % 2 == 0 ) // current tile is white
+   {   
+      SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
+   } 
+   else // current tile is black
+   {                        
+      SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
+   }
+   SDL_RenderFillRect(ren, &rect);
+}
 
-   if (controller->GetSelectedPiece() == Position(row, col)) 
+void Play::HighlightSelectedPiece()
+{
+   Position piece_pos = controller->GetSelectedPiece();
+   if (piece_pos != kOffTheBoard)
    {
-      rect.x = start_x + piece_width * col;
-      rect.y = top_padding + tile_height * (row);
-      rect.w = piece_width;
-      rect.h = tile_height;
+      SDL_Rect selected_rect = TileAt(piece_pos);
       SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+      SDL_RenderFillRect(ren, &selected_rect);
+   }
+}
+
+SDL_Rect Play::TileAt(Position position)
+{
+   SDL_Rect rect;
+   rect.x = start_x + piece_width * position.col;
+   rect.y = top_padding + tile_height * position.row;
+   rect.w = piece_width;
+   rect.h = tile_height;
+   return rect;
+}
+
+void Play::HighlightLegalMoves(int row, int col)
+{
+   SDL_Rect rect;
+   // highlight legal moves
+   rect.x = start_x + piece_width * col;
+   rect.y = top_padding + tile_height * (row);
+   rect.w = piece_width;
+   rect.h = tile_height;
+
+   if (controller->GetLegalMoves().count(Position(row, col)) != 0) 
+   {
+      SDL_SetRenderDrawColor(ren,255, 200, 0, SDL_ALPHA_OPAQUE);
+      SDL_RenderFillRect(ren, &rect);
+   }
+
+   // fill in center so it looks like an outline
+   int padding = tile_height / 16;
+   padding *= 1;
+
+   rect.x = start_x + piece_width * col + padding;
+   rect.y = top_padding + tile_height * row + padding;
+   rect.w = piece_width - 2 * padding;
+   rect.h = tile_height - 2 * padding;
+
+   if ( (col + row) % 2 == 0 ) 
+   {   // current tile is white
+      SDL_SetRenderDrawColor(ren, 235, 240, 218, SDL_ALPHA_OPAQUE);
+      SDL_RenderFillRect(ren, &rect);
+   } 
+   else 
+   {                        // current tile is black
+      SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE); 
       SDL_RenderFillRect(ren, &rect);
    }
 }

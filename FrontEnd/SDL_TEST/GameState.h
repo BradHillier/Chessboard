@@ -75,8 +75,11 @@ class Play : public GameState
 private:
    map<PieceNum, SDL_Texture*> pieces;
    void AdjustRectSizes();
-   void HighlightSelectedPiece(int row, int col);
+   void DrawTileBackground(int row, int col);
+   void HighlightSelectedPiece();
+   void HighlightLegalMoves(int row, int col);
    void DrawPiece(int row, int col);
+   SDL_Rect TileAt(Position position);
 
    int start_x;
    int piece_width;
