@@ -43,6 +43,15 @@ class GameState{
 
 class Menu : public GameState{
 
+private:
+   int width, height;
+   TTF_Font *font;
+   SDL_Rect button_rect;
+   SDL_Surface *button_surface;
+   SDL_Texture *button_texture;
+   void DrawTitle();
+   void DrawButtons();
+
 public:
     Menu(/* args */);
     virtual ~Menu();

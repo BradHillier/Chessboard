@@ -1,5 +1,6 @@
 #include "GameState.h"
 
+
 //////////////////////////////
 /////////Global space/////////
 //////////////////////////////
@@ -9,7 +10,7 @@ string APP_PATH = SDL_GetPrefPath("Prometheus", "Chessboard"); // the location o
 
 // i tried putting it in .h but with whatever lil testing i did it seems to like it here
 SDL_Window * GameState::win = SDL_CreateWindow(
-   "Chessboard" ,
+   "Pixel Chess" ,
    SDL_WINDOWPOS_UNDEFINED,
    SDL_WINDOWPOS_UNDEFINED,
    SCREEN_WIDTH,
@@ -53,14 +54,11 @@ void GameState::limit_Fps(Uint32 start_tick){
 
 Menu::Menu(/* args */)
 {
-
-    backgroundTexture = IMG_LoadTexture(ren,(APP_PATH + "MENU_SCREEN.png").c_str()); //menu background.png (temp for now) path to the background
-
-    //error checking 
-    if (!backgroundTexture){
-        cout << "Menu constructor: Load background" << SDL_GetError()<<endl;
-    }    
-}
+   font = TTF_OpenFont( (APP_PATH + "ARCADECLASSIC.ttf").c_str(), 60);
+   if (!font) {
+       // Handle error
+   }
+   }
 
 Menu::~Menu()
 {
@@ -73,49 +71,127 @@ void Menu::enter(){}
 
 void Menu::update(){
 
-    Uint32 starting_tick;
+ Uint32 starting_tick;
 
-    while (currGameState == GameState::menu)
-    {
-        starting_tick = SDL_GetTicks();
-        SDL_Event e;
-        while (SDL_PollEvent(&e))
-        {
-            switch (e.type){
-                case SDL_QUIT:
-                    shutdown();
-                    break;
-                case SDL_KEYDOWN:
-                   if(e.key.keysym.sym == SDLK_ESCAPE){
-                       shutdown();
-                       break;
-                   }
-                   if(e.key.keysym.sym == SDLK_1){
-                       //change state by pressing 1
-                       currGameState = play; //get outta the loop when change state
-                        break;
-                   }
-                   if(e.key.keysym.sym == SDLK_2){
-                       //change state by pressing 1
-                       currGameState = help; //get outta the loop when change state
-                        break;
-                   }
-                   if(e.key.keysym.sym == SDLK_3){
-                       //change state by pressing 1
-                       currGameState = credits; //get outta the loop when change state
-                        break;
-                   }
+   starting_tick = SDL_GetTicks();
+   SDL_Event e;
+   while (SDL_PollEvent(&e))
+   {
+      switch (e.type)
+      {
+         case SDL_QUIT:
+            shutdown();
+            break;
+         case SDL_MOUSEBUTTONDOWN:
+            int mouse_x, mouse_y;
+            SDL_GetMouseState(&mouse_x,&mouse_y);
+            if (button_rect.x <= mouse_x && mouse_x <= button_rect.x + button_rect.w  && 
+                button_rect.y <= mouse_y && mouse_y <= button_rect.y + button_rect.h
+               )
+            {
+              currGameState = play; //get outta the loop when change state
+              return;
             }
-        }
+         case SDL_KEYDOWN:
+            if(e.key.keysym.sym == SDLK_ESCAPE){
+              shutdown();
+              break;
+            }
+            if(e.key.keysym.sym == SDLK_1){
+              //change state by pressing 1
+              currGameState = play; //get outta the loop when change state
+               break;
+            }
+            if(e.key.keysym.sym == SDLK_2){
+              //change state by pressing 1
+              currGameState = help; //get outta the loop when change state
+               break;
+            }
+            if(e.key.keysym.sym == SDLK_3){
+               //change state by pressing 1
+               currGameState = credits; //get outta the loop when change state
+               break;
+            }
+      }
+   }
 
-        //using sdl enums for all gamestates
+   //using sdl enums for all gamestates
 
-        SDL_RenderClear(ren);
-        SDL_Rect rect = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
-        SDL_RenderCopy(ren,backgroundTexture,NULL,&rect); // NULL stretches the image to the entire screen
-        SDL_RenderPresent(ren);
-        limit_Fps(starting_tick);
-    }//menu loop
+   SDL_RenderClear(ren);
+
+   SDL_GetRendererOutputSize(ren, &width, &height);
+   SDL_Rect rect = {0, 0, width, height};
+   SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);
+   SDL_RenderFillRect(ren, &rect);
+
+   SDL_RenderCopy(ren, backgroundTexture, NULL, &rect); // NULL stretches the image to the entire screen
+   DrawTitle();
+   DrawButtons();
+
+
+   SDL_RenderPresent(ren);
+   limit_Fps(starting_tick);
+}
+void Menu::DrawTitle()
+{
+   TTF_SetFontSize(font, height / 8);
+   SDL_Surface *textSurface = TTF_RenderText_Solid(
+         font, 
+         "Pixel Chess", 
+         {255, 255, 255});
+   if (!textSurface) {
+      cout << "Error: Unable to load font" << endl;
+   }
+   SDL_Texture *textTexture = SDL_CreateTextureFromSurface(ren, textSurface);
+   if (!textTexture) {
+      cout << "Error: NULL textSurfac" << endl;
+   }
+   SDL_Rect textRect = { width / 2 - textSurface->w / 2,
+         height / 3, 
+         textSurface->w,
+         textSurface->h 
+   };
+   SDL_RenderCopy(ren, textTexture, NULL, &textRect);
+}
+
+void Menu::DrawButtons()
+{
+   TTF_SetFontSize(font, height / 8);
+
+   int bw = width / 4;
+   SDL_Color font_colour;
+   button_rect = {width / 2 - bw / 2, height / 2, bw, bw / 3};
+
+   int mouse_x, mouse_y;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
+    if (button_rect.x <= mouse_x && mouse_x <= button_rect.x + button_rect.w && 
+        button_rect.y <= mouse_y && mouse_y <= button_rect.y + button_rect.h
+       )
+    {
+       SDL_SetRenderDrawColor(ren, 255, 255, 255, SDL_ALPHA_OPAQUE);
+       font_colour = {0, 0, 0};
+
+    }
+    else 
+    {
+       SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);
+       font_colour = {255, 255, 255};
+    }
+    SDL_RenderFillRect(ren, &button_rect);
+
+   TTF_SetFontSize(font, height / 16);
+
+   button_surface = TTF_RenderText_Solid(font, "Play", font_colour);
+   button_texture = SDL_CreateTextureFromSurface(ren, button_surface);
+
+   SDL_Rect textRect = { 
+         width / 2 - button_surface->w / 2,
+         button_rect.y + (button_rect.h / 2) - (button_surface->h / 2),
+         button_surface->w,
+         button_surface->h 
+   };
+
+   SDL_RenderCopy(ren, button_texture, NULL, &textRect);
 }
 
 
@@ -234,49 +310,53 @@ Play::~Play()
 }
 
 void Play::enter(){}
+
 void Play::update()
 {
-    Uint32 starting_tick;
-    AdjustRectSizes();
+   Uint32 starting_tick;
+   AdjustRectSizes();
 
-     starting_tick = SDL_GetTicks();
-     int source_x,source_y, dest_x,dest_y;
-     SDL_Event e;
-     while (SDL_PollEvent(&e))
-     {
-         switch (e.type){
-             case SDL_QUIT:
-                 shutdown();
-                 break;
-             case SDL_KEYDOWN:
-                 if(e.key.keysym.sym == SDLK_ESCAPE){
-                     shutdown();
-                 } else if (e.key.keysym.sym == SDLK_1){
-                     //change state, go back to main menu
-                     currGameState = menu; //get outta the loop when change state
-                     controller->ResetGame();
-                     break;
-                 }
-             case SDL_MOUSEBUTTONDOWN:
-                 SDL_GetMouseState(&source_x,&source_y);
-                 source_x = (source_x - left_padding) / piece_width;
-                 source_y = (source_y - top_padding) / tile_height;
-                 controller->ProcessClick(Position(source_y, source_x));
-                 break;
-         }
-     }
+   starting_tick = SDL_GetTicks();
+   int source_x,source_y, dest_x,dest_y;
+   SDL_Event e;
+   while (SDL_PollEvent(&e))
+   {
+      switch (e.type){
+         case SDL_QUIT:
+            shutdown();
+            break;
+         case SDL_KEYDOWN:
+            if(e.key.keysym.sym == SDLK_ESCAPE)
+            {
+               shutdown();
+            } 
+            else if (e.key.keysym.sym == SDLK_1)
+            {
+               //change state, go back to main menu
+               currGameState = menu; //get outta the loop when change state
+               controller->ResetGame();
+               return;
+            }
+         case SDL_MOUSEBUTTONDOWN:
+            SDL_GetMouseState(&source_x,&source_y);
+            source_x = (source_x - left_padding) / piece_width;
+            source_y = (source_y - top_padding) / tile_height;
+            controller->ProcessClick(Position(source_y, source_x));
+            break;
+      }
+   }
 
-      SDL_SetRenderDrawColor(ren, 144, 148, 156, SDL_ALPHA_OPAQUE);
-      SDL_RenderClear(ren);
+   SDL_SetRenderDrawColor(ren, 144, 148, 156, SDL_ALPHA_OPAQUE);
+   SDL_RenderClear(ren);
 
-      DrawBoard();
-      HighlightSelectedPiece();
-      HighlightLegalMoves();
-      DrawPieces();
-      DrawEdgeOfBoard();
+   DrawBoard();
+   HighlightSelectedPiece();
+   HighlightLegalMoves();
+   DrawPieces();
+   DrawEdgeOfBoard();
 
-      SDL_RenderPresent(ren);
-      limit_Fps(starting_tick);   
+   SDL_RenderPresent(ren);
+   limit_Fps(starting_tick);   
 }
 
 void Play::DrawEdgeOfBoard()
@@ -478,4 +558,4 @@ void Credits::update(){
 
 }
 
-void Credits::exit(){}
+void Credits::exit() {}

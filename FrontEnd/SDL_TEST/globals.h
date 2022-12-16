@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <string>
 
@@ -10,6 +11,8 @@ using namespace std; // i know this is not like b everyone but did not wanna use
 // maybe create images as pngs in paint for testing, diff images for each state
 
 static int k = SDL_Init(SDL_INIT_EVERYTHING); // initialised everything
+static int k2= TTF_Init();
+
 
 const int SCREEN_WIDTH = 500;
 const int SCREEN_HEIGHT = 562;
