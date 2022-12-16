@@ -259,38 +259,42 @@ void Play::update()
                  }
              case SDL_MOUSEBUTTONDOWN:
                  SDL_GetMouseState(&source_x,&source_y);
-                 source_x = (source_x - start_x) / piece_width;
+                 source_x = (source_x - left_padding) / piece_width;
                  source_y = (source_y - top_padding) / tile_height;
                  controller->ProcessClick(Position(source_y, source_x));
                  break;
          }
      }
 
+      SDL_SetRenderDrawColor(ren, 144, 148, 156, SDL_ALPHA_OPAQUE);
       SDL_RenderClear(ren);
-      DrawBoard();
-      HighlightLegalMoves();
-      HighlightSelectedPiece();
-      DrawPieces();
-     for (int col = 0; col < 8; col++) 
-     {
-          // Adjust rect for drawing bottom of board
-          SDL_Rect rect;
-          rect.x = start_x + piece_width * col;
-          rect.y = top_padding + tile_height * 8;
-          rect.w = piece_width;
-          rect.h = piece_width / 4;
 
-          if (col % 2 == 0) {
-             SDL_SetRenderDrawColor(ren,31, 31, 40, SDL_ALPHA_OPAQUE);
-          } else {
-             SDL_SetRenderDrawColor(ren,152, 161, 177, SDL_ALPHA_OPAQUE);
-          }
-          SDL_RenderFillRect(ren, &rect);
-     }
-     
-     SDL_SetRenderDrawColor(ren, 144, 148, 156, SDL_ALPHA_OPAQUE);
-     SDL_RenderPresent(ren);
-     limit_Fps(starting_tick);   
+      DrawBoard();
+      HighlightSelectedPiece();
+      HighlightLegalMoves();
+      DrawPieces();
+      DrawEdgeOfBoard();
+
+      SDL_RenderPresent(ren);
+      limit_Fps(starting_tick);   
+}
+
+void Play::DrawEdgeOfBoard()
+{
+   for (int col = 0; col < 8; col++) 
+   {
+      // Adjust rect for drawing bottom of board
+      SDL_Rect rect = TileAt(Position(kBoardSize, col));
+      rect.h /= 4;
+      if (col % 2 == 0) {
+         SDL_SetRenderDrawColor(ren,31, 31, 40, SDL_ALPHA_OPAQUE);
+      } 
+      else 
+      {
+         SDL_SetRenderDrawColor(ren,152, 161, 177, SDL_ALPHA_OPAQUE);
+      }
+      SDL_RenderFillRect(ren, &rect);
+   }
 }
 
 void Play::AdjustRectSizes()
@@ -302,7 +306,7 @@ void Play::AdjustRectSizes()
      // stops pieces from clipping the bottom of the screen
      board_pixels -= board_pixels / 8;
    }
-   start_x = (width - board_pixels) / 2;
+   left_padding = (width - board_pixels) / 2;
    piece_width = round(board_pixels / kBoardSize);
    piece_height = 2 * piece_width;
    tile_height = 5 * piece_width / 6;
@@ -360,7 +364,7 @@ void Play::FillCenterOfRect(SDL_Rect rect, Position position)
 SDL_Rect Play::TileAt(Position position)
 {
    SDL_Rect rect;
-   rect.x = start_x + piece_width * position.col;
+   rect.x = left_padding + piece_width * position.col;
    rect.y = top_padding + tile_height * position.row;
    rect.w = piece_width;
    rect.h = tile_height;
@@ -400,7 +404,7 @@ void Play::DrawPieces()
          PieceNum piece = controller->GetBoard()[row][col];
          if (piece != kEmpty)
          {
-            rect.x = start_x + piece_width * col;
+            rect.x = left_padding + piece_width * col;
             rect.y = (top_padding - piece_width) + tile_height * row - piece_y_offset;
             rect.w = piece_width;
             rect.h = piece_height;

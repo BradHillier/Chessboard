@@ -74,23 +74,31 @@ class Play : public GameState
 {
 private:
    map<PieceNum, SDL_Texture*> pieces;
+
    void AdjustRectSizes();
+
    void DrawBoard();
    void HighlightSelectedPiece();
    void HighlightLegalMoves();
    void DrawPieces();
-   void AddPadding(SDL_Rect &rect, int padding);
-   SDL_Rect TileAt(Position position);
-   void FillCenterOfRect(SDL_Rect rect, Position position);
-   void SetTileRenderColor(int row, int col);
+   void DrawEdgeOfBoard();
 
-   int start_x;
+   SDL_Rect TileAt(Position position);
+   void SetTileRenderColor(int row, int col);
+   void FillCenterOfRect(SDL_Rect rect, Position position);
+
+   void AddPadding(SDL_Rect &rect, int padding);
+
+   int left_padding;
+   int top_padding;
+
+   int board_pixels;
+
    int piece_width;
    int piece_height; 
-   int tile_height;
-   int top_padding;
-   int board_pixels;
    int piece_y_offset;
+
+   int tile_height;
 
 public:
     Play();
