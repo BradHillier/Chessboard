@@ -7,8 +7,8 @@
 
 ////////game state/////////
 //base class
-class GameState{
-
+class GameState
+{
     public:
 
         GameState() {}

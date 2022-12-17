@@ -5,8 +5,9 @@
 /////////Global space/////////
 //////////////////////////////
 
-string APP_PATH = SDL_GetPrefPath("Prometheus", "Chessboard"); // the location of Assets and user data
-
+// the location of Assets and user data
+char* tmp_path = SDL_GetPrefPath("Prometheus", "Chessboard"); 
+string APP_PATH = string(tmp_path);
 
 // i tried putting it in .h but with whatever lil testing i did it seems to like it here
 SDL_Window * GameState::win = SDL_CreateWindow(
@@ -31,12 +32,19 @@ GameState * GameState::currGameState = menu;
 
 //Mouse* GameState::mouse = new Mouse(ren);
 
-void GameState::shutdown(){
+void GameState::shutdown()
+{
+   SDL_free(tmp_path);
 
-    SDL_DestroyRenderer(ren);
-    SDL_DestroyWindow(win);
-    SDL_Quit();
-    ::exit(0);
+   delete GameState::menu;
+   delete GameState::help;
+   delete GameState::credits;
+   delete GameState::play;
+
+   SDL_DestroyRenderer(ren);
+   SDL_DestroyWindow(win);
+   SDL_Quit();
+   ::exit(0);
 }
 
 void GameState::limit_Fps(Uint32 start_tick){
@@ -58,13 +66,17 @@ Menu::Menu(/* args */)
    if (!font) {
        // Handle error
    }
-   }
+}
 
 Menu::~Menu()
 {
+   TTF_CloseFont(font);
 
-    SDL_DestroyTexture(backgroundTexture); //it only loads it once but just for good measure, we prevent any memory leaks 
-
+   // it only loads it once but just for good measure, 
+   // we prevent any memory leaks 
+   SDL_DestroyTexture(backgroundTexture); 
+   SDL_DestroyTexture(button_texture);
+   SDL_FreeSurface(button_surface);
 }
 
 void Menu::enter(){}
@@ -152,6 +164,10 @@ void Menu::DrawTitle()
          textSurface->h 
    };
    SDL_RenderCopy(ren, textTexture, NULL, &textRect);
+
+   // free memory
+   SDL_DestroyTexture(textTexture);
+   SDL_FreeSurface(textSurface);
 }
 
 void Menu::DrawButtons()
@@ -192,6 +208,8 @@ void Menu::DrawButtons()
    };
 
    SDL_RenderCopy(ren, button_texture, NULL, &textRect);
+   SDL_FreeSurface(button_surface);
+   SDL_DestroyTexture(button_texture);
 }
 
 
@@ -302,6 +320,7 @@ Play::Play()
 
 Play::~Play()
 {
+   delete controller;
    // delete all piece assets
    for (const auto &asset : pieces)
    {
