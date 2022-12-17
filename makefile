@@ -40,11 +40,11 @@ bin/chessboard: FrontEnd/SDL_TEST/graphical.o FrontEnd/SDL_TEST/GameState.o obje
 	@echo "Building executable file"
 	g++ $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(OPTIONS) $^ -o $@ $(LINKER_FLAGS)
 
-FrontEnd/SDL_TEST/graphical.o: FrontEnd/SDL_TEST/main.cpp FrontEnd/SDL_TEST/Gamestate.cpp
+FrontEnd/SDL_TEST/graphical.o: FrontEnd/SDL_TEST/main.cpp FrontEnd/SDL_TEST/Gamestate.cpp FrontEnd/SDL_TEST/GameState.h 
 	@echo "buiding main object"
 	g++ -c $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(OPTIONS) $< -o $@ $(LINKER_FLAGS)
 
-FrontEnd/SDL_TEST/GameState.o: FrontEnd/SDL_TEST/GameState.cpp FrontEnd/SDL_TEST/globals.h
+FrontEnd/SDL_TEST/GameState.o: FrontEnd/SDL_TEST/GameState.cpp FrontEnd/SDL_TEST/GameState.h FrontEnd/SDL_TEST/globals.h
 	@echo "Building gamestate object"
 	g++ -c $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(OPTIONS) $< -o $@ $(LINKER_FLAGS)
 
