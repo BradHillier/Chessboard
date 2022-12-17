@@ -35,12 +35,6 @@ GameState * GameState::currGameState = menu;
 void GameState::shutdown()
 {
    SDL_free(tmp_path);
-
-   delete GameState::menu;
-   delete GameState::help;
-   delete GameState::credits;
-   delete GameState::play;
-
    SDL_DestroyRenderer(ren);
    SDL_DestroyWindow(win);
    SDL_Quit();
