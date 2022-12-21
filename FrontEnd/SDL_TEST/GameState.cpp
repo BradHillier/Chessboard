@@ -6,8 +6,8 @@
 //////////////////////////////
 
 // the location of Assets and user data
-char* tmp_path = SDL_GetPrefPath("Prometheus", "Chessboard"); 
-string APP_PATH = string(tmp_path);
+char* tmp_path = SDL_GetBasePath();
+string ASSET_PATH = string(tmp_path) + "../assets/";
 
 // i tried putting it in .h but with whatever lil testing i did it seems to like it here
 SDL_Window * GameState::win = SDL_CreateWindow(
@@ -56,7 +56,7 @@ void GameState::limit_Fps(Uint32 start_tick){
 
 Menu::Menu(/* args */)
 {
-   font = TTF_OpenFont( (APP_PATH + "ARCADECLASSIC.ttf").c_str(), 60);
+   font = TTF_OpenFont( (ASSET_PATH + "font/ARCADECLASSIC.ttf").c_str(), 60);
    if (!font) {
        // Handle error
    }
@@ -69,8 +69,8 @@ Menu::~Menu()
    // it only loads it once but just for good measure, 
    // we prevent any memory leaks 
    SDL_DestroyTexture(backgroundTexture); 
-   SDL_DestroyTexture(button_texture);
-   SDL_FreeSurface(button_surface);
+   SDL_DestroyTexture(text_texture);
+   SDL_FreeSurface(text_surface);
 }
 
 void Menu::enter(){}
@@ -164,46 +164,65 @@ void Menu::DrawTitle()
    SDL_FreeSurface(textSurface);
 }
 
+bool Menu::IsMouseIn(SDL_Rect rect)
+{
+   int mouse_x, mouse_y;
+   SDL_GetMouseState(&mouse_x, &mouse_y);
+   bool in_horizontal  = button_rect.x <= mouse_x && mouse_x <= button_rect.x + button_rect.w;
+   bool in_vertical = button_rect.y <= mouse_y && mouse_y <= button_rect.y + button_rect.h;
+
+   return in_horizontal && in_vertical;
+}
+
 void Menu::DrawButtons()
 {
-   TTF_SetFontSize(font, height / 8);
+   DrawButton("Play", 0);
+   DrawButton("Help", 1);
+   DrawButton("Credits", 2);
+   DrawButton("Quit", 3);
+}
 
-   int bw = width / 4;
-   SDL_Color font_colour;
-   button_rect = {width / 2 - bw / 2, height / 2, bw, bw / 3};
-
-   int mouse_x, mouse_y;
-    SDL_GetMouseState(&mouse_x, &mouse_y);
-    if (button_rect.x <= mouse_x && mouse_x <= button_rect.x + button_rect.w && 
-        button_rect.y <= mouse_y && mouse_y <= button_rect.y + button_rect.h
-       )
-    {
-       SDL_SetRenderDrawColor(ren, 255, 255, 255, SDL_ALPHA_OPAQUE);
-       font_colour = {0, 0, 0};
-
-    }
-    else 
-    {
-       SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);
-       font_colour = {255, 255, 255};
-    }
-    SDL_RenderFillRect(ren, &button_rect);
+void Menu::DrawButton(char* text, int offset)
+{
+   SDL_Color black = {235, 240, 218};
+   SDL_Color white = {90, 96, 111};
 
    TTF_SetFontSize(font, height / 16);
 
-   button_surface = TTF_RenderText_Solid(font, "Play", font_colour);
-   button_texture = SDL_CreateTextureFromSurface(ren, button_surface);
+   // needed to create the size of button_rext; overwritten before rendering
+   text_surface = TTF_RenderText_Solid(font, text, {0, 0, 0});
 
    SDL_Rect textRect = { 
-         width / 2 - button_surface->w / 2,
-         button_rect.y + (button_rect.h / 2) - (button_surface->h / 2),
-         button_surface->w,
-         button_surface->h 
+         width / 2 - text_surface->w / 2,
+         height / 2 + offset * 2 *text_surface->h + text_surface->h / 2 - (text_surface->h / 2),
+         text_surface->w,
+         text_surface->h 
    };
 
-   SDL_RenderCopy(ren, button_texture, NULL, &textRect);
-   SDL_FreeSurface(button_surface);
-   SDL_DestroyTexture(button_texture);
+   int padding = min(10, width / 64); // caps the size to no more than 10px
+   button_rect = textRect;
+   button_rect.x -= 4*padding;
+   button_rect.y -= padding;
+   button_rect.w += 4*2*padding;
+   button_rect.h += 2*padding;
+   if (IsMouseIn(button_rect))
+   {
+      SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);
+   }
+   else 
+   {
+      SDL_SetRenderDrawColor(ren, 90, 96, 111, SDL_ALPHA_OPAQUE);
+   }
+   SDL_RenderFillRect(ren, &button_rect);
+
+   SDL_Color foreground_colour = IsMouseIn(button_rect) ? white : black;
+   text_surface = TTF_RenderText_Solid(font, text, foreground_colour);
+   text_texture = SDL_CreateTextureFromSurface(ren, text_surface);
+   SDL_RenderCopy(ren, text_texture, NULL, &textRect);
+
+   // free memory
+   SDL_FreeSurface(text_surface);
+   SDL_DestroyTexture(text_texture);
 }
 
 
@@ -216,7 +235,7 @@ void Menu::exit(){}
 
 Help::Help(/* args */){
 
-    backgroundTexture = IMG_LoadTexture(ren, (APP_PATH + "HELP_SCREEN.png").c_str());
+    backgroundTexture = IMG_LoadTexture(ren, (ASSET_PATH + "menus/HELP_SCREEN.png").c_str());
 
     //error checking 
     if(!backgroundTexture){
@@ -287,20 +306,20 @@ Play::Play()
     height = SCREEN_HEIGHT;
 
     // load white pieces
-    pieces[kWKing] = IMG_LoadTexture(ren, (APP_PATH + "W_King.png").c_str());
-    pieces[kWQueen] = IMG_LoadTexture(ren, (APP_PATH + "W_Queen.png").c_str());
-    pieces[kWRook] = IMG_LoadTexture(ren, (APP_PATH + "W_Rook.png").c_str());
-    pieces[kWKnight] = IMG_LoadTexture(ren, (APP_PATH + "W_Knight.png").c_str()); 
-    pieces[kWBishop] = IMG_LoadTexture(ren, (APP_PATH + "W_Bishop.png").c_str());
-    pieces[kWPawn] = IMG_LoadTexture(ren, (APP_PATH + "W_Pawn.png").c_str());
+    pieces[kWKing] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/W_King.png").c_str());
+    pieces[kWQueen] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/W_Queen.png").c_str());
+    pieces[kWRook] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/W_Rook.png").c_str());
+    pieces[kWKnight] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/W_Knight.png").c_str()); 
+    pieces[kWBishop] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/W_Bishop.png").c_str());
+    pieces[kWPawn] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/W_Pawn.png").c_str());
 
     // load black pieces
-    pieces[kBKing] = IMG_LoadTexture(ren, (APP_PATH + "B_King.png").c_str());
-    pieces[kBQueen] = IMG_LoadTexture(ren, (APP_PATH + "B_Queen.png").c_str());
-    pieces[kBRook] = IMG_LoadTexture(ren, (APP_PATH + "B_Rook.png").c_str());
-    pieces[kBKnight] = IMG_LoadTexture(ren, (APP_PATH + "B_Knight.png").c_str()); 
-    pieces[kBBishop] = IMG_LoadTexture(ren, (APP_PATH + "B_Bishop.png").c_str());
-    pieces[kBPawn] = IMG_LoadTexture(ren, (APP_PATH + "B_Pawn.png").c_str());
+    pieces[kBKing] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/B_King.png").c_str());
+    pieces[kBQueen] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/B_Queen.png").c_str());
+    pieces[kBRook] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/B_Rook.png").c_str());
+    pieces[kBKnight] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/B_Knight.png").c_str()); 
+    pieces[kBBishop] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/B_Bishop.png").c_str());
+    pieces[kBPawn] = IMG_LoadTexture(ren, (ASSET_PATH + "pieces/B_Pawn.png").c_str());
 
    // check that pieces loaded successfully
    for (const auto &asset : pieces)
@@ -516,7 +535,7 @@ void Play::exit(){}
 
 Credits::Credits(/* args */){
 
-    backgroundTexture = IMG_LoadTexture(ren, (APP_PATH + "CREDITS_SCREEN.png").c_str()); //menu background.png (temp for now) path to the background
+    backgroundTexture = IMG_LoadTexture(ren, (ASSET_PATH + "menus/CREDITS_SCREEN.png").c_str()); //menu background.png (temp for now) path to the background
 
     //error checking 
     if(!backgroundTexture){

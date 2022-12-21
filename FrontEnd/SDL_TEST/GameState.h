@@ -47,10 +47,12 @@ private:
    int width, height;
    TTF_Font *font;
    SDL_Rect button_rect;
-   SDL_Surface *button_surface;
-   SDL_Texture *button_texture;
+   SDL_Surface *text_surface;
+   SDL_Texture *text_texture;
    void DrawTitle();
    void DrawButtons();
+   bool IsMouseIn(SDL_Rect rect);
+   void DrawButton(char* text, int offset);
 
 public:
     Menu(/* args */);

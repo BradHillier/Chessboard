@@ -140,5 +140,5 @@ objects/effects.o: src/effects.cpp include/effects.h
 #=============================================================================
 
 clean:                                                                             
-	rm objects/effects.o objects/chess_controller.o $(GAME_OBJS) $(UI_OBJS) $(STATE_OBJS) $(EXECUTABLES) 
-	rm FrontEnd/SDL_TEST/*.o FrontEnd/SDL_TEST/graphical
+	rm -f objects/effects.o objects/chess_controller.o $(GAME_OBJS) $(UI_OBJS) $(STATE_OBJS) $(EXECUTABLES) 
+	rm -f FrontEnd/SDL_TEST/*.o FrontEnd/SDL_TEST/graphical
