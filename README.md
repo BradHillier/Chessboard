@@ -10,6 +10,10 @@ This software was designed and implemented as part of a [semester-long team proj
 
 ![Gameplay GIF](./assets/screenshots/chessboard.gif)
 
+## Architecture
+
+Pixel-Chess uses the MVC architecture to break the system down in loosely coupled components.  All logic regarding the state of the gameboard is strictly seperated from the code related to graphics. The frontend can only interact with a controller object that allows it to query the internal state of the game and report actions taken by the user. The frontend is managed by a state machine, allowing smooth and easy transitions through the various menus and playing state.
+
 ## Installation
 
 ### macOS
